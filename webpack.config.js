@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
+    devtool: 'inline-source-map',
     entry: './src/game.js',
     output: {
         filename: 'game.js',
