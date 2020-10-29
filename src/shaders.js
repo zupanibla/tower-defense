@@ -9,21 +9,21 @@ out vec4 vColor;
 out vec3 vLighting;
 
 void main() {
-    gl_Position = aMvpMatrix * aPosition;
-    vColor = aColor;
+	gl_Position = aMvpMatrix * aPosition;
+	vColor = aColor;
 
-    // Apply lighting effect
-    highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-    highp vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
+	// Apply lighting effect
+	highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
+	highp vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
 
-    highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
-    // highp vec3 directionalVector = normalize(vec3(0.0, 0.0, 1.0));
-    // highp vec3 directionalVector = normalize(vec3(1.0, 0.0, 0.0));
+	highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+	// highp vec3 directionalVector = normalize(vec3(0.0, 0.0, 1.0));
+	// highp vec3 directionalVector = normalize(vec3(1.0, 0.0, 0.0));
 
-    highp vec4 transformedNormal = aNormalMatrix * vec4(aNormal, 1.0);
+	highp vec4 transformedNormal = aNormalMatrix * vec4(aNormal, 1.0);
 
-    highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-    vLighting = ambientLight + (directionalLightColor * directional);
+	highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+	vLighting = ambientLight + (directionalLightColor * directional);
 
 }
 `;
@@ -38,10 +38,10 @@ in vec3 vLighting;
 out vec4 oColor;
 
 void main() {
-    oColor = vec4(vColor.rgb * vLighting, 1.0);
+	oColor = vec4(vColor.rgb * vLighting, 1.0);
 }
 `;
 
 export default {
-    cuboid: { vertex, fragment }
+	cuboid: { vertex, fragment }
 };

@@ -14,12 +14,12 @@ export function initRenderer() {
 		preserveDrawingBuffer: true,
 	});
 
-    // programs <- {cuboid: (cuboid shader) }
+	// programs <- {cuboid: (cuboid shader) }
 	programs = compileShaders(gl, shaders);
 
-    // cuboid
+	// cuboid
 	let vertices = [
-         // aPosition                 // aNormal
+		 // aPosition                 // aNormal
 		 // Front face
 		-1.0, -1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
 		 1.0, -1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
@@ -65,13 +65,13 @@ export function initRenderer() {
 		20, 21, 22,     20, 22, 23,   // left
 	];
 
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black
-    gl.clearDepth(1.0);                 // Clear everything
-    gl.enable(gl.DEPTH_TEST);           // Enable depth testing
-    gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
-    gl.enable(gl.CULL_FACE);            // Don't draw back faces (effeciency)
+	gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black
+	gl.clearDepth(1.0);                 // Clear everything
+	gl.enable(gl.DEPTH_TEST);           // Enable depth testing
+	gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
+	gl.enable(gl.CULL_FACE);            // Don't draw back faces (effeciency)
 
-    // TODO no idea what this does
+	// TODO no idea what this does
 	vao = gl.createVertexArray();
 	gl.bindVertexArray(vao);
 
@@ -80,89 +80,96 @@ export function initRenderer() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-    // push indices to GPU
-    let indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+	// push indices to GPU
+	let indexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
-    // aPosition: enable and layout
+	// aPosition: enable and layout
 	gl.enableVertexAttribArray(0);
 	gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 28, 0);
 
-    // aNormal: enable and layout
+	// aNormal: enable and layout
 	gl.enableVertexAttribArray(1);
 	gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 28, 16);
 
-    // aMvpMatrix: enable and make instanced
-    for (var i = 0; i < 4; i++) {
-        gl.enableVertexAttribArray(2 + i);
-        gl.vertexAttribDivisor(2 + i, 1);
-    }
+	// aMvpMatrix: enable and make instanced
+	for (var i = 0; i < 4; i++) {
+		gl.enableVertexAttribArray(2 + i);
+		gl.vertexAttribDivisor(2 + i, 1);
+	}
 
-    // aNormalMatrix: enable and make instanced
-    for (var i = 0; i < 4; i++) {
-        gl.enableVertexAttribArray(6 + i);
-        gl.vertexAttribDivisor(6 + i, 1);
-    }
+	// aNormalMatrix: enable and make instanced
+	for (var i = 0; i < 4; i++) {
+		gl.enableVertexAttribArray(6 + i);
+		gl.vertexAttribDivisor(6 + i, 1);
+	}
 
-    // aColor: enable and make instanced
-    gl.enableVertexAttribArray(10);
-    gl.vertexAttribPointer(10, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + 64);
-    gl.vertexAttribDivisor(10, 1);
+	// aColor: enable and make instanced
+	gl.enableVertexAttribArray(10);
+	gl.vertexAttribPointer(10, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + 64);
+	gl.vertexAttribDivisor(10, 1);
 }
 
-
-export function render(entities) {
+// cuboids: {
+//     x, y, z,    // position
+//     w, l, h,    // size
+//     r, g, b,    // color
+//     rot,        // rotation around z axis
+//     px, py, pz  // pivot
+// }[]
+export function render(cuboids) {
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	// create viewMatrix (static camera)
-    let viewMatrix = mat4.create();
-    mat4.translate(viewMatrix, viewMatrix, [0, 0, -5]);
-    mat4.rotateX(viewMatrix, viewMatrix, Math.PI * (-1/4));
+	let viewMatrix = mat4.create();
+	mat4.translate(viewMatrix, viewMatrix, [0, 0, -5]);
+	mat4.rotateX(viewMatrix, viewMatrix, Math.PI * (-1/4));
 
-    // create projectionMatrix based on canvas size
-    let projectionMatrix = mat4.create();
-    let w = canvas.clientWidth;
-    let h = canvas.clientHeight;
-    let aspect = w / h;
-    let fovy = Math.PI / 2;
-    let near = 0.1;
-    let far = 100;
-    mat4.perspective(projectionMatrix, fovy, aspect, near, far);
+	// create projectionMatrix based on canvas size
+	let projectionMatrix = mat4.create();
+	let w = canvas.clientWidth;
+	let h = canvas.clientHeight;
+	let aspect = w / h;
+	let fovy = Math.PI / 2;
+	let near = 0.1;
+	let far = 100;
+	mat4.perspective(projectionMatrix, fovy, aspect, near, far);
 
 	// TODO no idea what this does
-    gl.bindVertexArray(vao);
+	gl.bindVertexArray(vao);
 
 	let program = programs.cuboid;
 	gl.useProgram(program.program);
 
-    // mvpMatrixNormalMatrixColorData <-
-    // <- [mvpR1, mvpR2, mvpR3, mvpR4, mvpR1, normalR1, normalR2, normalR3, normalR4, color, ...]
+	// mvpMatrixNormalMatrixColorData <-
+	// <- [mvpR1, mvpR2, mvpR3, mvpR4, mvpR1, normalR1, normalR2, normalR3, normalR4, color, ...]
 	let mvpMatrixNormalMatrixColorData = [];
 
-	for (let ent of entities) {
-        // model matrix
+	for (let cub of cuboids) {
+		// model matrix
 		let modelMatrix = mat4.create();
-		mat4.translate(modelMatrix, modelMatrix, [ent.x, ent.y, ent.z]);
-		mat4.rotateZ(modelMatrix, modelMatrix, ent.rot);
-		mat4.scale(modelMatrix, modelMatrix, [ent.w/2, ent.l/2, ent.h/2]);
+		mat4.translate(modelMatrix, modelMatrix, [cub.x, cub.y, cub.z]);
+		mat4.rotateZ(modelMatrix,   modelMatrix, cub.rot);
+		mat4.scale(modelMatrix,     modelMatrix, [cub.w/2, cub.l/2, cub.h/2]);
+		mat4.translate(modelMatrix, modelMatrix, [-cub.px, -cub.py, -cub.pz]);
 
-        // calculate and push aMvpMatrix to array
-        let mvpMatrix = mat4.create();
-        mat4.mul(mvpMatrix, viewMatrix, modelMatrix);
-        mat4.mul(mvpMatrix, projectionMatrix, mvpMatrix);
+		// calculate and push aMvpMatrix to array
+		let mvpMatrix = mat4.create();
+		mat4.mul(mvpMatrix, viewMatrix, modelMatrix);
+		mat4.mul(mvpMatrix, projectionMatrix, mvpMatrix);
 		mvpMatrixNormalMatrixColorData.push(...mvpMatrix);
 
-        // calculate and push aNormalMatrix to array
-        let normalMatrix = mat4.create();
-        mat4.mul(normalMatrix, viewMatrix, modelMatrix);
-        mat4.invert(normalMatrix, normalMatrix);
-        mat4.transpose(normalMatrix, normalMatrix);
+		// calculate and push aNormalMatrix to array
+		let normalMatrix = mat4.create();
+		mat4.mul(normalMatrix, viewMatrix, modelMatrix);
+		mat4.invert(normalMatrix, normalMatrix);
+		mat4.transpose(normalMatrix, normalMatrix);
 		mvpMatrixNormalMatrixColorData.push(...normalMatrix);
 
-        // push aColor to array
-		mvpMatrixNormalMatrixColorData.push(ent.r, ent.g, ent.b, 1.0);
+		// push aColor to array
+		mvpMatrixNormalMatrixColorData.push(cub.r, cub.g, cub.b, 1.0);
 	}
 
 	// push mvp matrices, normal matrices, colors to GPU
@@ -170,29 +177,29 @@ export function render(entities) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, mvpMatrixNormalMatrixColorBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mvpMatrixNormalMatrixColorData), gl.DYNAMIC_DRAW);
 
-    // aMvpMatrix: layout
-    for (var i = 0; i < 4; i++) {
-        gl.vertexAttribPointer(2 + i, 4, gl.FLOAT, false, 64 + 64 + 16, i * 16);
-    }
+	// aMvpMatrix: layout
+	for (var i = 0; i < 4; i++) {
+		gl.vertexAttribPointer(2 + i, 4, gl.FLOAT, false, 64 + 64 + 16, i * 16);
+	}
 
-    // aNormalMatrix: layout
-    for (var i = 0; i < 4; i++) {
-        gl.vertexAttribPointer(6 + i, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + i * 16);
-    }
+	// aNormalMatrix: layout
+	for (var i = 0; i < 4; i++) {
+		gl.vertexAttribPointer(6 + i, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + i * 16);
+	}
 
-    // aColors: layout
-    gl.vertexAttribPointer(10, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + 64);
+	// aColors: layout
+	gl.vertexAttribPointer(10, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + 64);
 
-	gl.drawElementsInstanced(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0, entities.length);
+	gl.drawElementsInstanced(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0, cuboids.length);
 }
 
 // Resize canvas and set viewport if client size changed
 export function adjustCanvasSize() {
-    if (canvas.width !== canvas.clientWidth ||
-        canvas.height !== canvas.clientHeight)
-    {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    }
+	if (canvas.width !== canvas.clientWidth ||
+		canvas.height !== canvas.clientHeight)
+	{
+		canvas.width = canvas.clientWidth;
+		canvas.height = canvas.clientHeight;
+		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+	}
 }
