@@ -113,7 +113,7 @@ export function initRenderer() {
 
 // cuboids: {
 //     x, y, z,    // position
-//     w, l, h,    // size
+//     sx, sy, sz, // size
 //     r, g, b,    // color
 //     rot,        // rotation around z axis
 //     px, py, pz  // pivot
@@ -153,7 +153,7 @@ export function render(cuboids) {
 		mat4.translate(modelMatrix, modelMatrix, [cub.x, cub.y, cub.z]);
 		mat4.rotateZ(modelMatrix,   modelMatrix, cub.rot);
 		mat4.translate(modelMatrix, modelMatrix, [-cub.px, -cub.py, -cub.pz]);
-		mat4.scale(modelMatrix,     modelMatrix, [cub.w/2, cub.l/2, cub.h/2]);
+		mat4.scale(modelMatrix,     modelMatrix, [cub.sx/2, cub.sy/2, cub.sz/2]);
 
 		// calculate and push aMvpMatrix to array
 		let mvpMatrix = mat4.create();
