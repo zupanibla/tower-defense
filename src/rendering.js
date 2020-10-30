@@ -151,9 +151,9 @@ export function render(cuboids) {
 		// model matrix
 		let modelMatrix = mat4.create();
 		mat4.translate(modelMatrix, modelMatrix, [cub.x, cub.y, cub.z]);
-		mat4.rotateZ(modelMatrix,   modelMatrix, cub.rot);
+		mat4.rotateZ(  modelMatrix, modelMatrix, cub.rot);
 		mat4.translate(modelMatrix, modelMatrix, [-cub.px, -cub.py, -cub.pz]);
-		mat4.scale(modelMatrix,     modelMatrix, [cub.sx/2, cub.sy/2, cub.sz/2]);
+		mat4.scale(    modelMatrix, modelMatrix, [cub.sx, cub.sy, cub.sz]);
 
 		// calculate and push aMvpMatrix to array
 		let mvpMatrix = mat4.create();
@@ -163,7 +163,7 @@ export function render(cuboids) {
 
 		// calculate and push aNormalMatrix to array
 		let normalMatrix = mat4.create();
-		mat4.mul(normalMatrix, viewMatrix, modelMatrix);
+        mat4.rotateZ(normalMatrix, normalMatrix, cub.rot);
 		mat4.invert(normalMatrix, normalMatrix);
 		mat4.transpose(normalMatrix, normalMatrix);
 		mvpMatrixNormalMatrixColorData.push(...normalMatrix);
