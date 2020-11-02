@@ -61,7 +61,6 @@ let addCuboidButton       = document.querySelector('.add-cuboid');
 let cuboids = [];
 let cameraHorizontalAngle = 0, cameraVerticalAngle = Math.PI * (-1/4), cameraDistance = 5;
 let prevMouseX, prevMouseY, dragging = false
-let selectedCuboidName = null;
 let selectTimestamp = 0;
 let selectedCuboid = null;
 let cuboidListScroll = 0;
@@ -71,22 +70,27 @@ let stateCaptureNumber = 0;
 function selectCuboid(cuboid) {
 	selectedCuboid = cuboid;
 	selectTimestamp = Date.now();
-    captureState();
+    captureStateIfChanged();
 	renderCuboidList();
 }
 
-function captureState() {
-    stateCaptures = stateCaptures.slice(0, stateCaptureNumber+1);
-    stateCaptures.push(JSON.parse(JSON.stringify(cuboids)));
-    stateCaptureNumber++;
+function captureStateIfChanged() {
+    if (JSON.stringify(cuboids) != JSON.stringify(stateCaptures[stateCaptureNumber])) {
+        stateCaptures = stateCaptures.slice(0, stateCaptureNumber+1);
+        stateCaptures.push(JSON.parse(JSON.stringify(cuboids)));
+        stateCaptureNumber++;
+    }
 }
 
 // event handlers
 // undo/redo
 document.addEventListener('keydown', e => {
     if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'z') {
-
         if (stateCaptureNumber > 0) {
+            // capture state first if it has changed
+            let prevStateCaptureNumber = stateCaptureNumber;
+            captureStateIfChanged();
+            stateCaptureNumber = prevStateCaptureNumber;
             cuboids = JSON.parse(JSON.stringify(stateCaptures[--stateCaptureNumber]));
             renderCuboidList();
         }
@@ -95,7 +99,6 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keydown', e => {
     if (e.ctrlKey && (e.key.toLowerCase() === 'y' || e.shiftKey && e.key.toLowerCase() === 'z')) {
-
         if (stateCaptureNumber < stateCaptures.length-1) {
             cuboids = JSON.parse(JSON.stringify(stateCaptures[++stateCaptureNumber]));
             renderCuboidList();
@@ -145,7 +148,9 @@ jsonInput.addEventListener('input', e => {
 
 	invalidDataWarning.style.display = 'none';
 	cuboids = newCuboids;
+    renderCuboidList();
 });
+jsonInput.addEventListener('blur', e => { captureStateIfChanged(); });
 
 // camera movement
 canvas.addEventListener('mousedown', e => {
@@ -182,7 +187,7 @@ resetCameraButton.addEventListener('click', e => {
 document.addEventListener('keyup', e => {
 	if (isInputFocused()) return;
 	if (['W', 'A', 'S', 'D', 'Q', 'E'].map(it => KEY[it]).includes(e.keyCode)) {
-        captureState();
+        captureStateIfChanged();
 		renderCuboidList();
 	}
 });
@@ -282,7 +287,7 @@ function renderCuboidList() {
 			let temp = cuboids[idx];
 			cuboids[idx] = cuboids[idx-1];
 			cuboids[idx-1] = temp;
-            captureState();
+            captureStateIfChanged();
 			renderCuboidList();
 		});
 		moveDownButton.addEventListener('click', e => {
@@ -291,18 +296,18 @@ function renderCuboidList() {
 			let temp = cuboids[idx];
 			cuboids[idx] = cuboids[idx+1];
 			cuboids[idx+1] = temp;
-            captureState();
+            captureStateIfChanged();
 			renderCuboidList();
 		});
 		cloneButton.addEventListener('click', e => {
 			cuboids.splice(cuboids.indexOf(cub)+1, 0, JSON.parse(JSON.stringify(cub)));
-            captureState();
+            captureStateIfChanged();
 			renderCuboidList();
 		});
 		xButton.addEventListener('click', e => {
 			if (selectedCuboid === cub) selectedCuboid = null;
 			cuboids.splice(cuboids.indexOf(cub), 1);
-            captureState();
+            captureStateIfChanged();
 			renderCuboidList();
 		});
 
@@ -349,6 +354,11 @@ function renderCuboidList() {
 				updateInputValues('b'+it);
 			});
 		}
+
+        // capture state on change and blur
+        for (let it of inputs) {
+            it.addEventListener('blur', e => { captureStateIfChanged(); });
+        }
 
 		// don't trigger cuboid select on input interaction
 		for (let it of [...inputs, ...labels, xButton, cloneButton, moveDownButton, moveUpButton]) {
@@ -485,7 +495,7 @@ function update() {
 	requestAnimationFrame(update);
 }
 
-captureState();
+captureStateIfChanged();
 initRenderer();
 renderCuboidList();
 update();
