@@ -65,16 +65,45 @@ let selectedCuboidName = null;
 let selectTimestamp = 0;
 let selectedCuboid = null;
 let cuboidListScroll = 0;
+let stateCaptures = [];
+let stateCaptureNumber = 0;
 
 function selectCuboid(cuboid) {
 	selectedCuboid = cuboid;
 	selectTimestamp = Date.now();
+    captureState();
 	renderCuboidList();
-	
-	if (!selectedCuboid) return;
+}
+
+function captureState() {
+    stateCaptures = stateCaptures.slice(0, stateCaptureNumber+1);
+    stateCaptures.push(JSON.parse(JSON.stringify(cuboids)));
+    stateCaptureNumber++;
 }
 
 // event handlers
+// undo/redo
+document.addEventListener('keydown', e => {
+    if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'z') {
+
+        if (stateCaptureNumber > 0) {
+            cuboids = JSON.parse(JSON.stringify(stateCaptures[--stateCaptureNumber]));
+            renderCuboidList();
+        }
+        e.preventDefault();
+    }
+});
+document.addEventListener('keydown', e => {
+    if (e.ctrlKey && (e.key.toLowerCase() === 'y' || e.shiftKey && e.key.toLowerCase() === 'z')) {
+
+        if (stateCaptureNumber < stateCaptures.length-1) {
+            cuboids = JSON.parse(JSON.stringify(stateCaptures[++stateCaptureNumber]));
+            renderCuboidList();
+        }
+        e.preventDefault();
+    }
+});
+
 // switching between tabs
 importExportTabButton.addEventListener('click', e => {
 	editTab.style.display         = 'none';
@@ -153,6 +182,7 @@ resetCameraButton.addEventListener('click', e => {
 document.addEventListener('keyup', e => {
 	if (isInputFocused()) return;
 	if (['W', 'A', 'S', 'D', 'Q', 'E'].map(it => KEY[it]).includes(e.keyCode)) {
+        captureState();
 		renderCuboidList();
 	}
 });
@@ -252,6 +282,7 @@ function renderCuboidList() {
 			let temp = cuboids[idx];
 			cuboids[idx] = cuboids[idx-1];
 			cuboids[idx-1] = temp;
+            captureState();
 			renderCuboidList();
 		});
 		moveDownButton.addEventListener('click', e => {
@@ -260,15 +291,18 @@ function renderCuboidList() {
 			let temp = cuboids[idx];
 			cuboids[idx] = cuboids[idx+1];
 			cuboids[idx+1] = temp;
+            captureState();
 			renderCuboidList();
 		});
 		cloneButton.addEventListener('click', e => {
 			cuboids.splice(cuboids.indexOf(cub)+1, 0, JSON.parse(JSON.stringify(cub)));
+            captureState();
 			renderCuboidList();
 		});
 		xButton.addEventListener('click', e => {
 			if (selectedCuboid === cub) selectedCuboid = null;
 			cuboids.splice(cuboids.indexOf(cub), 1);
+            captureState();
 			renderCuboidList();
 		});
 
@@ -451,6 +485,7 @@ function update() {
 	requestAnimationFrame(update);
 }
 
+captureState();
 initRenderer();
 renderCuboidList();
 update();
