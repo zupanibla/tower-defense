@@ -64,6 +64,7 @@ let prevMouseX, prevMouseY, dragging = false
 let selectedCuboidName = null;
 let selectTimestamp = 0;
 let selectedCuboid = null;
+let cuboidListScroll = 0;
 
 function selectCuboid(cuboid) {
 	selectedCuboid = cuboid;
@@ -166,11 +167,9 @@ addCuboidButton.addEventListener('click', e => {
 	selectCuboid(cuboids[cuboids.length-1]);
 });
 
-
 function renderCuboidList() {
 	let newCuboidList = document.createElement('div');
 	newCuboidList.className = 'cuboid-list';
-
 	for (let cub of cuboids) {
 		// cuboid list item
 		let item = document.createElement('div');
@@ -322,8 +321,13 @@ function renderCuboidList() {
 			it.addEventListener('click', e => { e.stopPropagation(); });
 		}
 	}
-
 	cuboidListWrapper.replaceChild(newCuboidList, cuboidListWrapper.firstElementChild);
+
+    // retain scroll position on rerender
+    newCuboidList.scroll(0, cuboidListScroll);
+    newCuboidList.addEventListener('scroll', e => {
+        cuboidListScroll = newCuboidList.scrollTop;
+    });
 }
 
 function update() {
