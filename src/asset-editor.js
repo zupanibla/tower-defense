@@ -189,12 +189,12 @@ document.addEventListener('keyup', e => {
 
 // add cuboid button
 addCuboidButton.addEventListener('click', e => {
-	cuboids.push({
+	cuboids.unshift({
 		name: 'faking kvader', mirror: false,
 		x: 0, y: 0, z: 50, sx: 100, sy: 100, sz: 100,
 		r: ~~(Math.random()*255), g: ~~(Math.random()*255), b: ~~(Math.random()*255),
 	});
-	selectCuboid(cuboids[cuboids.length-1]);
+	selectCuboid(cuboids[0]);
 });
 
 function renderCuboidList() {
