@@ -12,7 +12,7 @@ export function setViewMatrix(m) {
 
 export function initRenderer() {
 
-	canvas = document.getElementById('game-canvas');
+	canvas = document.querySelector('.game-canvas');
 
 	gl = canvas.getContext('webgl2', {
 		preserveDrawingBuffer: true,
