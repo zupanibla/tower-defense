@@ -213,9 +213,7 @@ function renderCuboidList() {
 			item.classList.add('selected');
 		}
 		newCuboidList.appendChild(item);
-		item.addEventListener('click', e => {
-			selectCuboid(cub);
-		});
+		item.addEventListener('mousedown', e => { selectCuboid(cub); });
 
 		let colorHex = ((1 << 24) + (cub.r << 16) + (cub.g << 8) + cub.b).toString(16).substr(1);
 		
@@ -362,7 +360,7 @@ function renderCuboidList() {
 
 		// don't trigger cuboid select on input interaction
 		for (let it of [...inputs, ...labels, xButton, cloneButton, moveDownButton, moveUpButton]) {
-			it.addEventListener('click', e => { e.stopPropagation(); });
+			it.addEventListener('mousedown', e => { e.stopPropagation(); });
 		}
 	}
 	cuboidListWrapper.replaceChild(newCuboidList, cuboidListWrapper.firstElementChild);
