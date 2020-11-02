@@ -7,7 +7,7 @@ let canvas, gl, programs, vao, viewMatrix;
 
 // NOTE a default value is set in initRenderer
 export function setViewMatrix(m) {
-    viewMatrix = m;
+	viewMatrix = m;
 }
 
 export function initRenderer() {
@@ -21,11 +21,11 @@ export function initRenderer() {
 	// programs <- {cuboid: (cuboid shader) }
 	programs = compileShaders(gl, shaders);
 
-    // set default viewMatrix
-    let m = mat4.create();
-    mat4.translate(m, m, [0, 0, -5]);
-    mat4.rotateX(m, m, Math.PI * (-1/4));
-    setViewMatrix(m);
+	// set default viewMatrix
+	let m = mat4.create();
+	mat4.translate(m, m, [0, 0, -5]);
+	mat4.rotateX(m, m, Math.PI * (-1/4));
+	setViewMatrix(m);
 
 	// cuboid
 	let vertices = [
@@ -139,7 +139,7 @@ export function render(cuboids) {
 	let aspect = w / h;
 	let fovy = Math.PI / 2;
 	let near = 0.1;
-	let far = 100;
+	let far = 10000;
 	mat4.perspective(projectionMatrix, fovy, aspect, near, far);
 
 	// TODO no idea what this does
@@ -158,7 +158,7 @@ export function render(cuboids) {
 		mat4.translate(modelMatrix, modelMatrix, [cub.x, cub.y, cub.z]);
 		mat4.rotateZ(  modelMatrix, modelMatrix, cub.rot);
 		mat4.translate(modelMatrix, modelMatrix, [-cub.px, -cub.py, -cub.pz]);
-        // divide sx,sy,sz by 2 because mesh size is 2
+		// divide sx,sy,sz by 2 because mesh size is 2
 		mat4.scale(    modelMatrix, modelMatrix, [cub.sx/2, cub.sy/2, cub.sz/2]);
 
 		// calculate and push aMvpMatrix to array
@@ -169,7 +169,7 @@ export function render(cuboids) {
 
 		// calculate and push aNormalMatrix to array
 		let normalMatrix = mat4.create();
-        mat4.rotateZ(normalMatrix, normalMatrix, cub.rot);
+		mat4.rotateZ(normalMatrix, normalMatrix, cub.rot);
 		mat4.invert(normalMatrix, normalMatrix);
 		mat4.transpose(normalMatrix, normalMatrix);
 		mvpMatrixNormalMatrixColorData.push(...normalMatrix);
