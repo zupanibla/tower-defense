@@ -1,0 +1,181 @@
+<html>
+	<head>
+		<title>Asset editor</title>
+		
+		<style>
+			body, html {
+				font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+				padding: 0;
+				margin: 0;
+				color: rgb(206, 202, 195);
+			}
+
+			#game-canvas {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: calc(100% - 450px);
+				height: 100%;
+			}
+
+			.sidebar {
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 450px;
+				height: 100%;
+
+				box-sizing: border-box;
+				padding: 20px;
+				background: rgb(24, 26, 27);
+			}
+
+			button {
+				background: #333333;
+				color: rgb(206, 202, 195);
+				outline: none;
+			}
+
+			h4 {
+				margin-bottom: 5px;
+			}
+
+			.import-export-tab-button {
+			}
+
+			.wasd-target-label {
+				display: inline-block;
+				min-width: 150px;
+			}
+
+			.cuboid-list {
+				height: 500px;
+				margin-top: 20px;
+				overflow: scroll;
+				overflow-x: hidden;
+				scrollbar-color: #202324 #454a4d;
+			}
+
+			::-webkit-scrollbar {
+				background-color: #202324;
+				color: #aba499;
+			}
+			::-webkit-scrollbar-corner {
+				background-color: #181a1b;
+			}
+			::-webkit-scrollbar-thumb {
+				background-color: #454a4d;
+			}
+
+
+			.cuboid-list-item {
+				border: 2px solid #454a4d;
+			}
+
+			.cuboid-list-item.selected {
+				border-color: yellow;
+			}
+
+			.cuboid-list-item-name-input {
+				width: 70px;
+			}
+
+			.cuboid-list-item-preview {
+				display: inline-block;
+				vertical-align: middle;
+				width: 40px;
+				height: 100px;
+			}
+
+			.cuboid-list-item-content {
+				display: inline-block;
+				vertical-align: middle;
+				box-sizing: border-box;
+				padding: 5px;
+				padding-left: 10px;
+			}
+			.cuboid-list-item-number-inputs label {
+				display: inline-block;
+				width: 50px;
+				font-size: 10px;
+			}
+
+			.cuboid-list-item-x-input, .cuboid-list-item-y-input, .cuboid-list-item-z-input,
+			.cuboid-list-item-sx-input, .cuboid-list-item-sy-input, .cuboid-list-item-sz-input,
+			.cuboid-list-item-fx-input, .cuboid-list-item-fy-input, .cuboid-list-item-fz-input,
+			.cuboid-list-item-bx-input, .cuboid-list-item-by-input, .cuboid-list-item-bz-input {
+				font-size: 10px;
+				width: 40px;
+			}
+
+			.json-input {
+				width: 100%;
+				height: 600px;
+				color: rgb(206, 202, 195);
+				background-color: rgb(24, 26, 27);
+				border: 2px solid #454a4d;;
+			}
+
+			.invalid-data-warning {
+				color: red;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div>
+			<canvas id="game-canvas"></canvas>
+
+			<div class="sidebar">
+				<div class="edit-tab">
+					<button class="import-export-tab-button">Import/Export tab</button><br><br>
+					<button class="reset-camera-button">Reset camera</button>
+
+					<label class="show-axes-checkbox-label">
+						<input type="checkbox" class="show-axes-checkbox"> Show XYZ axes
+					</label>
+					<label class="show-tile-size-checkbox-label">
+						<input type="checkbox" class="show-tile-size-checkbox"> Show tile size
+					</label>
+
+					<h4>WASDQE target</h4>
+					<label class="wasd-target-label">
+						<input type="radio" name="wasd-target" value="position" checked>
+						Position
+					</label>
+					<label class="wasd-target-label">
+						<input type="radio" name="wasd-target" value="front-corner-position">
+						Front corner position
+					</label><br>
+					<label class="wasd-target-label">
+						<input type="radio" name="wasd-target" value="size">
+						Size
+					</label>
+					<label class="wasd-target-label">
+						<input type="radio" name="wasd-target" value="back-corner-position">
+						Back corner position
+					</label><br>
+					<br>
+
+					<button class="add-cuboid">Add cuboid</button><br>
+
+					<div class="cuboid-list-wrapper">
+						<div class="cuboid-list"></div>
+					</div>
+				</div>
+
+				<div class="import-export-tab" style="display: none;">
+					<button class="edit-tab-button">Edit tab</button><br>
+					<br>
+
+					<label>
+						<textarea class="json-input" cols="30" rows="10" spellcheck="false"></textarea>
+					</label>
+					<b class="invalid-data-warning" style="display: none">Invalid data</b>
+				</div>
+			</div>
+		</div>
+
+		<script src="./asset-editor.js"></script>
+	</body>
+</html>
