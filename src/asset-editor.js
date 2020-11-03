@@ -62,14 +62,21 @@ let cuboids = [];
 let cameraHorizontalAngle = 0, cameraVerticalAngle = Math.PI * (-1/4), cameraDistance = 5;
 let prevMouseX, prevMouseY, dragging = false
 let selectTimestamp = 0;
-let selectedCuboid = null;
+let selectedCuboids = [];
 let cuboidListScroll = 0;
-// stateCaptures: {cuboids, selectedCuboidIdx, cuboidListScroll}[]
+// stateCaptures: {cuboids, selectedCuboidIdxs, cuboidListScroll}[]
 let stateCaptures = [];
 let stateCaptureIdx = -1;
 
 function selectCuboid(cuboid) {
-	selectedCuboid = cuboid;
+	selectedCuboids = [cuboid];
+	selectTimestamp = Date.now();
+	captureStateIfChanged();
+	renderCuboidList();
+}
+
+function addCuboidToSelection(cuboid) {
+	selectedCuboids.push(cuboid);
 	selectTimestamp = Date.now();
 	captureStateIfChanged();
 	renderCuboidList();
@@ -78,9 +85,12 @@ function selectCuboid(cuboid) {
 function captureStateIfChanged() {
 	if (stateCaptureIdx == -1 || JSON.stringify(cuboids) != JSON.stringify(stateCaptures[stateCaptureIdx].cuboids)) {
 		stateCaptures = stateCaptures.slice(0, stateCaptureIdx+1);
+
+		let selectedCuboidIdxs = selectedCuboids.map(it => cuboids.indexOf(it)).filter(it => it != -1);
+
 		stateCaptures.push({
 			cuboids: JSON.parse(JSON.stringify(cuboids)),
-			selectedCuboidIdx: cuboids.indexOf(selectedCuboid),
+			selectedCuboidIdxs,
 			cuboidListScroll,
 		});
 		stateCaptureIdx++;
@@ -90,11 +100,12 @@ function captureStateIfChanged() {
 function loadState() {
 	let state = stateCaptures[stateCaptureIdx];
 	cuboids = JSON.parse(JSON.stringify(state.cuboids));
-	if (state.selectedCuboidIdx != -1) {
-		selectedCuboid = cuboids[state.selectedCuboidIdx];
-	} else {
-		selectedCuboid = null;
+
+	selectedCuboids = [];
+	for (let it of state.selectedCuboidIdxs) {
+		selectedCuboids.push(cuboids[it]);
 	}
+
 	cuboidListScroll = state.cuboidListScroll;
 	renderCuboidList();
 }
@@ -228,11 +239,17 @@ function renderCuboidList() {
 		// cuboid list item
 		let item = document.createElement('div');
 		item.className = 'cuboid-list-item';
-		if (cub === selectedCuboid) {
+		if (selectedCuboids.includes(cub)) {
 			item.classList.add('selected');
 		}
 		newCuboidList.appendChild(item);
-		item.addEventListener('mousedown', e => { selectCuboid(cub); });
+		item.addEventListener('mousedown', e => {
+			if (e.ctrlKey) {
+				addCuboidToSelection(cub);
+			} else {
+				selectCuboid(cub);
+			}
+		});
 
 		let colorHex = ((1 << 24) + (cub.r << 16) + (cub.g << 8) + cub.b).toString(16).substr(1);
 		
@@ -322,7 +339,7 @@ function renderCuboidList() {
 			renderCuboidList();
 		});
 		xButton.addEventListener('click', e => {
-			if (selectedCuboid === cub) selectedCuboid = null;
+			if (selectedCuboids.includes(cub)) selectedCuboids.splice(selectedCuboids.indexOf(cub), 1);
 			cuboids.splice(cuboids.indexOf(cub), 1);
 			captureStateIfChanged();
 			renderCuboidList();
@@ -393,38 +410,38 @@ function update() {
 	// selected cuboid movement and scaling
 	let wasdTarget = document.querySelector('input[name="wasd-target"]:checked').value;
 
-	if (selectedCuboid) {
+	for (let it of selectedCuboids) {
 		if (wasdTarget == 'position') {
-			if (keyboard[KEY['A']]) selectedCuboid.x -= 4;
-			if (keyboard[KEY['D']]) selectedCuboid.x += 4;
-			if (keyboard[KEY['W']]) selectedCuboid.y += 4;
-			if (keyboard[KEY['S']]) selectedCuboid.y -= 4;
-			if (keyboard[KEY['Q']]) selectedCuboid.z -= 4;
-			if (keyboard[KEY['E']]) selectedCuboid.z += 4;
+			if (keyboard[KEY['A']]) it.x -= 4;
+			if (keyboard[KEY['D']]) it.x += 4;
+			if (keyboard[KEY['W']]) it.y += 4;
+			if (keyboard[KEY['S']]) it.y -= 4;
+			if (keyboard[KEY['Q']]) it.z -= 4;
+			if (keyboard[KEY['E']]) it.z += 4;
 		}
 		if (wasdTarget == 'size') {
-			if (keyboard[KEY['A']] && selectedCuboid.sx > 4) selectedCuboid.sx -= 4;
-			if (keyboard[KEY['D']]) selectedCuboid.sx += 4;
-			if (keyboard[KEY['W']]) selectedCuboid.sy += 4;
-			if (keyboard[KEY['S']] && selectedCuboid.sy > 4) selectedCuboid.sy -= 4;
-			if (keyboard[KEY['Q']] && selectedCuboid.sz > 4) selectedCuboid.sz -= 4;
-			if (keyboard[KEY['E']]) selectedCuboid.sz += 4;
+			if (keyboard[KEY['A']] && it.sx > 4) it.sx -= 4;
+			if (keyboard[KEY['D']]) it.sx += 4;
+			if (keyboard[KEY['W']]) it.sy += 4;
+			if (keyboard[KEY['S']] && it.sy > 4) it.sy -= 4;
+			if (keyboard[KEY['Q']] && it.sz > 4) it.sz -= 4;
+			if (keyboard[KEY['E']]) it.sz += 4;
 		}
 		if (wasdTarget == 'front-corner-position') {
-			if (keyboard[KEY['A']]) { selectedCuboid.sx += 4; selectedCuboid.x -= 4/2; }
-			if (keyboard[KEY['D']] && selectedCuboid.sx > 4) { selectedCuboid.sx -= 4; selectedCuboid.x += 4/2; }
-			if (keyboard[KEY['W']] && selectedCuboid.sy > 4) { selectedCuboid.sy -= 4; selectedCuboid.y += 4/2; }
-			if (keyboard[KEY['S']]) { selectedCuboid.sy += 4; selectedCuboid.y -= 4/2; }
-			if (keyboard[KEY['Q']]) { selectedCuboid.sz += 4; selectedCuboid.z -= 4/2; }
-			if (keyboard[KEY['E']] && selectedCuboid.sz > 4) { selectedCuboid.sz -= 4; selectedCuboid.z += 4/2; }
+			if (keyboard[KEY['A']]) { it.sx += 4; it.x -= 4/2; }
+			if (keyboard[KEY['D']] && it.sx > 4) { it.sx -= 4; it.x += 4/2; }
+			if (keyboard[KEY['W']] && it.sy > 4) { it.sy -= 4; it.y += 4/2; }
+			if (keyboard[KEY['S']]) { it.sy += 4; it.y -= 4/2; }
+			if (keyboard[KEY['Q']]) { it.sz += 4; it.z -= 4/2; }
+			if (keyboard[KEY['E']] && it.sz > 4) { it.sz -= 4; it.z += 4/2; }
 		}
 		if (wasdTarget == 'back-corner-position') {
-			if (keyboard[KEY['A']] && selectedCuboid.sx > 4) { selectedCuboid.sx -= 4; selectedCuboid.x -= 4/2; }
-			if (keyboard[KEY['D']]) { selectedCuboid.sx += 4; selectedCuboid.x += 4/2; }
-			if (keyboard[KEY['W']]) { selectedCuboid.sy += 4; selectedCuboid.y += 4/2; }
-			if (keyboard[KEY['S']] && selectedCuboid.sy > 4) { selectedCuboid.sy -= 4; selectedCuboid.y -= 4/2; }
-			if (keyboard[KEY['Q']] && selectedCuboid.sz > 4) { selectedCuboid.sz -= 4; selectedCuboid.z -= 4/2; }
-			if (keyboard[KEY['E']]) { selectedCuboid.sz += 4; selectedCuboid.z += 4/2; }
+			if (keyboard[KEY['A']] && it.sx > 4) { it.sx -= 4; it.x -= 4/2; }
+			if (keyboard[KEY['D']]) { it.sx += 4; it.x += 4/2; }
+			if (keyboard[KEY['W']]) { it.sy += 4; it.y += 4/2; }
+			if (keyboard[KEY['S']] && it.sy > 4) { it.sy -= 4; it.y -= 4/2; }
+			if (keyboard[KEY['Q']] && it.sz > 4) { it.sz -= 4; it.z -= 4/2; }
+			if (keyboard[KEY['E']]) { it.sz += 4; it.z += 4/2; }
 		}
 	}
 
@@ -490,18 +507,19 @@ function update() {
 	}
 
 	// render selected cuboid highlight
-	if (selectedCuboid &&
-		Date.now() - selectTimestamp < 800 &&
-		(Date.now() - selectTimestamp) % 400 < 200) {
+	for (let it of selectedCuboids) {
+		if (Date.now() - selectTimestamp < 800 &&
+			(Date.now() - selectTimestamp) % 400 < 200) {
 
-		let highlightDrawable = {...cuboidToDrawable(selectedCuboid), r: 1, g: 1, b: 0};
+			let highlightDrawable = {...cuboidToDrawable(it), r: 1, g: 1, b: 0};
 
-		drawables.push(highlightDrawable);
+			drawables.push(highlightDrawable);
 
-		if (selectedCuboid.mirror) {
-			let mirrorHighlightDrawable = {...cuboidToDrawable(selectedCuboid), r: 1, g: 1, b: 0};
-			mirrorHighlightDrawable.px *= -1;
-			drawables.push(mirrorHighlightDrawable);
+			if (it.mirror) {
+				let mirrorHighlightDrawable = {...cuboidToDrawable(it), r: 1, g: 1, b: 0};
+				mirrorHighlightDrawable.px *= -1;
+				drawables.push(mirrorHighlightDrawable);
+			}
 		}
 	}
 
