@@ -119,7 +119,7 @@ function loadState() {
 // select all
 document.addEventListener('keydown', e => {
 	if (e.ctrlKey && e.key.toLowerCase() === 'a') {
-		selectedCuboids = cuboids;
+		selectedCuboids = cuboids.slice();
 		renderCuboidList();
 	}
 });
