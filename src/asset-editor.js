@@ -76,10 +76,14 @@ function selectCuboid(cuboid) {
 	renderCuboidList();
 }
 
-function addCuboidToSelection(cuboid) {
-	selectedCuboids.push(cuboid);
-	selectTimestamp = Date.now();
+function toggleCuboidSelection(cuboid) {
+	if (selectedCuboids.includes(cuboid)) {
+		selectedCuboids.splice(selectedCuboids.indexOf(cuboid), 1);
+	} else {
+		selectedCuboids.push(cuboid);
+	}
 	captureStateIfChanged();
+	selectTimestamp = Date.now();
 	renderCuboidList();
 }
 
@@ -254,7 +258,7 @@ function renderCuboidList() {
 		newCuboidList.appendChild(item);
 		item.addEventListener('mousedown', e => {
 			if (e.ctrlKey) {
-				addCuboidToSelection(cub);
+				toggleCuboidSelection(cub);
 			} else {
 				selectCuboid(cub);
 			}
