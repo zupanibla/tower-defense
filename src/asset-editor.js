@@ -32,7 +32,7 @@ function isInputFocused() {
 document.addEventListener('keydown', e => {
 	// text inputs and textareas have priority
 	// might be cleaner to do this via e.stopPropagation but whatever
-	if (isInputFocused()) return;
+	if (e.ctrlKey || isInputFocused()) return;
 
 	keyboard[e.keyCode] = true;
 
@@ -111,6 +111,13 @@ function loadState() {
 }
 
 // event handlers
+// select all
+document.addEventListener('keydown', e => {
+	if (e.ctrlKey && e.key.toLowerCase() === 'a') {
+		selectedCuboids = cuboids;
+	}
+});
+
 // undo/redo
 document.addEventListener('keydown', e => {
 	if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'z') {
