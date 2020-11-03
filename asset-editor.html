@@ -48,16 +48,18 @@
 				margin-bottom: 5px;
 			}
 
-			.import-export-tab-button {
-			}
-
 			.wasd-target-label {
 				display: inline-block;
 				min-width: 150px;
 			}
 
+            .add-cuboid-wrapper {
+                display: inline-block;
+                width: 150px;
+            }
+
 			.cuboid-list {
-				height: 500px;
+				height: 450px;
 				margin-top: 20px;
 				overflow: scroll;
 				overflow-x: hidden;
@@ -165,7 +167,15 @@
 					</label><br>
 					<br>
 
-					<button class="add-cuboid">Add cuboid</button><br>
+                    <div class="add-cuboid-wrapper">
+					   <button class="add-cuboid">Add cuboid</button>
+                    </div>
+                    <label class="speed-slider-label">
+                        <input type="range" class="speed-slider" name="speed" min="0" max="1000" value="600">
+                        Speed
+                    </label><br>
+
+                    <br>
 
 					<div class="cuboid-list-wrapper">
 						<div class="cuboid-list"></div>

@@ -55,6 +55,7 @@ let canvas                = document.querySelector('.game-canvas');
 let resetCameraButton     = document.querySelector('.reset-camera-button');
 let cuboidListWrapper     = document.querySelector('.cuboid-list-wrapper');
 let addCuboidButton       = document.querySelector('.add-cuboid');
+let speedSlider           = document.querySelector('.speed-slider');
 
 // app state
 // cuboids: {[x, y, z, sx, sy, sz]: number, [r, g, b]: 0 - 255, [name]: string, [mirror]: boolean}[]
@@ -413,42 +414,48 @@ function renderCuboidList() {
 	});
 }
 
+
+let frameCount = 0;
+
 function update() {
 	// selected cuboid movement and scaling
 	let wasdTarget = document.querySelector('input[name="wasd-target"]:checked').value;
 
 	for (let it of selectedCuboids) {
-		if (wasdTarget == 'position') {
-			if (keyboard[KEY['A']]) it.x -= 4;
-			if (keyboard[KEY['D']]) it.x += 4;
-			if (keyboard[KEY['W']]) it.y += 4;
-			if (keyboard[KEY['S']]) it.y -= 4;
-			if (keyboard[KEY['Q']]) it.z -= 4;
-			if (keyboard[KEY['E']]) it.z += 4;
-		}
-		if (wasdTarget == 'size') {
-			if (keyboard[KEY['A']] && it.sx > 4) it.sx -= 4;
-			if (keyboard[KEY['D']]) it.sx += 4;
-			if (keyboard[KEY['W']]) it.sy += 4;
-			if (keyboard[KEY['S']] && it.sy > 4) it.sy -= 4;
-			if (keyboard[KEY['Q']] && it.sz > 4) it.sz -= 4;
-			if (keyboard[KEY['E']]) it.sz += 4;
-		}
-		if (wasdTarget == 'front-corner-position') {
-			if (keyboard[KEY['A']]) { it.sx += 4; it.x -= 4/2; }
-			if (keyboard[KEY['D']] && it.sx > 4) { it.sx -= 4; it.x += 4/2; }
-			if (keyboard[KEY['W']] && it.sy > 4) { it.sy -= 4; it.y += 4/2; }
-			if (keyboard[KEY['S']]) { it.sy += 4; it.y -= 4/2; }
-			if (keyboard[KEY['Q']]) { it.sz += 4; it.z -= 4/2; }
-			if (keyboard[KEY['E']] && it.sz > 4) { it.sz -= 4; it.z += 4/2; }
-		}
-		if (wasdTarget == 'back-corner-position') {
-			if (keyboard[KEY['A']] && it.sx > 4) { it.sx -= 4; it.x -= 4/2; }
-			if (keyboard[KEY['D']]) { it.sx += 4; it.x += 4/2; }
-			if (keyboard[KEY['W']]) { it.sy += 4; it.y += 4/2; }
-			if (keyboard[KEY['S']] && it.sy > 4) { it.sy -= 4; it.y -= 4/2; }
-			if (keyboard[KEY['Q']] && it.sz > 4) { it.sz -= 4; it.z -= 4/2; }
-			if (keyboard[KEY['E']]) { it.sz += 4; it.z += 4/2; }
+		if (frameCount % ~~(1/(speedSlider.value/1000)) == 0) {
+
+			if (wasdTarget == 'position') {
+				if (keyboard[KEY['A']]) it.x -= 4;
+				if (keyboard[KEY['D']]) it.x += 4;
+				if (keyboard[KEY['W']]) it.y += 4;
+				if (keyboard[KEY['S']]) it.y -= 4;
+				if (keyboard[KEY['Q']]) it.z -= 4;
+				if (keyboard[KEY['E']]) it.z += 4;
+			}
+			if (wasdTarget == 'size') {
+				if (keyboard[KEY['A']] && it.sx > 4) it.sx -= 4;
+				if (keyboard[KEY['D']]) it.sx += 4;
+				if (keyboard[KEY['W']]) it.sy += 4;
+				if (keyboard[KEY['S']] && it.sy > 4) it.sy -= 4;
+				if (keyboard[KEY['Q']] && it.sz > 4) it.sz -= 4;
+				if (keyboard[KEY['E']]) it.sz += 4;
+			}
+			if (wasdTarget == 'front-corner-position') {
+				if (keyboard[KEY['A']]) { it.sx += 4; it.x -= 4/2; }
+				if (keyboard[KEY['D']] && it.sx > 4) { it.sx -= 4; it.x += 4/2; }
+				if (keyboard[KEY['W']] && it.sy > 4) { it.sy -= 4; it.y += 4/2; }
+				if (keyboard[KEY['S']]) { it.sy += 4; it.y -= 4/2; }
+				if (keyboard[KEY['Q']]) { it.sz += 4; it.z -= 4/2; }
+				if (keyboard[KEY['E']] && it.sz > 4) { it.sz -= 4; it.z += 4/2; }
+			}
+			if (wasdTarget == 'back-corner-position') {
+				if (keyboard[KEY['A']] && it.sx > 4) { it.sx -= 4; it.x -= 4/2; }
+				if (keyboard[KEY['D']]) { it.sx += 4; it.x += 4/2; }
+				if (keyboard[KEY['W']]) { it.sy += 4; it.y += 4/2; }
+				if (keyboard[KEY['S']] && it.sy > 4) { it.sy -= 4; it.y -= 4/2; }
+				if (keyboard[KEY['Q']] && it.sz > 4) { it.sz -= 4; it.z -= 4/2; }
+				if (keyboard[KEY['E']]) { it.sz += 4; it.z += 4/2; }
+			}
 		}
 	}
 
@@ -533,6 +540,7 @@ function update() {
 	adjustCanvasSize();
 	render(drawables);
 	requestAnimationFrame(update);
+	frameCount++;
 }
 
 captureStateIfChanged();
