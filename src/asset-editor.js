@@ -116,6 +116,7 @@ function loadState() {
 document.addEventListener('keydown', e => {
 	if (e.ctrlKey && e.key.toLowerCase() === 'a') {
 		selectedCuboids = cuboids;
+		renderCuboidList();
 	}
 });
 
