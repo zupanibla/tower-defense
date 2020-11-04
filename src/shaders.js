@@ -13,8 +13,8 @@ void main() {
 	vColor = aColor;
 
 	// Apply lighting effect
-	highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-	highp vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
+	highp vec3 ambientLight = vec3(0.7, 0.7, 0.7);
+	highp vec3 directionalLightColor = vec3(0.3, 0.3, 0.3);
 
 	highp vec3 directionalVector = normalize(-vec3(-0.7, +0.1, -0.6));
 	// highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
