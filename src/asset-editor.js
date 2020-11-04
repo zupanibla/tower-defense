@@ -1,4 +1,4 @@
-import {initRenderer, render, adjustCanvasSize, setViewMatrix} from './rendering.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix} from './render-cuboids.js';
 import {mat4} from 'gl-matrix';
 import * as consoleUtils from './asset-editor-console-utils.js';
 
@@ -73,9 +73,9 @@ let stateCaptureIdx = -1;
 // set up console utils
 window.getCuboids = () => { return JSON.parse(JSON.stringify(cuboids)); };
 window.setCuboids = newCuboids => {
-    cuboids = newCuboids;
-    captureStateIfChanged();
-    renderCuboidList();
+	cuboids = newCuboids;
+	captureStateIfChanged();
+	renderCuboidList();
 }
 window.utils = consoleUtils;
 
@@ -553,12 +553,12 @@ function update() {
 	}
 
 	adjustCanvasSize();
-	render(drawables);
+	renderCuboids(drawables);
 	requestAnimationFrame(update);
 	frameCount++;
 }
 
 captureStateIfChanged();
-initRenderer();
+initCuboidRenderer();
 renderCuboidList();
 update();
