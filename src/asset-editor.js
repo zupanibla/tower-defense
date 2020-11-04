@@ -1,5 +1,6 @@
 import {initRenderer, render, adjustCanvasSize, setViewMatrix} from './rendering.js';
 import {mat4} from 'gl-matrix';
+import * as consoleUtils from './asset-editor-console-utils.js';
 
 // TODO requestAnimationFrame speed depends on screen refresh rate?
 
@@ -68,6 +69,15 @@ let cuboidListScroll = 0;
 // stateCaptures: {cuboids, selectedCuboidIdxs, cuboidListScroll}[]
 let stateCaptures = [];
 let stateCaptureIdx = -1;
+
+// set up console utils
+window.getCuboids = () => { return JSON.parse(JSON.stringify(cuboids)); };
+window.setCuboids = newCuboids => {
+    cuboids = newCuboids;
+    captureStateIfChanged();
+    renderCuboidList();
+}
+window.utils = consoleUtils;
 
 function selectCuboid(cuboid) {
 	selectedCuboids = [cuboid];
