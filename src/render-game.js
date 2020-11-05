@@ -1,5 +1,5 @@
 import {mat4} from 'gl-matrix';
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix} from './rendering.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix} from './render-cuboids.js';
 
 import duckJson  from './assets/duck.json';
 import floorJson from './assets/floor.json';
