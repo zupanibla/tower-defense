@@ -11,6 +11,7 @@ import balisticTurretJson from './assets/balistic-turret.json';
 import flameTurretJson    from './assets/flame-turret.json';
 import snezakJson         from './assets/snezak.json';
 import snezak2Json        from './assets/snezak2.json';
+import missileJson        from './assets/missile.json';
 
 
 export function renderGame(game) {
@@ -79,6 +80,23 @@ export function renderGame(game) {
 
 		cuboids.push(...enCuboids);
 	}
+
+    // bullets
+    for (let bl of game.bullets) {
+        // missile
+        let blCuboids = [];
+
+        if (bl.type == 'missile') blCuboids = cuboidsFromJson(missileJson);
+
+        for (let it of blCuboids) {
+            it.x   = bl.x;
+            it.y   = bl.y;
+            it.z   = bl.z;
+            it.rot = bl.rot;
+        }
+
+        cuboids.push(...blCuboids);
+    }
 
 	renderCuboids(cuboids);
 }
