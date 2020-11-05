@@ -1,31 +1,53 @@
 
 export function updateGame(game) {
-    for (let ent of game.enemies) {
+    // towers
+    for (let y = 0; y < game.towers.length; y++) {
+        for (let x = 0; x < game.towers[y].length; x++) {
+            let tw = game.towers[y][x];
+            if (tw === null) continue;
+
+            tw.rot += Math.PI / 60;
+        }
+    }
+
+    // enemies
+    for (let en of game.enemies) {
 
         // duck
-        if (ent.type == 'duck') {
-            ent.pathPos += 2.0 / 60;
+        if (en.type == 'duck') {
+            en.pathPos += 2.0 / 60;
 
             // position on path
-            let [x,  y]  = positionOnPath(ent.pathPos, game.path);
-            let [x2, y2] = positionOnPath(ent.pathPos + 1, game.path);
-            ent.x   = x;
-            ent.y   = y;
-            ent.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
+            let [x,  y]  = positionOnPath(en.pathPos, game.path);
+            let [x2, y2] = positionOnPath(en.pathPos + 1, game.path);
+            en.x   = x;
+            en.y   = y;
+            en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
 
             // jumping
-            if (ent.z <= 0) {
-                ent.z  = 0;
-                ent.vz = 0.10;
+            if (en.z <= 0) {
+                en.z  = 0;
+                en.vz = 0.10;
             }
 
             // apply velocity
-            ent.z  += ent.vz;
+            en.z  += en.vz;
 
             // gravity
-            ent.vz -= 0.010;
+            en.vz -= 0.010;
         }
 
+        // snezak, snezak2
+        if (en.type == 'snezak' || en.type == 'snezak2') {
+            en.pathPos += 2.0 / 60;
+
+            // position on path
+            let [x,  y]  = positionOnPath(en.pathPos, game.path);
+            let [x2, y2] = positionOnPath(en.pathPos + 1, game.path);
+            en.x   = x;
+            en.y   = y;
+            en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
+        }
     }
 
     game.time++;

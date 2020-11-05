@@ -1,12 +1,16 @@
 import {mat4} from 'gl-matrix';
 import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix} from './render-cuboids.js';
 
-import duckJson      from './assets/duck.json';
-import floorJson     from './assets/floor.json';
-import tileJson      from './assets/tile.json';
-import greenTileJson from './assets/green-tile.json';
-import rockyTileJson from './assets/rocky-tile.json';
-import pathTileJson  from './assets/path-tile.json';
+import duckJson           from './assets/duck.json';
+import floorJson          from './assets/floor.json';
+import tileJson           from './assets/tile.json';
+import greenTileJson      from './assets/green-tile.json';
+import rockyTileJson      from './assets/rocky-tile.json';
+import pathTileJson       from './assets/path-tile.json';
+import balisticTurretJson from './assets/balistic-turret.json';
+import flameTurretJson    from './assets/flame-turret.json';
+import snezakJson         from './assets/snezak.json';
+import snezak2Json        from './assets/snezak2.json';
 
 
 export function renderGame(game) {
@@ -32,22 +36,48 @@ export function renderGame(game) {
         }
     }
 
+    // towers
+    for (let y = 0; y < game.towers.length; y++) {
+        for (let x = 0; x < game.towers[y].length; x++) {
+            let tw = game.towers[y][x];
+            if (tw === null) continue;
+
+            let towerCuboids = null;
+            
+            if (tw.type == 'balistic') towerCuboids = cuboidsFromJson(balisticTurretJson);
+            if (tw.type == 'flame')    towerCuboids = cuboidsFromJson(flameTurretJson);
+            
+            for (let it of towerCuboids) {
+                it.x   = x;
+                it.y   = y;
+
+                if (it.name != 'stand' && it.name != 'base') {
+                    it.rot = tw.rot
+                }
+            }
+
+            cuboids.push(...towerCuboids);
+        }
+    }
+
     // enemies
-	for (let ent of game.enemies) {
-		
-		// duck
-		if (ent.type == 'duck') {
-			let duckCuboids = cuboidsFromJson(duckJson);
+	for (let en of game.enemies) {
 
-			for (let it of duckCuboids) {
-				it.x   = ent.x;
-				it.y   = ent.y;
-				it.z   = ent.z;
-				it.rot = ent.rot;
-			}
+		// duck, snezak
+        let enCuboids = [];
 
-			cuboids.push(...duckCuboids);
+        if (en.type == 'duck')    enCuboids = cuboidsFromJson(duckJson);
+        if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
+        if (en.type == 'snezak2') enCuboids = cuboidsFromJson(snezak2Json);
+
+		for (let it of enCuboids) {
+			it.x   = en.x;
+			it.y   = en.y;
+			it.z   = en.z;
+			it.rot = en.rot;
 		}
+
+		cuboids.push(...enCuboids);
 	}
 
 	renderCuboids(cuboids);
