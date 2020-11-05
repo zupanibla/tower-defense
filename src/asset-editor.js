@@ -248,7 +248,7 @@ document.addEventListener('keyup', e => {
 addCuboidButton.addEventListener('click', e => {
 	cuboids.unshift({
 		name: 'faking kvader', mirror: false,
-		x: 0, y: 0, z: 50, sx: 100, sy: 100, sz: 100,
+		x: 0, y: 0, z: 40, sx: 80, sy: 80, sz: 80,
 		r: ~~(Math.random()*255), g: ~~(Math.random()*255), b: ~~(Math.random()*255),
 	});
 	selectCuboid(cuboids[0]);
