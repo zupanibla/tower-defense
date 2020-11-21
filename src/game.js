@@ -39,12 +39,22 @@ game.towers[9][11] = {type: 'balistic', rot: 0};
 game.towers[10][2] = {type: 'flame',    rot: 0};
 game.bullets[0].lockedOn = game.enemies[0];
 
-
 function ticker() {
-	updateGame(game);
-	renderGame(game);
-	requestAnimationFrame(ticker);
+    requestAnimationFrame(ticker);
+    
+    let timeNow = Date.now();
+    let timeBetween = timeNow - timeBefore;
+
+    if (timeBetween > frameDuration) {
+        timeBefore = timeNow - (timeBetween % frameDuration);
+
+        updateGame(game);
+        renderGame(game);
+    }
 }
 
 initGameRenderer();
+let fps = 60;
+let frameDuration = 1000 / fps;
+let timeBefore = Date.now();
 ticker();
