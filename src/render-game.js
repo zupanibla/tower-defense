@@ -10,7 +10,6 @@ import pathTileJson       from './assets/path-tile.json';
 import balisticTurretJson from './assets/balistic-turret.json';
 import flameTurretJson    from './assets/flame-turret.json';
 import snezakJson         from './assets/snezak.json';
-import snezak2Json        from './assets/snezak2.json';
 import missileJson        from './assets/missile.json';
 
 
@@ -53,7 +52,7 @@ export function renderGame(game) {
                 it.y   = y;
 
                 if (it.name != 'stand' && it.name != 'base') {
-                    it.rot = tw.rot
+                    it.rot = tw.rot;
                 }
             }
 
@@ -69,7 +68,6 @@ export function renderGame(game) {
 
         if (en.type == 'duck')    enCuboids = cuboidsFromJson(duckJson);
         if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
-        if (en.type == 'snezak2') enCuboids = cuboidsFromJson(snezak2Json);
 
 		for (let it of enCuboids) {
 			it.x   = en.x;

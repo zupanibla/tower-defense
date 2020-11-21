@@ -6,7 +6,31 @@ export function updateGame(game) {
 			let tw = game.towers[y][x];
 			if (tw === null) continue;
 
-			tw.rot += Math.PI / 60;
+            // lock on
+			let RANGE    = 3;
+            let targetEn = null;
+            // target highest pathPos enemy in range
+            for (let en of game.enemies) {
+                if (dist({x,y,z:0}, en) > RANGE) continue;
+                if (!targetEn || en.pathPos > targetEn.pathPos) {
+                    targetEn = en;
+                }
+            }
+
+            // calculate targetRot
+            if (targetEn) {
+    			tw.targetRot = Math.atan2(targetEn.y - y, targetEn.x - x) + Math.PI / 2;
+            }
+
+            // rotate towards targetRot at ROT_SPEED
+            let ROT_SPEED = 3 / 60;
+
+            let a = angleBetween(tw.targetRot, tw.rot);
+            if (Math.abs(a) < ROT_SPEED) {
+                tw.rot = tw.targetRot;
+            } else {
+                tw.rot += Math.sign(a) * ROT_SPEED;
+            }
 		}
 	}
 
@@ -37,8 +61,8 @@ export function updateGame(game) {
 			en.vz -= 0.010;
 		}
 
-		// snezak, snezak2
-		if (en.type == 'snezak' || en.type == 'snezak2') {
+		// snezak
+		if (en.type == 'snezak') {
 			en.pathPos += 2.0 / 60;
 
 			// position on path
@@ -63,10 +87,12 @@ export function updateGame(game) {
 			dy /= d;
 			dz /= d;
 
+            let BULLET_VELOCITY = 0.1;
+
 			// update pos/rot
-			bl.x += dx / 10;
-			bl.y += dy / 10;
-			bl.z += dz / 10;
+			bl.x += dx * BULLET_VELOCITY;
+			bl.y += dy * BULLET_VELOCITY;
+			bl.z += dz * BULLET_VELOCITY;
 			bl.rot = Math.atan2(dy, dx) + Math.PI/2;
 
 			// on collision
@@ -81,11 +107,15 @@ export function updateGame(game) {
 
 
 function positionOnPath(p, path) {
+    if (p < 0) return path[0].slice();
+
 	let prevIt = path[0];
 
 	for (let it of path) {
+        // calculate segment length
 		let d = Math.sqrt((it[0] - prevIt[0])*(it[0] - prevIt[0]) + (it[1] - prevIt[1])*(it[1] - prevIt[1]));
 
+        // interpolate (x, y) between path vertices
 		if (p - d < 0) {
 			return [
 				prevIt[0] * (1 - p/d) + it[0] * p/d,
@@ -101,4 +131,15 @@ function positionOnPath(p, path) {
 		path[path.length-1][0],
 		path[path.length-1][1],
 	];
+}
+
+
+// smallest rot needed to align a to b
+function angleBetween(a, b) {
+    return Math.atan2(Math.sin(a-b), Math.cos(a-b));
+}
+
+// distance between two points : {x,y,z}
+function dist(a, b) {
+	return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
 }

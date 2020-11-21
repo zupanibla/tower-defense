@@ -25,7 +25,6 @@ let game = {
         {type: 'duck',    x: 0, y: 0, z: 2, rot: 0, pathPos: -2,  vz: 0,},
         {type: 'duck',    x: 0, y: 0, z: 4, rot: 0, pathPos: -4,  vz: 0,},
         {type: 'duck',    x: 0, y: 0, z: 8, rot: 0, pathPos: -6,  vz: 0,},
-        {type: 'snezak2', x: 0, y: 0, z: 0, rot: 0, pathPos: -8,  vz: 0,},
         {type: 'snezak',  x: 0, y: 0, z: 0, rot: 0, pathPos: -10, vz: 0,},
         {type: 'snezak',  x: 0, y: 0, z: 0, rot: 0, pathPos: -12, vz: 0,},
 	],
@@ -33,11 +32,10 @@ let game = {
 }
 
 game.towers = game.tiles.map(row => row.map(_ => null));
-game.towers[2][9] =  {type: 'flame',    rot: 0};
-game.towers[8][11] = {type: 'balistic', rot: 0};
-game.towers[9][11] = {type: 'balistic', rot: 0};
-game.towers[10][2] = {type: 'flame',    rot: 0};
-game.towers[6][7] =  {type: 'flame',    rot: 0};
+game.towers[2][9] =  {type: 'flame',    rot: 0, targetRot: 0};
+game.towers[8][11] = {type: 'balistic', rot: 0, targetRot: 0};
+game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0};
+game.towers[10][2] = {type: 'flame',    rot: 0, targetRot: 0};
 game.bullets[0].lockedOn = game.enemies[0];
 
 function ticker() {
