@@ -133,14 +133,14 @@ export function renderCuboids(cuboids) {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	// create projectionMatrix based on canvas size
+	// use orthographic projection
 	let projectionMatrix = mat4.create();
 	let w = canvas.clientWidth;
 	let h = canvas.clientHeight;
-	let aspect = w / h;
-	let fovy = Math.PI / 2;
+	let downscale = 120;
 	let near = 0.1;
 	let far = 10000;
-	mat4.perspective(projectionMatrix, fovy, aspect, near, far);
+	mat4.ortho(projectionMatrix, -w/downscale, w/downscale, -h/downscale, h/downscale, near, far);
 
 	// TODO no idea what this does
 	gl.bindVertexArray(vao);

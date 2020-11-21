@@ -105,13 +105,14 @@ export function renderGame(game) {
 export function initGameRenderer() {
 	initCuboidRenderer();
 
-	// set camera
+	// set camera, isometric view
     // NOTE transformations are applied bottom up
 	let m = mat4.create();
-	mat4.translate(m, m, [0, 6, -20]);      // camera pos
-	mat4.rotateX(m, m, Math.PI * (-1/10));  // tilt world
-    mat4.scale(m, m, [3, 3, 3]);            // tile size 3
-    mat4.translate(m, m, [-7, -5.5, 0]);    // (0, 0) tile to (-7, -5.5) pos
+	mat4.translate(m, m, [0, 0, -200]);     // camera pos
+    mat4.rotateX(m, m, Math.PI * (-1/4));   // tilt world
+    mat4.rotateZ(m, m, Math.PI * (-1/4));   // tilt world
+    mat4.scale(m, m, [1, 1, 1]);            // tile size 3
+    mat4.translate(m, m, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
 	setViewMatrix(m);
 }
 
