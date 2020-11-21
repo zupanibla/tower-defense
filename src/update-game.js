@@ -6,31 +6,45 @@ export function updateGame(game) {
 			let tw = game.towers[y][x];
 			if (tw === null) continue;
 
-            // lock on
-			let RANGE    = 3;
-            let targetEn = null;
-            // target highest pathPos enemy in range
-            for (let en of game.enemies) {
-                if (dist({x,y,z:0}, en) > RANGE) continue;
-                if (!targetEn || en.pathPos > targetEn.pathPos) {
-                    targetEn = en;
-                }
-            }
+			// lock on
+			tw.targetEn = null;
+			// target highest pathPos enemy in range
+			let RANGE = 3;
+			for (let en of game.enemies) {
+				if (dist({x,y,z:0}, en) > RANGE) continue;
+				if (!tw.targetEn || en.pathPos > tw.targetEn.pathPos) {
+					tw.targetEn = en;
+				}
+			}
 
-            // calculate targetRot
-            if (targetEn) {
-    			tw.targetRot = Math.atan2(targetEn.y - y, targetEn.x - x) + Math.PI / 2;
-            }
+			// calculate targetRot
+			if (tw.targetEn) {
+				tw.targetRot = Math.atan2(tw.targetEn.y - y, tw.targetEn.x - x) + Math.PI / 2;
+			}
 
-            // rotate towards targetRot at ROT_SPEED
-            let ROT_SPEED = 3 / 60;
+			// rotate towards targetRot at ROT_SPEED
+			let ROT_SPEED = 3 / 60;
 
-            let a = angleBetween(tw.targetRot, tw.rot);
-            if (Math.abs(a) < ROT_SPEED) {
-                tw.rot = tw.targetRot;
-            } else {
-                tw.rot += Math.sign(a) * ROT_SPEED;
-            }
+			let a = angleBetween(tw.targetRot, tw.rot);
+			if (Math.abs(a) < ROT_SPEED) {
+				tw.rot = tw.targetRot;
+			} else {
+				tw.rot += Math.sign(a) * ROT_SPEED;
+			}
+
+			// shooting
+			if (tw.targetEn && tw.rot == tw.targetRot && tw.cooldown == 0) {
+				game.bullets.push({
+					type: 'missile',
+					x, y, z: 0.5,
+					rot: 0,
+					targetEn: tw.targetEn,
+				});
+				tw.cooldown = 60;
+			}
+
+			// cooldown
+			if (tw.cooldown > 0) tw.cooldown--;
 		}
 	}
 
@@ -77,17 +91,17 @@ export function updateGame(game) {
 	// bullets
 	for (let bl of game.bullets) {
 		// missile
-		if (bl.lockedOn) {
+		if (bl.targetEn) {
 			// calculate direction
-			let dx = bl.lockedOn.x - bl.x;
-			let dy = bl.lockedOn.y - bl.y;
-			let dz = bl.lockedOn.z - bl.z;
+			let dx = bl.targetEn.x - bl.x;
+			let dy = bl.targetEn.y - bl.y;
+			let dz = bl.targetEn.z - bl.z;
 			let d  = Math.sqrt(dx*dx + dy*dy + dz*dz);
 			dx /= d;
 			dy /= d;
 			dz /= d;
 
-            let BULLET_VELOCITY = 0.1;
+			let BULLET_VELOCITY = 0.1;
 
 			// update pos/rot
 			bl.x += dx * BULLET_VELOCITY;
@@ -107,15 +121,15 @@ export function updateGame(game) {
 
 
 function positionOnPath(p, path) {
-    if (p < 0) return path[0].slice();
+	if (p < 0) return path[0].slice();
 
 	let prevIt = path[0];
 
 	for (let it of path) {
-        // calculate segment length
+		// calculate segment length
 		let d = Math.sqrt((it[0] - prevIt[0])*(it[0] - prevIt[0]) + (it[1] - prevIt[1])*(it[1] - prevIt[1]));
 
-        // interpolate (x, y) between path vertices
+		// interpolate (x, y) between path vertices
 		if (p - d < 0) {
 			return [
 				prevIt[0] * (1 - p/d) + it[0] * p/d,
@@ -136,7 +150,7 @@ function positionOnPath(p, path) {
 
 // smallest rot needed to align a to b
 function angleBetween(a, b) {
-    return Math.atan2(Math.sin(a-b), Math.cos(a-b));
+	return Math.atan2(Math.sin(a-b), Math.cos(a-b));
 }
 
 // distance between two points : {x,y,z}
