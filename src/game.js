@@ -1,6 +1,7 @@
 import {updateGame} from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
 
+let canvas = document.querySelector('.game-canvas');
 
 let game = {
     tiles: [
@@ -29,14 +30,36 @@ let game = {
         {type: 'snezak',  x: 0, y: 0, z: 0, rot: 0, pathPos: -12, vz: 0,},
 	],
     bullets: [{type: 'missile', x: 11, y: 0, z: 2, rot: 0, lockedOn: null}],
+    mouse: {
+        mouseX: -1,
+        mouseY: -1,
+        isMouseDown: false
+    }
 }
 
 game.towers = game.tiles.map(row => row.map(_ => null));
-game.towers[2][9] =  {type: 'flame',    rot: 0, targetRot: 0};
+game.towers[2][9]  = {type: 'flame',    rot: 0, targetRot: 0};
 game.towers[8][11] = {type: 'balistic', rot: 0, targetRot: 0};
 game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0};
 game.towers[10][2] = {type: 'flame',    rot: 0, targetRot: 0};
 game.bullets[0].lockedOn = game.enemies[0];
+
+canvas.addEventListener('mousemove', (e) => {
+    game.mouse.mouseX = e.offsetX;
+    game.mouse.mouseY = e.offsetY;
+});
+
+canvas.addEventListener('mousedown', (e) => {
+    game.mouse.mouseX = e.offsetX;
+    game.mouse.mouseY = e.offsetY;
+    game.mouse.isMouseDown = true;
+});
+
+canvas.addEventListener('mouseup', (e) => {
+    game.mouse.mouseX = e.offsetX;
+    game.mouse.mouseY = e.offsetY;
+    game.mouse.isMouseDown = false;
+});
 
 function ticker() {
     requestAnimationFrame(ticker);
