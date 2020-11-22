@@ -126,29 +126,14 @@ export function initGameRenderer() {
 
 	// set camera, isometric view
     // NOTE transformations are applied bottom up
-	let m = mat4.create();     // camera pos
+    let m = mat4.create();
+	mat4.translate(m, m, [0, 0, -200]);     // camera pos
     mat4.rotateX(m, m, Math.PI * (-1/4));   // tilt world
     mat4.rotateZ(m, m, Math.PI * (-1/4));   // tilt world
-    mat4.scale(m, m, [120/900, 120/900, 120/900]);            // tile size 3
+    mat4.scale(m, m, [1, 1, 1]);            // tile size 3
     mat4.translate(m, m, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
-	setViewMatrix(m);
-
-    let mi = mat4.create();
-    mat4.translate(mi, mi, [0, 0, 0]);     // camera pos
-    // mat4.rotateX(mi, mi, Math.PI * (-1/4));   // tilt world
-    mat4.scale(mi, mi, [1, Math.cos(Math.PI * (-1/4)), 1]);  // scale instead of rotate
-    mat4.rotateZ(mi, mi, Math.PI * (-1/4));   // tilt world
-    mat4.scale(mi, mi, [120/900, 120/900, 120/900]);            // tile size 3
-    mat4.translate(mi, mi, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
-    mat4.invert(mi, mi);
-    let a = [-1, 0, 0, 1,
-             0, 0, 0, 0, 
-             0, 0, 0, 0,
-             0, 0, 0, 0, ];
-    mat4.mul(a, mi, a);
-    console.log(a);
+    setViewMatrix(m);
 }
-
 
 function cuboidsFromJson(modelJson) {
 	let cuboids = [];

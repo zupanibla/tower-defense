@@ -135,18 +135,12 @@ export function renderCuboids(cuboids) {
 	// create projectionMatrix based on canvas size
 	// use orthographic projection
 	let projectionMatrix = mat4.create();
-    // let w = canvas.clientWidth;
-    // let h = canvas.clientHeight;
-    let w = 1;
-    let h = 1;
-	let downscale = 1;
-	let near = 0.0;
+	let w = canvas.clientWidth;
+	let h = canvas.clientHeight;
+	let downscale = 120;
+	let near = 0.1;
 	let far = 10000;
 	mat4.ortho(projectionMatrix, -w/downscale, w/downscale, -h/downscale, h/downscale, near, far);
-    projectionMatrix[14] = 0;
-    projectionMatrix[10] = -0.0001;
-    // console.log(projectionMatrix);
-    // mat4.identity(projectionMatrix);
 
 	// TODO no idea what this does
 	gl.bindVertexArray(vao);
