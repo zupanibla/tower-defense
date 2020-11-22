@@ -12,13 +12,24 @@ import flameTurretJson    from './assets/flame-turret.json';
 import snezakJson         from './assets/snezak.json';
 import missileJson        from './assets/missile.json';
 import bluePortalJson     from './assets/blue-portal.json';
-import redPortalJson     from './assets/red-portal.json';
+import redPortalJson      from './assets/red-portal.json';
+import greenHighlightJson from './assets/green-highlight.json';
 
 
 export function renderGame(game) {
 	adjustCanvasSize();
 
 	let cuboids = [];
+
+    // highlight
+    if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12) {
+        let hlCuboids = cuboidsFromJson(greenHighlightJson);
+        for (let it of hlCuboids) {
+            it.x = game.mouse.tileX;
+            it.y = game.mouse.tileY;
+        }
+        cuboids.push(...hlCuboids);
+    }
 
     // tiles
     for (let y = 0; y < game.tiles.length; y++) {
