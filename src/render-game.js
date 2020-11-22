@@ -11,6 +11,8 @@ import balisticTurretJson from './assets/balistic-turret.json';
 import flameTurretJson    from './assets/flame-turret.json';
 import snezakJson         from './assets/snezak.json';
 import missileJson        from './assets/missile.json';
+import bluePortalJson     from './assets/blue-portal.json';
+import redPortalJson     from './assets/red-portal.json';
 
 
 export function renderGame(game) {
@@ -77,7 +79,26 @@ export function renderGame(game) {
 		}
 
 		cuboids.push(...enCuboids);
-	}
+    }
+    
+    // environment
+    for (let en of game.environment) {
+
+        // bluePortal, redPortal
+        let enCuboids = [];
+
+        if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
+        if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
+
+        for (let it of enCuboids) {
+            it.x   = en.x;
+            it.y   = en.y;
+            it.z   = en.z;
+            it.rot = en.rot;
+        }
+
+        cuboids.push(...enCuboids);
+    }
 
     // bullets
     for (let bl of game.bullets) {

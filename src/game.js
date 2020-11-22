@@ -19,16 +19,20 @@ let game = {
         [1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1],  // 12x12
     ].reverse(),  // bottom left is (0, 0) PepePains
     towers: [],
-    path: [[1,12], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 3], [8, 3], [8, -4], ],
+    path: [[1,12], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 3], [8, 3], [8, -1], ],
 	time: 0,
 	enemies: [
-        {type: 'duck',    x: 0, y: 0, z: 0, rot: 0, pathPos:  0,  vz: 0,},
-        {type: 'duck',    x: 0, y: 0, z: 2, rot: 0, pathPos: -2,  vz: 0,},
-        {type: 'duck',    x: 0, y: 0, z: 4, rot: 0, pathPos: -4,  vz: 0,},
-        {type: 'duck',    x: 0, y: 0, z: 8, rot: 0, pathPos: -6,  vz: 0,},
-        {type: 'snezak',  x: 0, y: 0, z: 0, rot: 0, pathPos: -10, vz: 0,},
-        {type: 'snezak',  x: 0, y: 0, z: 0, rot: 0, pathPos: -12, vz: 0,},
-	],
+        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0,},
+        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -2,  vz: 0,},
+        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -4,  vz: 0,},
+        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -6,  vz: 0,},
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -10, vz: 0,},
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0,},
+    ],
+    environment: [
+        {type: 'bluePortal',    x: 8, y: -1, z: -0.35, rot: 0},
+        {type: 'redPortal',     x: 1, y: 12, z: -0.35, rot: 0},
+    ],
     bullets: [],
     mouse: {
         mouseX: -1,
@@ -46,6 +50,7 @@ game.towers[10][2] = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, co
 canvas.addEventListener('mousemove', (e) => {
     game.mouse.mouseX = e.offsetX;
     game.mouse.mouseY = e.offsetY;
+    console.log(game.mouse);
 });
 
 canvas.addEventListener('mousedown', (e) => {
