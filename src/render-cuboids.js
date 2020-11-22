@@ -132,16 +132,6 @@ export function renderCuboids(cuboids) {
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// create projectionMatrix based on canvas size
-	// use orthographic projection
-	let projectionMatrix = mat4.create();
-	let w = canvas.clientWidth;
-	let h = canvas.clientHeight;
-	let downscale = 120;
-	let near = 0.1;
-	let far = 10000;
-	mat4.ortho(projectionMatrix, -w/downscale, w/downscale, -h/downscale, h/downscale, near, far);
-
 	// TODO no idea what this does
 	gl.bindVertexArray(vao);
 
@@ -164,7 +154,6 @@ export function renderCuboids(cuboids) {
 		// calculate and push aMvpMatrix to array
 		let mvpMatrix = mat4.create();
 		mat4.mul(mvpMatrix, viewMatrix, modelMatrix);
-		mat4.mul(mvpMatrix, projectionMatrix, mvpMatrix);
 		mvpMatrixNormalMatrixColorData.push(...mvpMatrix);
 
 		// calculate and push aNormalMatrix to array
