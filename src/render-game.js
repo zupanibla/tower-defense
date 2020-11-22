@@ -105,6 +105,7 @@ export function renderGame(game) {
             it.x   = en.x;
             it.y   = en.y;
             it.z   = en.z;
+            it.a   = 0.8;
             it.rot = en.rot;
         }
 
@@ -155,7 +156,7 @@ function cuboidsFromJson(modelJson) {
 			name: it.name,
 			x: 0, y: 0, z: 0,
 			sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
-			r: it.r/255, g: it.g/255, b: it.b/255,
+			r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
 			rot: 0,
 			px: -it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
 		});
@@ -165,7 +166,7 @@ function cuboidsFromJson(modelJson) {
 				name: it.name,
 				x: 0, y: 0, z: 0,
 				sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
-				r: it.r/255, g: it.g/255, b: it.b/255,
+				r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
 				rot: 0,
 				px: +it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
 			});

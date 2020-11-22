@@ -81,6 +81,9 @@ export function initCuboidRenderer() {
 	gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
 	gl.enable(gl.CULL_FACE);            // Don't draw back faces (effeciency)
 
+    gl.enable(gl.BLEND);                // enable alpha
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
 	// TODO no idea what this does
 	vao = gl.createVertexArray();
 	gl.bindVertexArray(vao);
@@ -124,7 +127,7 @@ export function initCuboidRenderer() {
 // cuboids: {
 //     x, y, z,    // position
 //     sx, sy, sz, // size
-//     r, g, b,    // color
+//     r, g, b, a,    // color
 //     rot,        // rotation around z axis
 //     px, py, pz  // pivot
 // }[]
@@ -164,7 +167,7 @@ export function renderCuboids(cuboids) {
 		mvpMatrixNormalMatrixColorData.push(...normalMatrix);
 
 		// push aColor to array
-		mvpMatrixNormalMatrixColorData.push(cub.r, cub.g, cub.b, 1.0);
+		mvpMatrixNormalMatrixColorData.push(cub.r, cub.g, cub.b, cub.a);
 	}
 
 	// push mvp matrices, normal matrices, colors to GPU
