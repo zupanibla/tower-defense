@@ -114,7 +114,13 @@ export function updateGame(game) {
 				game.bullets.splice(game.bullets.indexOf(bl), 1);
 			}
 		}
-	}    
+	}
+
+	// ui
+	// TODO: maybe don't update these values every frame?
+	document.querySelector('.money').innerHTML      = game.player.money;
+	document.querySelector('.health').innerHTML     = game.player.health;
+	document.querySelector('.combat-log').innerHTML = game.ui.combatLog;
 
 	game.time++;
 }

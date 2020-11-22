@@ -1,7 +1,9 @@
 import {updateGame} from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
 
-let canvas = document.querySelector('.game-canvas');
+let canvas          = document.querySelector('.game-canvas');
+let ui              = document.querySelector('.game-ui');
+let pausePlayButton = document.querySelector('.pause-play-button');
 
 let game = {
     tiles: [
@@ -34,11 +36,19 @@ let game = {
         {type: 'redPortal',     x: 1, y: 12, z: -0.35, rot: 0},
     ],
     bullets: [],
+    player: {
+        health: 100,
+        money: 12315
+    },
+    ui: {
+        combatLog: "Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />"
+    },
     mouse: {
         mouseX: -1,
         mouseY: -1,
         isMouseDown: false,
     },
+    isPaused: true
 }
 
 game.towers = game.tiles.map(row => row.map(_ => null));
@@ -47,23 +57,45 @@ game.towers[8][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, co
 game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 game.towers[10][2] = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 
-canvas.addEventListener('mousemove', (e) => {
-    game.mouse.mouseX = e.offsetX;
-    game.mouse.mouseY = e.offsetY;
-    console.log(game.mouse);
+ui.addEventListener('mousemove', (e) => {
+    var rect = ui.getBoundingClientRect();
+    game.mouse.mouseX = Math.round(e.clientX - rect.left);
+    game.mouse.mouseY = Math.round(e.clientY - rect.top);
 });
 
-canvas.addEventListener('mousedown', (e) => {
-    game.mouse.mouseX = e.offsetX;
-    game.mouse.mouseY = e.offsetY;
+ui.addEventListener('mousedown', (e) => {
+    var rect = ui.getBoundingClientRect();
+    game.mouse.mouseX = Math.round(e.clientX - rect.left);
+    game.mouse.mouseY = Math.round(e.clientY - rect.top);
     game.mouse.isMouseDown = true;
+    createCombatLogEntry("Clicked on x: " + game.mouse.mouseX + ", y: " + game.mouse.mouseY);
 });
 
-canvas.addEventListener('mouseup', (e) => {
-    game.mouse.mouseX = e.offsetX;
-    game.mouse.mouseY = e.offsetY;
+ui.addEventListener('mouseup', (e) => {
+    var rect = ui.getBoundingClientRect();
+    game.mouse.mouseX = Math.round(e.clientX - rect.left);
+    game.mouse.mouseY = Math.round(e.clientY - rect.top);
     game.mouse.isMouseDown = false;
 });
+
+pausePlayButton.addEventListener('mouseup', (e) => {
+    if (game.isPaused) {
+        pausePlayButton.classList.remove("play-button");
+        pausePlayButton.classList.add("pause-button");
+        createCombatLogEntry("You unpaused the game.");
+    }
+    else {
+        pausePlayButton.classList.remove("pause-button");
+        pausePlayButton.classList.add("play-button");
+        createCombatLogEntry("You paused the game.");
+    }
+
+    game.isPaused = !game.isPaused;
+});
+
+function createCombatLogEntry(s) {
+    game.ui.combatLog += s + "<br />";
+}
 
 function ticker() {
     requestAnimationFrame(ticker);

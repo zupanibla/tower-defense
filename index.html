@@ -3,20 +3,163 @@
 		<title>Obramba s stolpi</title>
 		
 		<style>
-			.game-canvas {
-                display: block;
-                width: 1100;
+			/* https://www.dafont.com/04b-03.font */
+			@font-face {
+    			font-family: '04b03';
+    			src: url('./src/fonts/04b03.woff2') format('woff2'),
+        			 url('./src/fonts/04b03.woff') format('woff');
+    			font-weight: normal;
+    			font-style: normal;
+    			font-display: swap;
+			}
+			.unselectable {
+    			-webkit-touch-callout: none;
+    			-webkit-user-select: none;
+    			-khtml-user-select: none;
+    			-moz-user-select: none;
+    			-ms-user-select: none;
+    			user-select: none;
+			}
+			.game {
+				position: relative;
+				width: 1100;
                 height: 900;
-                margin: 0 auto;
+				top: 50%;
+    			left: 50%;
+    			transform: translate(-50%, -50%);
+			}
+			.game-canvas {
+				position: absolute;
+				z-index: 1;
+                width: 1100;
+                height: 900; 
             }
+			.game-ui {
+				position: absolute;
+				z-index: 2;
+				width: 1100;
+                height: 900;
+				color: white;
+				font-size: 40px;
+			}
 			body {
-				background-color: #0F0F0F;
+				background-color: #060606;
+				margin: 0 0;
+				font-family: '04b03';
+			}
+			.play-button {
+				width: 100;
+                height: 40;
+				background: url('src/ui/buttons/button-play.png');
+			}
+			.play-button:hover {
+				width: 100;
+                height: 40;
+    			background: url('src/ui/buttons/button-play-hover.png');
+				cursor: pointer;
+			}
+			.play-button:active {
+				width: 100;
+                height: 40;
+    			background: url('src/ui/buttons/button-play-active.png');
+				cursor: pointer;
+			}
+			.pause-button {
+				width: 100;
+                height: 40;
+				background: url('src/ui/buttons/button-pause.png');
+			}
+			.pause-button:hover {
+				width: 100;
+                height: 40;
+    			background: url('src/ui/buttons/button-pause-hover.png');
+				cursor: pointer;
+			}
+			.pause-button:active {
+				width: 100;
+                height: 40;
+    			background: url('src/ui/buttons/button-pause-active.png');
+				cursor: pointer;
+			}
+			.health {
+				color: #54fd20;
+			}
+			.money {
+				color: yellow;
+			}
+			.game-ui-topleft {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			.game-ui-topright {
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+			.game-ui-bottomleft {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+			}
+			.game-ui-bottomright {
+				width: 320;
+				height: 160;
+
+				position: absolute;
+				bottom: 0;
+				right: 0;
+			}
+			.combat-log {
+				font-size: 20px;
+				overflow-y: scroll;
+				display: flex;
+				flex-direction: column-reverse;
+			}
+			::-webkit-scrollbar {
+			  width: 8px;
+			}
+			::-webkit-scrollbar-track {
+			  background: #000000;
+			}
+			::-webkit-scrollbar-thumb {
+			  background: #101010;
+			}
+			::-webkit-scrollbar-thumb:hover {
+			  background: #303030;
 			}
 		</style>
 	</head>
 
 	<body>
-		<canvas class="game-canvas"></canvas>
+		<div class="game unselectable">
+			<canvas class="game-canvas"></canvas>
+			<div class="game-ui">
+				<div class="game-ui-topleft">
+					Health:<br />
+					<span class="health"></span>
+				</div>
+				<div class="game-ui-topright">
+					Money:<br /><span class="money"></span>
+				</div>
+				<div class="game-ui-bottomleft">
+					YOU CAN<br />
+					PURCHASE TOWER!!!<br />
+					<div class="pause-play-button play-button"></div>
+				</div>
+				<div class="game-ui-bottomright combat-log">
+				</div>
+			</div>
+		</div>
+
+		<!-- Preload images -->
+		<img src="src/ui/buttons/button-pause.png"        style="visibility: hidden" />
+		<img src="src/ui/buttons/button-pause-hover.png"  style="visibility: hidden" />
+		<img src="src/ui/buttons/button-pause-active.png" style="visibility: hidden" />
+		<img src="src/ui/buttons/button-play.png"         style="visibility: hidden" />
+		<img src="src/ui/buttons/button-play-hover.png"   style="visibility: hidden" />
+		<img src="src/ui/buttons/button-play-active.png"  style="visibility: hidden" />
+
 		<script src="./game.js"></script>
 	</body>
 </html>
