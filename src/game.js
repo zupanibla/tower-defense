@@ -6,6 +6,8 @@ let ui              = document.querySelector('.game-ui');
 let pausePlayButton = document.querySelector('.pause-play-button');
 
 let game = {
+    width: ui.clientWidth,
+    height: ui.clientHeight,
     tiles: [
         [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1],
@@ -46,6 +48,8 @@ let game = {
     mouse: {
         mouseX: -1,
         mouseY: -1,
+        tileX: -1,
+        tileY: -1,
         isMouseDown: false,
     },
     isPaused: true
@@ -57,13 +61,13 @@ game.towers[8][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, co
 game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 game.towers[10][2] = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 
-ui.addEventListener('mousemove', (e) => {
+ui.addEventListener('mousemove', e => {
     var rect = ui.getBoundingClientRect();
     game.mouse.mouseX = Math.round(e.clientX - rect.left);
     game.mouse.mouseY = Math.round(e.clientY - rect.top);
 });
 
-ui.addEventListener('mousedown', (e) => {
+ui.addEventListener('mousedown', e => {
     var rect = ui.getBoundingClientRect();
     game.mouse.mouseX = Math.round(e.clientX - rect.left);
     game.mouse.mouseY = Math.round(e.clientY - rect.top);
@@ -71,14 +75,14 @@ ui.addEventListener('mousedown', (e) => {
     createCombatLogEntry("Clicked on x: " + game.mouse.mouseX + ", y: " + game.mouse.mouseY);
 });
 
-ui.addEventListener('mouseup', (e) => {
+ui.addEventListener('mouseup', e => {
     var rect = ui.getBoundingClientRect();
     game.mouse.mouseX = Math.round(e.clientX - rect.left);
     game.mouse.mouseY = Math.round(e.clientY - rect.top);
     game.mouse.isMouseDown = false;
 });
 
-pausePlayButton.addEventListener('mouseup', (e) => {
+pausePlayButton.addEventListener('mouseup', e => {
     if (game.isPaused) {
         pausePlayButton.classList.remove("play-button");
         pausePlayButton.classList.add("pause-button");
