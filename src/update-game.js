@@ -10,8 +10,8 @@ export function updateGame(game) {
     mat4.translate(m, m, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
     mat4.invert(m, m);
 
-    let normalMouseX = 2*(game.mouse.mouseX / game.width)  - 1;     // between -1 and 1
-    let normalMouseY = -(2*(game.mouse.mouseY / game.height) - 1);  // between -1 and 1
+    let normalMouseX = 2*(game.mouse.x / game.width)  - 1;     // between -1 and 1
+    let normalMouseY = -(2*(game.mouse.y / game.height) - 1);  // between -1 and 1
 
     let a = [normalMouseX, normalMouseY, 0, 1,
              0, 0, 0, 0,

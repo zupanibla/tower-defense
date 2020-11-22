@@ -46,11 +46,11 @@ let game = {
         combatLog: "Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />"
     },
     mouse: {
-        mouseX: -1,
-        mouseY: -1,
+        x: -1,
+        y: -1,
         tileX: -1,
         tileY: -1,
-        isMouseDown: false,
+        isDown: false,
     },
     isPaused: true
 }
@@ -63,23 +63,23 @@ game.towers[10][2] = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, co
 
 ui.addEventListener('mousemove', e => {
     var rect = ui.getBoundingClientRect();
-    game.mouse.mouseX = Math.round(e.clientX - rect.left);
-    game.mouse.mouseY = Math.round(e.clientY - rect.top);
+    game.mouse.x = Math.round(e.clientX - rect.left);
+    game.mouse.y = Math.round(e.clientY - rect.top);
 });
 
 ui.addEventListener('mousedown', e => {
     var rect = ui.getBoundingClientRect();
-    game.mouse.mouseX = Math.round(e.clientX - rect.left);
-    game.mouse.mouseY = Math.round(e.clientY - rect.top);
-    game.mouse.isMouseDown = true;
-    createCombatLogEntry("Clicked on x: " + game.mouse.mouseX + ", y: " + game.mouse.mouseY);
+    game.mouse.x = Math.round(e.clientX - rect.left);
+    game.mouse.y = Math.round(e.clientY - rect.top);
+    game.mouse.isDown = true;
+    createCombatLogEntry("Clicked on x: " + game.mouse.x + ", y: " + game.mouse.y);
 });
 
 ui.addEventListener('mouseup', e => {
     var rect = ui.getBoundingClientRect();
-    game.mouse.mouseX = Math.round(e.clientX - rect.left);
-    game.mouse.mouseY = Math.round(e.clientY - rect.top);
-    game.mouse.isMouseDown = false;
+    game.mouse.x = Math.round(e.clientX - rect.left);
+    game.mouse.y = Math.round(e.clientY - rect.top);
+    game.mouse.isDown = false;
 });
 
 pausePlayButton.addEventListener('mouseup', e => {
