@@ -50,9 +50,14 @@ let game = {
         y: -1,
         tileX: -1,
         tileY: -1,
+        clickX: -1,
+        clickY: -1,
+        clickedTileX: -1,
+        clickedTileY: -1,
         isDown: false,
+        clickTime: -1000,
     },
-    isPaused: true
+    isPaused: true,
 }
 
 game.towers = game.tiles.map(row => row.map(_ => null));
@@ -72,6 +77,9 @@ ui.addEventListener('mousedown', e => {
     game.mouse.x = Math.round(e.clientX - rect.left);
     game.mouse.y = Math.round(e.clientY - rect.top);
     game.mouse.isDown = true;
+    game.mouse.clickTime = game.time;
+    game.mouse.clickX = game.mouse.x;
+    game.mouse.clickY = game.mouse.y;
     createCombatLogEntry("Clicked on x: " + game.mouse.x + ", y: " + game.mouse.y);
 });
 
