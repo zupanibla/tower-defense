@@ -113,11 +113,23 @@ export function renderGame(game) {
 		if (en.type == 'duck')    enCuboids = cuboidsFromJson(duckJson);
 		if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
 
+		let alpha = 1;
+		// fade in enemies when they come out of portal (first 0.5 of the path)
+		if (en.pathPos < 0.5) {
+			alpha = Math.max(0, en.pathPos) * 2;
+		}
+		// fade out enemies when that go in portal (last 0.5 of the path)
+		if (en.pathPos > game.pathLen - 0.5) {
+			// TODO visual bug: health bars make blue portal transparent
+			alpha = 1 - Math.min(en.pathPos - (game.pathLen-0.5), 0.5) * 2;
+		}
+
 		for (let it of enCuboids) {
 			it.x   = en.x;
 			it.y   = en.y;
 			it.z   = en.z;
 			it.rot = en.rot;
+			it.a   = alpha;
 		}
 		cuboids.push(...enCuboids);
 

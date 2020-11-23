@@ -28,7 +28,8 @@ let game = {
         [1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1],  // 12x12
     ].reverse(),  // bottom left is (0, 0) PepePains
     towers: [],
-    path: [[1,12], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 3], [8, 3], [8, -1], ],
+    path: [[1,12.5], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 3], [8, 3], [8, -1.5], ],
+    pathLen: 48,  // HARDCODED
 	time: 0,
 	enemies: [
         {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0, health: 100, maxHealth: 100},

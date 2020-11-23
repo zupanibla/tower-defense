@@ -122,6 +122,10 @@ export function updateGame(game) {
 			en.y   = y;
 			en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
 
+            if (y2 == y && x2 == x) {
+                en.rot = 0;
+            }
+
 			// jumping
 			if (en.z <= 0) {
 				en.z  = 0;
@@ -145,6 +149,9 @@ export function updateGame(game) {
 			en.x   = x;
 			en.y   = y;
 			en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
+            if (y2 == y && x2 == x) {
+                en.rot = 0;
+            }
 		}
 	}
 
@@ -152,7 +159,7 @@ export function updateGame(game) {
     for (let i = 0; i < game.enemies.length; i++) {
         let en = game.enemies[i];
 
-        if (en.health <= 0) {
+        if (en.health <= 0) {  // on death
             game.enemies.splice(i, 1);
             i--;
 
@@ -161,6 +168,11 @@ export function updateGame(game) {
             if (en.type == 'snezak') color = [217/256, 218/256, 242/256];
             if (en.type == 'duck')   color = [232/256, 220/256, 59/256];
             game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color));
+        } else if (en.pathPos >= game.pathLen) {  // on portal pass
+            game.enemies.splice(i, 1);
+            i--;
+
+            game.player.health -= 10;
         }
     }
 
@@ -169,7 +181,7 @@ export function updateGame(game) {
 
         // bounce
         let BOUNCE_FACTOR = 0.5;
-        if (pt.z <= 0.01 && pt.x >= -0.5 && pt.x <= 11.5 && pt.y >= -0.5 && pt.y <= 11.5) {
+        if (pt.z <= 0.01 && pt.x >= -0.5 && pt.x <= 11.5 && pt.y >= -0.5 && pt.y <= 11.5) {  // HARDCODED   
 
             pt.z  = 0;
             pt.vz = -pt.vz * BOUNCE_FACTOR;
@@ -220,7 +232,7 @@ export function updateGame(game) {
 
 
 function positionOnPath(p, path) {
-	if (p < 0) return path[0].slice();
+	if (p < 0) return [-100, -100];
 
 	let prevIt = path[0];
 
