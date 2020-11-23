@@ -22,14 +22,14 @@ export function renderGame(game) {
 	let cuboids = [];
 
     // highlight
-    if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12) {
-        let hlCuboids = cuboidsFromJson(greenHighlightJson);
-        for (let it of hlCuboids) {
-            it.x = game.mouse.tileX;
-            it.y = game.mouse.tileY;
-        }
-        cuboids.push(...hlCuboids);
-    }
+    //if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12) {
+    //    let hlCuboids = cuboidsFromJson(greenHighlightJson);
+    //    for (let it of hlCuboids) {
+    //        it.x = game.mouse.tileX;
+    //        it.y = game.mouse.tileY;
+    //    }
+    //    cuboids.push(...hlCuboids);
+    //}
 
     // tiles
     for (let y = 0; y < game.tiles.length; y++) {
@@ -46,6 +46,37 @@ export function renderGame(game) {
             }
 
             cuboids.push(...tileCuboids);
+        }
+    }
+
+    // handle tower on mouse
+    if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
+        game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
+        && game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2) {
+
+        // place tower
+        if (game.mouse.isDown) {
+            game.towers[game.mouse.tileY][game.mouse.tileX] =
+                {type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+            // take player money and deselect tower from shop
+            game.player.money -= game.mouse.tower.cost;
+            game.mouse.tower.button.classList.remove('tower-selected');
+            game.mouse.tower = null;
+        }
+        // show tower on mouse while placing
+        else {
+            let towerCuboids = null;
+
+            if (game.mouse.tower.type == 'balistic')    towerCuboids = cuboidsFromJson(balisticTurretJson);
+            if (game.mouse.tower.type == 'flame')       towerCuboids = cuboidsFromJson(flameTurretJson);
+
+            for (let it of towerCuboids) {
+                it.x = game.mouse.tileX;
+                it.y = game.mouse.tileY;
+                it.a = 0.6;
+            }
+
+            cuboids.push(...towerCuboids);
         }
     }
 
@@ -105,8 +136,14 @@ export function renderGame(game) {
             it.x   = en.x;
             it.y   = en.y;
             it.z   = en.z;
-            it.a   = 0.8;
             it.rot = en.rot;
+
+            // make the opening part of the portal transparent
+            if (en.type == 'bluePortal' || en.type == 'redPortal') {
+                if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
+                    it.a   = 0.6;
+                }
+            }   
         }
 
         cuboids.push(...enCuboids);

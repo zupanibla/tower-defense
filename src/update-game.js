@@ -2,6 +2,7 @@ import {mat4} from 'gl-matrix';
 
 export function updateGame(game) {
 	game.time++;
+	if (game.time % 5 === 0) game.player.money++;
 
     // mouse pos to tile pos
     // viewMatrix from render-game.js with a scale instead of rotateX and inverted

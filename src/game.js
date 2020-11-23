@@ -4,6 +4,11 @@ import {initGameRenderer, renderGame} from './render-game.js';
 let canvas          = document.querySelector('.game-canvas');
 let ui              = document.querySelector('.game-ui');
 let pausePlayButton = document.querySelector('.pause-play-button');
+let shopButtons     = [
+                      document.querySelector('.tower-0-0'), document.querySelector('.tower-0-1'), document.querySelector('.tower-0-2'),
+                      document.querySelector('.tower-1-0'), document.querySelector('.tower-1-1'), document.querySelector('.tower-1-2'),
+                      document.querySelector('.tower-2-0'), document.querySelector('.tower-2-1'), document.querySelector('.tower-2-2')
+                    ];
 
 let game = {
     width: ui.clientWidth,
@@ -40,11 +45,15 @@ let game = {
     bullets: [],
     player: {
         health: 100,
-        money: 12315
+        money: 100
     },
     ui: {
-        combatLog: "Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />"
+        combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'
     },
+    shop: [
+        {type: 'balistic', cost: 100, button: shopButtons[0]},
+        {type: 'flame',    cost: 200, button: shopButtons[1]},
+    ],
     mouse: {
         x: -1,
         y: -1,
@@ -56,6 +65,7 @@ let game = {
         clickedTileY: -1,
         isDown: false,
         clickTime: -1000,
+        tower: null
     },
     isPaused: true,
 }
@@ -80,7 +90,7 @@ ui.addEventListener('mousedown', e => {
     game.mouse.clickTime = game.time;
     game.mouse.clickX = game.mouse.x;
     game.mouse.clickY = game.mouse.y;
-    createCombatLogEntry("Clicked on x: " + game.mouse.x + ", y: " + game.mouse.y);
+    createCombatLogEntry('Clicked on x: ' + game.mouse.x + ', y: ' + game.mouse.y);
 });
 
 ui.addEventListener('mouseup', e => {
@@ -92,21 +102,50 @@ ui.addEventListener('mouseup', e => {
 
 pausePlayButton.addEventListener('mouseup', e => {
     if (game.isPaused) {
-        pausePlayButton.classList.remove("play-button");
-        pausePlayButton.classList.add("pause-button");
-        createCombatLogEntry("You unpaused the game.");
+        pausePlayButton.classList.remove('play-button');
+        pausePlayButton.classList.add('pause-button');
+        createCombatLogEntry('You unpaused the game.');
     }
     else {
-        pausePlayButton.classList.remove("pause-button");
-        pausePlayButton.classList.add("play-button");
-        createCombatLogEntry("You paused the game.");
+        pausePlayButton.classList.remove('pause-button');
+        pausePlayButton.classList.add('play-button');
+        createCombatLogEntry('You paused the game.');
     }
 
     game.isPaused = !game.isPaused;
 });
 
+for (let i = 0; i < game.shop.length; i++) {
+    let sh = game.shop[i];
+    sh.button.addEventListener('click', e => {
+        if (game.player.money >= sh.cost) {
+            // deselect all other towers
+            for (let sh2 of game.shop) {
+                sh2.button.classList.remove('tower-selected');
+            }
+            // select the clicked tower
+            sh.button.classList.add('tower-selected');
+            game.mouse.tower = sh;
+        }
+    });
+}
+
 function createCombatLogEntry(s) {
-    game.ui.combatLog += s + "<br />";
+    game.ui.combatLog += s + '<br />';
+}
+
+function updateShop() {
+    for (let sh of game.shop) {
+        // update tower cost text
+        sh.button.querySelector('.tower-cost').innerHTML = sh.cost;
+        // update icons if player can or cannot afford tower
+        if (game.player.money >= sh.cost) {
+            sh.button.classList.remove('tower-disabled');
+        }
+        else {
+            sh.button.classList.add('tower-disabled');
+        }
+    }
 }
 
 function ticker() {
@@ -118,6 +157,7 @@ function ticker() {
     if (timeBetween > frameDuration) {
         timeBefore = timeNow - (timeBetween % frameDuration);
 
+        updateShop();
         updateGame(game);
         renderGame(game);
     }
