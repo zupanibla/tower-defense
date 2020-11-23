@@ -71,6 +71,9 @@ let game = {
     isPaused: true,
 }
 
+// for debug purposes
+window.game = game;
+
 game.towers = game.tiles.map(row => row.map(_ => null));
 game.towers[2][9] =  {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 game.towers[8][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
