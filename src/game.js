@@ -169,7 +169,7 @@ function ticker() {
 }
 
 initGameRenderer();
-let fps = 60;
+let fps = 65;  // TODO
 let frameDuration = 1000 / fps;
 let timeBefore = Date.now();
 ticker();
