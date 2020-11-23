@@ -146,18 +146,23 @@ export function updateGame(game) {
 			en.y   = y;
 			en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
 		}
+	}
 
-        // death
+    // enemy death
+    for (let i = 0; i < game.enemies.length; i++) {
+        let en = game.enemies[i];
+
         if (en.health <= 0) {
-            game.enemies.splice(game.enemies.indexOf(en), 1);
+            game.enemies.splice(i, 1);
+            i--;
 
-            // death particles
+            // spawn debris
             let color = [0, 0, 0]
             if (en.type == 'snezak') color = [217/256, 218/256, 242/256];
             if (en.type == 'duck')   color = [232/256, 220/256, 59/256];
-            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color));               
+            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color));
         }
-	}
+    }
 
     // particles
     for (let pt of game.particles) {
@@ -193,10 +198,16 @@ export function updateGame(game) {
 
         // decay
         pt.a -= (1/6)/60;
+    }
+
+    // particle death
+    for (let i = 0; i < game.particles.length; i++) {
+        let pt = game.particles[i];
 
         // remove when a <= 0
         if (pt.a <= 0) {
-            game.particles.splice(game.particles.indexOf(pt), 1);
+            game.particles.splice(i, 1);
+            i--;
         }
     }
 
