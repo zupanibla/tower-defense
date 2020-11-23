@@ -2,133 +2,7 @@
 	<head>
 		<title>Obramba s stolpi</title>
 		
-		<style>
-			/* https://www.dafont.com/04b-03.font */
-			@font-face {
-    			font-family: '04b03';
-    			src: url('./src/fonts/04b03.woff2') format('woff2'),
-        			 url('./src/fonts/04b03.woff') format('woff');
-    			font-weight: normal;
-    			font-style: normal;
-    			font-display: swap;
-			}
-			.unselectable {
-    			-webkit-touch-callout: none;
-    			-webkit-user-select: none;
-    			-khtml-user-select: none;
-    			-moz-user-select: none;
-    			-ms-user-select: none;
-    			user-select: none;
-			}
-			.game {
-				position: relative;
-				width: 1100;
-                height: 900;
-				top: 50%;
-    			left: 50%;
-    			transform: translate(-50%, -50%);
-			}
-			.game-canvas {
-				position: absolute;
-				z-index: 1;
-                width: 1100;
-                height: 900; 
-            }
-			.game-ui {
-				position: absolute;
-				z-index: 2;
-				width: 1100;
-                height: 900;
-				color: white;
-				font-size: 40px;
-			}
-			body {
-				background-color: #060606;
-				margin: 0 0;
-				font-family: '04b03';
-			}
-			.play-button {
-				width: 100;
-                height: 40;
-				background: url('src/ui/buttons/button-play.png');
-			}
-			.play-button:hover {
-				width: 100;
-                height: 40;
-    			background: url('src/ui/buttons/button-play-hover.png');
-				cursor: pointer;
-			}
-			.play-button:active {
-				width: 100;
-                height: 40;
-    			background: url('src/ui/buttons/button-play-active.png');
-				cursor: pointer;
-			}
-			.pause-button {
-				width: 100;
-                height: 40;
-				background: url('src/ui/buttons/button-pause.png');
-			}
-			.pause-button:hover {
-				width: 100;
-                height: 40;
-    			background: url('src/ui/buttons/button-pause-hover.png');
-				cursor: pointer;
-			}
-			.pause-button:active {
-				width: 100;
-                height: 40;
-    			background: url('src/ui/buttons/button-pause-active.png');
-				cursor: pointer;
-			}
-			.health {
-				color: #54fd20;
-			}
-			.money {
-				color: yellow;
-			}
-			.game-ui-topleft {
-				position: absolute;
-				top: 0;
-				left: 0;
-			}
-			.game-ui-topright {
-				position: absolute;
-				top: 0;
-				right: 0;
-			}
-			.game-ui-bottomleft {
-				position: absolute;
-				bottom: 0;
-				left: 0;
-			}
-			.game-ui-bottomright {
-				width: 320;
-				height: 160;
-
-				position: absolute;
-				bottom: 0;
-				right: 0;
-			}
-			.combat-log {
-				font-size: 20px;
-				overflow-y: scroll;
-				display: flex;
-				flex-direction: column-reverse;
-			}
-			::-webkit-scrollbar {
-			  width: 8px;
-			}
-			::-webkit-scrollbar-track {
-			  background: #000000;
-			}
-			::-webkit-scrollbar-thumb {
-			  background: #101010;
-			}
-			::-webkit-scrollbar-thumb:hover {
-			  background: #303030;
-			}
-		</style>
+		<link rel="stylesheet" href="main.css">
 	</head>
 
 	<body>
@@ -136,29 +10,50 @@
 			<canvas class="game-canvas"></canvas>
 			<div class="game-ui">
 				<div class="game-ui-topleft">
-					Health:<br />
-					<span class="health"></span>
+					<div class="tower-select">
+						<div class="tower-icon tower-0-0 tower-disabled"><div class="tower-cost"></div></div>
+						<div class="tower-icon tower-0-1 tower-disabled"><div class="tower-cost"></div></div>
+						<div class="tower-icon tower-0-2 tower-disabled"><div class="tower-cost tower-coming-soon">Coming soon</div></div>
+						<div class="tower-icon tower-1-0 tower-disabled"><div class="tower-cost tower-coming-soon">Coming soon</div></div>
+						<div class="tower-icon tower-1-1 tower-disabled"><div class="tower-cost tower-coming-soon">Coming soon</div></div>
+						<div class="tower-icon tower-1-2 tower-disabled"><div class="tower-cost tower-coming-soon">Coming soon</div></div>
+						<div class="tower-icon tower-2-0 tower-disabled"><div class="tower-cost tower-coming-soon">Coming soon</div></div>
+						<div class="tower-icon tower-2-1 tower-disabled"><div class="tower-cost tower-coming-soon">Coming soon</div></div>
+						<div class="tower-icon tower-2-2 tower-disabled"><div class="tower-cost tower-coming-soon">Coming soon</div></div>
+					</div>
 				</div>
 				<div class="game-ui-topright">
-					Money:<br /><span class="money"></span>
+					Health:<br />
+					<span class="health"></span><br />
+					Money:<br />
+					<span class="money"></span>
 				</div>
 				<div class="game-ui-bottomleft">
-					YOU CAN<br />
-					PURCHASE TOWER!!!<br />
 					<div class="pause-play-button play-button"></div>
+					Wave: <span class="wave">12</span>
 				</div>
 				<div class="game-ui-bottomright combat-log">
 				</div>
 			</div>
 		</div>
 
+		
 		<!-- Preload images -->
-		<img src="src/ui/buttons/button-pause.png"        style="visibility: hidden" />
-		<img src="src/ui/buttons/button-pause-hover.png"  style="visibility: hidden" />
-		<img src="src/ui/buttons/button-pause-active.png" style="visibility: hidden" />
-		<img src="src/ui/buttons/button-play.png"         style="visibility: hidden" />
-		<img src="src/ui/buttons/button-play-hover.png"   style="visibility: hidden" />
-		<img src="src/ui/buttons/button-play-active.png"  style="visibility: hidden" />
+		<img src="src/ui/buttons/button-pause.png"        				style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-pause-hover.png"  				style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-pause-active.png" 				style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-play.png"         				style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-play-hover.png"   				style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-play-active.png"  				style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/tower-select-background.png"  			style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-ballistic-turret.png"  			style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-ballistic-turret-hover.png"  	style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-ballistic-turret-active.png"  	style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-ballistic-turret-disabled.png"  style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-flame-turret.png"  				style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-flame-turret-hover.png"  		style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-flame-turret-active.png"  		style="visibility: hidden; height: 0px;" />
+		<img src="src/ui/buttons/button-flame-turret-disabled.png"  	style="visibility: hidden; height: 0px;" />
 
 		<script src="./game.js"></script>
 	</body>
