@@ -31,12 +31,12 @@ let game = {
     path: [[1,12], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 3], [8, 3], [8, -1], ],
 	time: 0,
 	enemies: [
-        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0,},
-        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -2,  vz: 0,},
-        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -4,  vz: 0,},
-        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -6,  vz: 0,},
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -10, vz: 0,},
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0,},
+        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0, health: 1, },
+        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -2,  vz: 0, health: 1, },
+        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -4,  vz: 0, health: 1, },
+        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -6,  vz: 0, health: 1, },
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -10, vz: 0, health: 1, },
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 1, },
     ],
     environment: [
         {type: 'bluePortal',    x: 8, y: -1, z: -0.35, rot: 0},
@@ -45,7 +45,7 @@ let game = {
     bullets: [],
     player: {
         health: 100,
-        money: 100
+        money: 100,
     },
     ui: {
         combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'

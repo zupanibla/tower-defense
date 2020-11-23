@@ -143,6 +143,7 @@ export function updateGame(game) {
 			// on collision
 			if (d < 0.1) {
 				game.bullets.splice(game.bullets.indexOf(bl), 1);
+                bl.targetEn.health -= 0.2;
 			}
 		}
 	}
