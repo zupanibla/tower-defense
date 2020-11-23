@@ -65,13 +65,56 @@ export function updateGame(game) {
 
 			// shooting
 			if (tw.targetEn && tw.rot == tw.targetRot && tw.cooldown == 0) {
-				game.bullets.push({
-					type: 'missile',
-					x, y, z: 0.5,
-					rot: 0,
-					targetEn: tw.targetEn,
-				});
-				tw.cooldown = 60;
+                if (tw.type == 'balistic') {
+    				game.bullets.push({
+    					type: 'missile',
+    					x, y, z: 0.5,
+    					rot: 0,
+    					targetEn: tw.targetEn,
+    				});
+                    tw.cooldown = 60;
+                }
+
+                if (tw.type == 'flame') {
+                    // flame origin
+                    let xo = x, yo = y, zo = 0.5;
+
+                    xo += Math.cos(tw.rot - Math.PI / 2) * 0.40;
+                    yo += Math.sin(tw.rot - Math.PI / 2) * 0.40;
+
+                    let FLAME_VELOCITY = 0.1;
+
+                    let flameRot = tw.rot - Math.PI / 2 + (Math.random() - 0.5)*(Math.random() - 0.5)*2;
+
+                    let vx = Math.cos(flameRot) * FLAME_VELOCITY;
+                    let vy = Math.sin(flameRot) * FLAME_VELOCITY;
+                    let vz = 0;
+
+                    let colors = [
+                        [252, 165, 3],
+                        [252, 69, 3],
+                        [252, 202, 3],
+                    ];
+
+                    let color = colors[~~(Math.random() * colors.length)];
+
+                    game.particles.push({
+                        type: 'flame',
+                        x: xo,
+                        y: yo,
+                        z: zo,
+                        vx, vy, vz,
+                        rot: 0,
+                        rotv: (Math.random() - 0.5) * 3,
+                        sx: 0.1,
+                        sy: 0.1,
+                        sz: 0.1,
+                        r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+                    });
+
+                    // damage
+                    tw.targetEn.health -= 0.5;
+                }
 			}
 
 			// cooldown
@@ -179,25 +222,27 @@ export function updateGame(game) {
     // particles
     for (let pt of game.particles) {
 
-        // bounce
-        let BOUNCE_FACTOR = 0.5;
-        if (pt.z <= 0.01 && pt.x >= -0.5 && pt.x <= 11.5 && pt.y >= -0.5 && pt.y <= 11.5) {  // HARDCODED   
+        if (pt.type == 'debris') {
+            // bounce
+            let BOUNCE_FACTOR = 0.5;
+            if (pt.z <= 0.01 && pt.x >= -0.5 && pt.x <= 11.5 && pt.y >= -0.5 && pt.y <= 11.5) {  // HARDCODED   
 
-            pt.z  = 0;
-            pt.vz = -pt.vz * BOUNCE_FACTOR;
+                pt.z  = 0;
+                pt.vz = -pt.vz * BOUNCE_FACTOR;
 
-            pt.vx = pt.vx * BOUNCE_FACTOR;
-            pt.vy = pt.vy * BOUNCE_FACTOR;
+                pt.vx = pt.vx * BOUNCE_FACTOR;
+                pt.vy = pt.vy * BOUNCE_FACTOR;
 
-            let v = Math.sqrt(pt.vx*pt.vx + pt.vy*pt.vy + pt.vz*pt.vz);
+                let v = Math.sqrt(pt.vx*pt.vx + pt.vy*pt.vy + pt.vz*pt.vz);
 
-            pt.rotv /= 2;
-            pt.rotv += 2*(Math.random() - 0.5)*2*(Math.random() - 0.5) * v;
-        }
+                pt.rotv /= 2;
+                pt.rotv += 2*(Math.random() - 0.5)*2*(Math.random() - 0.5) * v;
+            }
 
-        // gravity
-        if (pt.z > 0) {
-            pt.vz -= 0.01;
+            // gravity
+            if (pt.z > 0) {
+                pt.vz -= 0.01;
+            }
         }
 
         // update pos
@@ -209,7 +254,9 @@ export function updateGame(game) {
         pt.rot += pt.rotv;
 
         // decay
-        pt.a -= (1/6)/60;
+        if (pt.type == 'debris') pt.a -= (1/6)/60;
+        if (pt.type == 'flame')  pt.a -= 4/60
+
     }
 
     // particle death
@@ -277,7 +324,7 @@ function debrisParticles(x, y, z, r, g, b) {
     let PARTICLE_VELOCITY = 20/60;
     let ROTATION_SCALE    = 0.3;
 
-    let cubs = [];
+    let particles = [];
 
     for (let i = -CUBE_DENSITY/2 + 0.5; i < CUBE_DENSITY/2 + 0.5; i++) {
         for (let j = -CUBE_DENSITY/2 + 0.5; j < CUBE_DENSITY/2 + 0.5; j++) {
@@ -286,7 +333,8 @@ function debrisParticles(x, y, z, r, g, b) {
                 let i2 = i + Math.random() - 0.5; 
                 let j2 = j + Math.random() - 0.5; 
                 let k2 = k + Math.random() - 0.5; 
-                cubs.push({
+                particles.push({
+                    type: 'debris',
                     x: x + i2 * CUBE_SIZE / CUBE_DENSITY,
                     y: y + j2 * CUBE_SIZE / CUBE_DENSITY,
                     z: z + k2 * CUBE_SIZE / CUBE_DENSITY,
@@ -304,5 +352,5 @@ function debrisParticles(x, y, z, r, g, b) {
         }
     }
 
-    return cubs;
+    return particles;
 }
