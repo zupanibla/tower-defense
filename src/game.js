@@ -32,12 +32,12 @@ let game = {
     pathLen: 48,  // HARDCODED
 	time: 0,
 	enemies: [
-        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0, health: 100, maxHealth: 100},
-        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -2,  vz: 0, health: 100, maxHealth: 100},
-        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -4,  vz: 0, health: 100, maxHealth: 100},
-        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -6,  vz: 0, health: 100, maxHealth: 100},
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -10, vz: 0, health: 200, maxHealth: 200},
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 200, maxHealth: 200},
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0, health: 200, maxHealth: 200, friedness: 0},
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -2,  vz: 0, health: 200, maxHealth: 200, friedness: 0},
+        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -8,  vz: 0, health: 120, maxHealth: 120, friedness: 0},
+        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -10, vz: 0, health: 120, maxHealth: 120, friedness: 0},
+        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 120, maxHealth: 120, friedness: 0},
+        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -14, vz: 0, health: 120, maxHealth: 120, friedness: 0},
     ],
     particles: [],
     environment: [
@@ -76,10 +76,10 @@ let game = {
 window.game = game;
 
 game.towers = game.tiles.map(row => row.map(_ => null));
-game.towers[2][9] =  {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[8][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+game.towers[4][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+game.towers[3][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+game.towers[2][9]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[10][2] = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 
 ui.addEventListener('mousemove', e => {
     var rect = ui.getBoundingClientRect();

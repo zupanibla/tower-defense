@@ -113,6 +113,20 @@ export function renderGame(game) {
 		if (en.type == 'duck')    enCuboids = cuboidsFromJson(duckJson);
 		if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
 
+		// fried ducks
+		if (en.type == 'duck') {
+			for (let it of enCuboids) {
+				// don't fry them cute eyes
+				if (it.name == 'eyes') continue;
+
+				let k = 1 - Math.min(en.friedness, 100) / 100;
+				it.r = k * it.r;
+				it.g = k * it.g;
+				it.b = k * it.b;
+			}
+		}
+
+
 		let alpha = 1;
 		// fade in enemies when they come out of portal (first 0.5 of the path)
 		if (en.pathPos < 0.5) {

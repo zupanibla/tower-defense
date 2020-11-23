@@ -113,7 +113,8 @@ export function updateGame(game) {
                     });
 
                     // damage
-                    tw.targetEn.health -= 0.5;
+                    tw.targetEn.health    -= 0.5;
+                    tw.targetEn.friedness += 1;
                 }
 			}
 
@@ -209,7 +210,10 @@ export function updateGame(game) {
             // spawn debris
             let color = [0, 0, 0]
             if (en.type == 'snezak') color = [217/256, 218/256, 242/256];
-            if (en.type == 'duck')   color = [232/256, 220/256, 59/256];
+            if (en.type == 'duck') {
+                let k = 1 - Math.min(en.friedness, 100) / 100;
+                color = [k * 232/256, k * 220/256, k * 59/256];
+            }
             game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color));
         } else if (en.pathPos >= game.pathLen) {  // on portal pass
             game.enemies.splice(i, 1);
