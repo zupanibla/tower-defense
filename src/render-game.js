@@ -122,13 +122,13 @@ export function renderGame(game) {
 		cuboids.push(...enCuboids);
 
 		// health bar
-		let size = 0.6;
+		let size = 0.6/100;
 		let green = {
 			x: en.x, y: en.y, z: 0,
 			name: 'green',
 			pz: -1.5, py: 0,
 			sz: 10/256,    sy: 10/256,
-			sx: en.health * size, px: (1 - en.health)/2 * size,
+			sx: en.health * size, px: (en.maxHealth - en.health)/2 * size,
 			r: 0, g: 1, b: 0, a: 1,
 			rot: Math.PI / 4,
 		};
@@ -137,7 +137,7 @@ export function renderGame(game) {
 			name: 'green',
 			pz: -1.5, py: 0,
 			sz: 10/256,  sy: 10/256,
-			sx: (1 - en.health) * size, px: -en.health/2 * size,
+			sx: (en.maxHealth - en.health) * size, px: -en.health/2 * size,
 			r: 1, g: 0, b: 0, a: 1,
 			rot: Math.PI / 4,
 		};
