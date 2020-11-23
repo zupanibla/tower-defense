@@ -79,6 +79,35 @@ export function updateGame(game) {
 		}
 	}
 
+	// bullets
+	for (let bl of game.bullets) {
+		// missile
+		if (bl.targetEn) {
+			// calculate direction
+			let dx = bl.targetEn.x - bl.x;
+			let dy = bl.targetEn.y - bl.y;
+			let dz = bl.targetEn.z - bl.z;
+			let d  = Math.sqrt(dx*dx + dy*dy + dz*dz);
+			dx /= d;
+			dy /= d;
+			dz /= d;
+
+			let BULLET_VELOCITY = 0.1;
+
+			// update pos/rot
+			bl.x += dx * BULLET_VELOCITY;
+			bl.y += dy * BULLET_VELOCITY;
+			bl.z += dz * BULLET_VELOCITY;
+			bl.rot = Math.atan2(dy, dx) + Math.PI/2;
+
+			// on collision
+			if (d < 0.1) {
+				game.bullets.splice(game.bullets.indexOf(bl), 1);
+                bl.targetEn.health -= 0.2;
+			}
+		}
+	}
+
 	// enemies
 	for (let en of game.enemies) {
 
@@ -117,35 +146,11 @@ export function updateGame(game) {
 			en.y   = y;
 			en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
 		}
-	}
 
-	// bullets
-	for (let bl of game.bullets) {
-		// missile
-		if (bl.targetEn) {
-			// calculate direction
-			let dx = bl.targetEn.x - bl.x;
-			let dy = bl.targetEn.y - bl.y;
-			let dz = bl.targetEn.z - bl.z;
-			let d  = Math.sqrt(dx*dx + dy*dy + dz*dz);
-			dx /= d;
-			dy /= d;
-			dz /= d;
-
-			let BULLET_VELOCITY = 0.1;
-
-			// update pos/rot
-			bl.x += dx * BULLET_VELOCITY;
-			bl.y += dy * BULLET_VELOCITY;
-			bl.z += dz * BULLET_VELOCITY;
-			bl.rot = Math.atan2(dy, dx) + Math.PI/2;
-
-			// on collision
-			if (d < 0.1) {
-				game.bullets.splice(game.bullets.indexOf(bl), 1);
-                bl.targetEn.health -= 0.2;
-			}
-		}
+        // death
+        if (en.health <= 0) {
+            game.enemies.splice(game.enemies.indexOf(en), 1);                    
+        }
 	}
 
 	// ui
