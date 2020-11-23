@@ -188,6 +188,19 @@ export function renderGame(game) {
 		cuboids.push(...blCuboids);
 	}
 
+	// particles
+	for (let pt of game.particles) {
+		let cub = {
+			name: 'particle',
+			x: pt.x, y: pt.y, z: pt.z, rot: pt.rot,
+			sx: pt.sx, sy: pt.sy, sz: pt.sz,
+			px: 0, py: 0, pz: -pt.sz/2,
+			r: pt.r, g: pt.g, b: pt.b, a: pt.a,
+		}
+		cuboids.push(cub);
+	}
+
+
 	renderCuboids(cuboids);
 }
 

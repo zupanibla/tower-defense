@@ -149,9 +149,56 @@ export function updateGame(game) {
 
         // death
         if (en.health <= 0) {
-            game.enemies.splice(game.enemies.indexOf(en), 1);                    
+            game.enemies.splice(game.enemies.indexOf(en), 1);
+
+            // death particles
+            let color = [0, 0, 0]
+            if (en.type == 'snezak') color = [217/256, 218/256, 242/256];
+            if (en.type == 'duck')   color = [232/256, 220/256, 59/256];
+            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color));               
         }
 	}
+
+    // particles
+    for (let pt of game.particles) {
+
+        // bounce
+        let BOUNCE_FACTOR = 0.5;
+        if (pt.z <= 0.01 && pt.x >= -0.5 && pt.x <= 11.5 && pt.y >= -0.5 && pt.y <= 11.5) {
+
+            pt.z  = 0;
+            pt.vz = -pt.vz * BOUNCE_FACTOR;
+
+            pt.vx = pt.vx * BOUNCE_FACTOR;
+            pt.vy = pt.vy * BOUNCE_FACTOR;
+
+            let v = Math.sqrt(pt.vx*pt.vx + pt.vy*pt.vy + pt.vz*pt.vz);
+
+            pt.rotv /= 2;
+            pt.rotv += 2*(Math.random() - 0.5)*2*(Math.random() - 0.5) * v;
+        }
+
+        // gravity
+        if (pt.z > 0) {
+            pt.vz -= 0.01;
+        }
+
+        // update pos
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.z += pt.vz;
+
+        // update rot
+        pt.rot += pt.rotv;
+
+        // decay
+        pt.a -= (1/6)/60;
+
+        // remove when a <= 0
+        if (pt.a <= 0) {
+            game.particles.splice(game.particles.indexOf(pt), 1);
+        }
+    }
 
 	// ui
 	// TODO: maybe don't update these values every frame?
@@ -197,4 +244,42 @@ function angleBetween(a, b) {
 // distance between two points : {x,y,z}
 function dist(a, b) {
 	return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
+}
+
+
+function debrisParticles(x, y, z, r, g, b) {
+    let CUBE_DENSITY      = 5;
+    let CUBE_SIZE         = 0.2;
+    let PARTICLE_SIZE     = 0.1;
+    let PARTICLE_VELOCITY = 20/60;
+    let ROTATION_SCALE    = 0.3;
+
+    let cubs = [];
+
+    for (let i = -CUBE_DENSITY/2 + 0.5; i < CUBE_DENSITY/2 + 0.5; i++) {
+        for (let j = -CUBE_DENSITY/2 + 0.5; j < CUBE_DENSITY/2 + 0.5; j++) {
+            for (let k = -CUBE_DENSITY/2 + 0.5; k < CUBE_DENSITY/2 + 0.5; k++) {
+                if (i*i + j*j + k*k > (CUBE_DENSITY/2)*(CUBE_DENSITY/2)) continue;
+                let i2 = i + Math.random() - 0.5; 
+                let j2 = j + Math.random() - 0.5; 
+                let k2 = k + Math.random() - 0.5; 
+                cubs.push({
+                    x: x + i2 * CUBE_SIZE / CUBE_DENSITY,
+                    y: y + j2 * CUBE_SIZE / CUBE_DENSITY,
+                    z: z + k2 * CUBE_SIZE / CUBE_DENSITY,
+                    vx: i2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    vy: j2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    vz: k2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    rot: 0,
+                    rotv: (Math.random() - 0.5) * ROTATION_SCALE,
+                    sx: PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
+                    sy: PARTICLE_SIZE,
+                    sz: PARTICLE_SIZE,
+                    r, g, b, a: 2,
+                });
+            }
+        }
+    }
+
+    return cubs;
 }

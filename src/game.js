@@ -38,6 +38,7 @@ let game = {
         {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -10, vz: 0, health: 200, maxHealth: 200},
         {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 200, maxHealth: 200},
     ],
+    particles: [],
     environment: [
         {type: 'bluePortal',    x: 8, y: -1, z: -0.35, rot: 0},
         {type: 'redPortal',     x: 1, y: 12, z: -0.35, rot: 0},
