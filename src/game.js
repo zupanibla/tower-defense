@@ -3,6 +3,7 @@ import {initGameRenderer, renderGame} from './render-game.js';
 
 let canvas          = document.querySelector('.game-canvas');
 let ui              = document.querySelector('.game-ui');
+let gameHtml        = document.querySelector('.game');
 let pausePlayButton = document.querySelector('.pause-play-button');
 let shopButtons     = [
                       document.querySelector('.tower-0-0'), document.querySelector('.tower-0-1'), document.querySelector('.tower-0-2'),
@@ -83,6 +84,26 @@ game.towers[3][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, co
 game.towers[2][9]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 
+// centers the game and downscales it if the browser window is too small
+// TODO: this can probably be done less hacky...
+function scaleBody() {
+    let h = window.innerHeight;
+    let w = window.innerWidth;
+    let scaleFactor = 1;
+
+    // determine and set scaling factor
+    if (h < game.height) scaleFactor = h / game.height;
+    if (w < game.width && scaleFactor > w / game.width) scaleFactor = w / game.width;
+    document.body.style.transform = 'scale(' + scaleFactor + ')';
+
+    // set game in center
+    gameHtml.style.top = (h - game.height * scaleFactor) / 2 / scaleFactor + 'px';
+    gameHtml.style.left = (w - game.width * scaleFactor)  / 2 / scaleFactor + 'px';
+}
+
+scaleBody();
+window.addEventListener('resize', scaleBody);
+
 ui.addEventListener('mousemove', e => {
     var rect = ui.getBoundingClientRect();
     game.mouse.x = Math.round(e.clientX - rect.left);
@@ -90,41 +111,47 @@ ui.addEventListener('mousemove', e => {
 });
 
 ui.addEventListener('mousedown', e => {
-    var rect = ui.getBoundingClientRect();
-    game.mouse.x = Math.round(e.clientX - rect.left);
-    game.mouse.y = Math.round(e.clientY - rect.top);
-    game.mouse.isDown = true;
-    game.mouse.clickTime = game.time;
-    game.mouse.clickX = game.mouse.x;
-    game.mouse.clickY = game.mouse.y;
+    // left click
+    if (e.button === 0) {
+        var rect = ui.getBoundingClientRect();
+        game.mouse.x = Math.round(e.clientX - rect.left);
+        game.mouse.y = Math.round(e.clientY - rect.top);
+        game.mouse.isDown = true;
+        game.mouse.clickTime = game.time;
+        game.mouse.clickX = game.mouse.x;
+        game.mouse.clickY = game.mouse.y;
 
-    // check if trying to place tower
-    if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
-        game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
-        && game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2 &&
-        game.mouse.isDown && game.player.money >= game.mouse.tower.cost) {
+        // check if trying to place tower
+        if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
+            game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
+            && game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2 &&
+            game.mouse.isDown && game.player.money >= game.mouse.tower.cost) {
 
-        // place tower
-        game.towers[game.mouse.tileY][game.mouse.tileX] =
-            {type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-        // take player money
-        game.player.money -= game.mouse.tower.cost;
-        // on pressing shift don't remove tower from cursor to allow placing multiple towers
-        if (!e.shiftKey) {
-            // deselect tower from shop and remove it from cursor
-            game.mouse.tower.button.classList.remove('tower-selected');
-            game.mouse.tower = null;
+            // place tower
+            game.towers[game.mouse.tileY][game.mouse.tileX] =
+                {type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+            // take player money
+            game.player.money -= game.mouse.tower.cost;
+            // on pressing shift don't remove tower from cursor to allow placing multiple towers
+            if (!e.shiftKey) {
+                // deselect tower from shop and remove it from cursor
+                game.mouse.tower.button.classList.remove('tower-selected');
+                game.mouse.tower = null;
+            }
         }
-    }
 
-    createCombatLogEntry('Clicked on x: ' + game.mouse.x + ', y: ' + game.mouse.y);
+        createCombatLogEntry('Clicked on x: ' + game.mouse.x + ', y: ' + game.mouse.y);
+    }
 });
 
 ui.addEventListener('mouseup', e => {
-    var rect = ui.getBoundingClientRect();
-    game.mouse.x = Math.round(e.clientX - rect.left);
-    game.mouse.y = Math.round(e.clientY - rect.top);
-    game.mouse.isDown = false;
+    // left click
+    if (e.button === 0) {
+        var rect = ui.getBoundingClientRect();
+        game.mouse.x = Math.round(e.clientX - rect.left);
+        game.mouse.y = Math.round(e.clientY - rect.top);
+        game.mouse.isDown = false;
+    }
 });
 
 pausePlayButton.addEventListener('mouseup', e => {
@@ -143,7 +170,7 @@ pausePlayButton.addEventListener('mouseup', e => {
 });
 
 document.addEventListener('keydown', function(e) {
-    if (e.key === "Escape") {
+    if (e.key === 'Escape') {
         // remove tower from cursor and shop selection
         game.mouse.tower = null;
         for (let sh2 of game.shop) {
