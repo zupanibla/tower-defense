@@ -38,6 +38,7 @@ let game = {
         {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -10, vz: 0, health: 120, maxHealth: 120, friedness: 0},
         {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 120, maxHealth: 120, friedness: 0},
         {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -14, vz: 0, health: 120, maxHealth: 120, friedness: 0},
+        {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: -20, vz: 0, health: 500, maxHealth: 500, friedness: 0}
     ],
     particles: [],
     environment: [
@@ -55,6 +56,7 @@ let game = {
     shop: [
         {type: 'balistic', cost: 100, button: shopButtons[0]},
         {type: 'flame',    cost: 200, button: shopButtons[1]},
+        {type: 'laser',    cost: 100, button: shopButtons[2]},
     ],
     mouse: {
         x: -1,
@@ -95,6 +97,26 @@ ui.addEventListener('mousedown', e => {
     game.mouse.clickTime = game.time;
     game.mouse.clickX = game.mouse.x;
     game.mouse.clickY = game.mouse.y;
+
+    // check if trying to place tower
+    if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
+        game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
+        && game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2 &&
+        game.mouse.isDown && game.player.money >= game.mouse.tower.cost) {
+
+        // place tower
+        game.towers[game.mouse.tileY][game.mouse.tileX] =
+            {type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+        // take player money
+        game.player.money -= game.mouse.tower.cost;
+        // on pressing shift don't remove tower from cursor to allow placing multiple towers
+        if (!e.shiftKey) {
+            // deselect tower from shop and remove it from cursor
+            game.mouse.tower.button.classList.remove('tower-selected');
+            game.mouse.tower = null;
+        }
+    }
+
     createCombatLogEntry('Clicked on x: ' + game.mouse.x + ', y: ' + game.mouse.y);
 });
 
@@ -120,6 +142,16 @@ pausePlayButton.addEventListener('mouseup', e => {
     game.isPaused = !game.isPaused;
 });
 
+document.addEventListener('keydown', function(e) {
+    if (e.key === "Escape") {
+        // remove tower from cursor and shop selection
+        game.mouse.tower = null;
+        for (let sh2 of game.shop) {
+            sh2.button.classList.remove('tower-selected');
+        }
+    }
+});
+
 for (let i = 0; i < game.shop.length; i++) {
     let sh = game.shop[i];
     sh.button.addEventListener('click', e => {
@@ -129,8 +161,13 @@ for (let i = 0; i < game.shop.length; i++) {
                 sh2.button.classList.remove('tower-selected');
             }
             // select the clicked tower
-            sh.button.classList.add('tower-selected');
-            game.mouse.tower = sh;
+            if (game.mouse.tower === sh) {
+                game.mouse.tower = null;
+            }
+            else {
+                sh.button.classList.add('tower-selected');
+                game.mouse.tower = sh;
+            }
         }
     });
 }
@@ -162,6 +199,7 @@ function ticker() {
     if (timeBetween > frameDuration) {
         timeBefore = timeNow - (timeBetween % frameDuration);
 
+        // TODO: call updateShop() somewhere else
         updateShop();
         updateGame(game);
         renderGame(game);

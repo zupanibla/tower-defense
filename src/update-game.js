@@ -65,7 +65,7 @@ export function updateGame(game) {
 
 			// shooting
 			if (tw.targetEn && tw.rot == tw.targetRot && tw.cooldown == 0) {
-                if (tw.type == 'balistic') {
+                if (tw.type == 'balistic' || tw.type == 'laser') {
     				game.bullets.push({
     					type: 'missile',
     					x, y, z: 0.5,
@@ -184,7 +184,7 @@ export function updateGame(game) {
 		}
 
 		// snezak
-		if (en.type == 'snezak') {
+		if (en.type == 'snezak' || en.type == 'butcher') {
 			en.pathPos += 2.0 / 60;
 
 			// position on path
@@ -209,12 +209,20 @@ export function updateGame(game) {
 
             // spawn debris
             let color = [0, 0, 0]
-            if (en.type == 'snezak') color = [217/256, 218/256, 242/256];
+            let density = 3;
+            if (en.type == 'snezak') {
+                color = [217/256, 218/256, 242/256];
+                density = 4;
+            }
             if (en.type == 'duck') {
                 let k = 1 - Math.min(en.friedness, 100) / 100;
                 color = [k * 232/256, k * 220/256, k * 59/256];
             }
-            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color));
+            if (en.type == 'butcher') {
+                color = [153/256, 0/256, 0/256];
+                density = 6;
+            }
+            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, density));
         } else if (en.pathPos >= game.pathLen) {  // on portal pass
             game.enemies.splice(i, 1);
             i--;
@@ -321,8 +329,8 @@ function dist(a, b) {
 }
 
 
-function debrisParticles(x, y, z, r, g, b) {
-    let CUBE_DENSITY      = 5;
+function debrisParticles(x, y, z, r, g, b, d) {
+    let CUBE_DENSITY      = d;
     let CUBE_SIZE         = 0.2;
     let PARTICLE_SIZE     = 0.1;
     let PARTICLE_VELOCITY = 20/60;

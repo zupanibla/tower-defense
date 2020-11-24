@@ -9,7 +9,9 @@ import rockyTileJson      from './assets/rocky-tile.json';
 import pathTileJson       from './assets/path-tile.json';
 import balisticTurretJson from './assets/balistic-turret.json';
 import flameTurretJson    from './assets/flame-turret.json';
+import laserTurretJson    from './assets/laser-turret.json';
 import snezakJson         from './assets/snezak.json';
+import butcherJson        from './assets/butcher.json';
 import missileJson        from './assets/missile.json';
 import bluePortalJson     from './assets/blue-portal.json';
 import redPortalJson      from './assets/red-portal.json';
@@ -20,16 +22,6 @@ export function renderGame(game) {
 	adjustCanvasSize();
 
 	let cuboids = [];
-
-	// highlight
-	//if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12) {
-	//    let hlCuboids = cuboidsFromJson(greenHighlightJson);
-	//    for (let it of hlCuboids) {
-	//        it.x = game.mouse.tileX;
-	//        it.y = game.mouse.tileY;
-	//    }
-	//    cuboids.push(...hlCuboids);
-	//}
 
 	// tiles
 	for (let y = 0; y < game.tiles.length; y++) {
@@ -54,30 +46,20 @@ export function renderGame(game) {
 		game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
 		&& game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2) {
 
-		// place tower
-		if (game.mouse.isDown) {
-			game.towers[game.mouse.tileY][game.mouse.tileX] =
-				{type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-			// take player money and deselect tower from shop
-			game.player.money -= game.mouse.tower.cost;
-			game.mouse.tower.button.classList.remove('tower-selected');
-			game.mouse.tower = null;
-		}
 		// show tower on mouse while placing
-		else {
-			let towerCuboids = null;
+		let towerCuboids = null;
 
-			if (game.mouse.tower.type == 'balistic')    towerCuboids = cuboidsFromJson(balisticTurretJson);
-			if (game.mouse.tower.type == 'flame')       towerCuboids = cuboidsFromJson(flameTurretJson);
+		if (game.mouse.tower.type == 'balistic')	towerCuboids = cuboidsFromJson(balisticTurretJson);
+		if (game.mouse.tower.type == 'flame')	   towerCuboids = cuboidsFromJson(flameTurretJson);
+		if (game.mouse.tower.type == 'laser')	   towerCuboids = cuboidsFromJson(laserTurretJson);
 
-			for (let it of towerCuboids) {
-				it.x = game.mouse.tileX;
-				it.y = game.mouse.tileY;
-				it.a = 0.6;
-			}
-
-			cuboids.push(...towerCuboids);
+		for (let it of towerCuboids) {
+			it.x = game.mouse.tileX;
+			it.y = game.mouse.tileY;
+			it.a = 0.6;
 		}
+
+		cuboids.push(...towerCuboids);
 	}
 
 	// towers
@@ -89,7 +71,8 @@ export function renderGame(game) {
 			let towerCuboids = null;
 			
 			if (tw.type == 'balistic') towerCuboids = cuboidsFromJson(balisticTurretJson);
-			if (tw.type == 'flame')    towerCuboids = cuboidsFromJson(flameTurretJson);
+			if (tw.type == 'flame')	towerCuboids = cuboidsFromJson(flameTurretJson);
+			if (tw.type == 'laser')	towerCuboids = cuboidsFromJson(laserTurretJson);
 			
 			for (let it of towerCuboids) {
 				it.x   = x;
@@ -110,8 +93,9 @@ export function renderGame(game) {
 		// duck, snezak
 		let enCuboids = [];
 
-		if (en.type == 'duck')    enCuboids = cuboidsFromJson(duckJson);
+		if (en.type == 'duck')	  enCuboids = cuboidsFromJson(duckJson);
 		if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
+		if (en.type == 'butcher') enCuboids = cuboidsFromJson(butcherJson);
 
 		// fried ducks
 		if (en.type == 'duck') {
