@@ -2,7 +2,15 @@ import {mat4} from 'gl-matrix';
 
 export function updateGame(game) {
 	game.time++;
-	if (game.time % 5 === 0) game.player.money++;
+    if (game.time % 5 === 0) game.player.money++;
+
+    if (game.time === 1) {
+        let STAR_AMOUNT = 400;
+
+        for (let i = 0; i < STAR_AMOUNT; i++) {
+            createStar();
+        }
+    }
 
     // mouse pos to tile pos
     // viewMatrix from render-game.js with a scale instead of rotateX and inverted
@@ -54,7 +62,7 @@ export function updateGame(game) {
 			}
 
 			// rotate towards targetRot at ROT_SPEED
-			let ROT_SPEED = 3 / 60;
+			let ROT_SPEED = 15 / 60;
 
 			let a = angleBetween(tw.targetRot, tw.rot);
 			if (Math.abs(a) < ROT_SPEED) {
@@ -268,6 +276,7 @@ export function updateGame(game) {
         // decay
         if (pt.type == 'debris') pt.a -= (1/6)/60;
         if (pt.type == 'flame')  pt.a -= 4/60
+        if (pt.type == 'star')   pt.a -= (1/6)/60;
 
     }
 
@@ -277,6 +286,11 @@ export function updateGame(game) {
 
         // remove when a <= 0
         if (pt.a <= 0) {
+            // make new star when old one dies
+            if (pt.type == 'star') {
+                createStar();
+            }
+
             game.particles.splice(i, 1);
             i--;
         }
@@ -328,6 +342,10 @@ function dist(a, b) {
 	return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
 }
 
+// random float between min and max
+function randomBetween(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
 function debrisParticles(x, y, z, r, g, b, d) {
     let CUBE_DENSITY      = d;
@@ -365,4 +383,30 @@ function debrisParticles(x, y, z, r, g, b, d) {
     }
 
     return particles;
+}
+
+function createStar() {
+
+    let STAR_SIZE_MIN = 0.01;
+    let STAR_SIZE_MAX = 0.1;
+    let STAR_ALIVE_MIN = 1;
+    let STAR_ALIVE_MAX = 20;
+
+    let starSize = randomBetween(STAR_SIZE_MIN, STAR_SIZE_MAX);
+
+    game.particles.push({
+        type: 'star',
+        x: randomBetween(-10, 22),    // HARDCODED
+        y: randomBetween(-10, 22),    // HARDCODED
+        z: -2,
+        vx: 0,
+        vy: 0,
+        vz: 0,
+        rot: 0,
+        rotv: 0,
+        sx: starSize,
+        sy: starSize,
+        sz: starSize,
+        r: 256/256, g: 256/256, b: 0/256, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
+    });
 }
