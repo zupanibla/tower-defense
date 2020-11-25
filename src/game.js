@@ -10,6 +10,7 @@ let shopButtons     = [
                       document.querySelector('.tower-1-0'), document.querySelector('.tower-1-1'), document.querySelector('.tower-1-2'),
                       document.querySelector('.tower-2-0'), document.querySelector('.tower-2-1'), document.querySelector('.tower-2-2')
                     ];
+let scaleBodyFactor = 1;
 
 let game = {
     width: ui.clientWidth,
@@ -89,16 +90,16 @@ game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, co
 function scaleBody() {
     let h = window.innerHeight;
     let w = window.innerWidth;
-    let scaleFactor = 1;
+    scaleBodyFactor  = 1;
 
     // determine and set scaling factor
-    if (h < game.height) scaleFactor = h / game.height;
-    if (w < game.width && scaleFactor > w / game.width) scaleFactor = w / game.width;
-    document.body.style.transform = 'scale(' + scaleFactor + ')';
+    if (h < game.height) scaleBodyFactor = h / game.height;
+    if (w < game.width && scaleBodyFactor > w / game.width) scaleBodyFactor = w / game.width;
+    document.body.style.transform = 'scale(' + scaleBodyFactor + ')';
 
     // set game in center
-    gameHtml.style.top = (h - game.height * scaleFactor) / 2 / scaleFactor + 'px';
-    gameHtml.style.left = (w - game.width * scaleFactor)  / 2 / scaleFactor + 'px';
+    gameHtml.style.top = (h - game.height * scaleBodyFactor) / 2 / scaleBodyFactor + 'px';
+    gameHtml.style.left = (w - game.width * scaleBodyFactor)  / 2 / scaleBodyFactor + 'px';
 }
 
 scaleBody();
@@ -106,8 +107,8 @@ window.addEventListener('resize', scaleBody);
 
 ui.addEventListener('mousemove', e => {
     var rect = ui.getBoundingClientRect();
-    game.mouse.x = Math.round(e.clientX - rect.left);
-    game.mouse.y = Math.round(e.clientY - rect.top);
+    game.mouse.x = Math.round(e.clientX - rect.left) / scaleBodyFactor;
+    game.mouse.y = Math.round(e.clientY - rect.top) / scaleBodyFactor;
 });
 
 ui.addEventListener('mousedown', e => {
