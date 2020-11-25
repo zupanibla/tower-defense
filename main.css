@@ -204,40 +204,40 @@ body {
 
 /* tower 0 2 */
 .tower-0-2 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('src/ui/buttons/button-oil-turret.png');
     top: 12px;
     left: 148px;
 }
 .tower-0-2:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('src/ui/buttons/button-oil-turret-hover.png');
 }
 .tower-0-2:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('src/ui/buttons/button-oil-turret-active.png');
 }
 .tower-0-2.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('src/ui/buttons/button-oil-turret-active.png');
 }
 .tower-0-2.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('src/ui/buttons/button-oil-turret-disabled.png');
 }
 
 /* tower 1 0 */
 .tower-1-0 {
-    background: url('src/ui/buttons/button-flame-turret.png');
+    background: url('src/ui/buttons/button-ballistic-turret.png');
     top: 80px;
     left: 12px;
 }
 .tower-1-0:hover {
-    background: url('src/ui/buttons/button-flame-turret-hover.png');
+    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-1-0:active {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('src/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-0.tower-selected {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('src/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-0.tower-disabled {
-    background: url('src/ui/buttons/button-flame-turret-disabled.png');
+    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 1 1 */
@@ -261,21 +261,21 @@ body {
 
 /* tower 1 2 */
 .tower-1-2 {
-    background: url('src/ui/buttons/button-flame-turret.png');
+    background: url('src/ui/buttons/button-ballistic-turret.png');
     top: 80px;
     left: 148px;
 }
 .tower-1-2:hover {
-    background: url('src/ui/buttons/button-flame-turret-hover.png');
+    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-1-2:active {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('src/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-2.tower-selected {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('src/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-2.tower-disabled {
-    background: url('src/ui/buttons/button-flame-turret-disabled.png');
+    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 2 0 */
@@ -299,21 +299,21 @@ body {
 
 /* tower 2 1 */
 .tower-2-1 {
-    background: url('src/ui/buttons/button-flame-turret.png');
+    background: url('src/ui/buttons/button-ballistic-turret.png');
     top: 148px;
     left: 80px;
 }
 .tower-2-1:hover {
-    background: url('src/ui/buttons/button-flame-turret-hover.png');
+    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-2-1:active {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('src/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-1.tower-selected {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('src/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-1.tower-disabled {
-    background: url('src/ui/buttons/button-flame-turret-disabled.png');
+    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 2 2 */
