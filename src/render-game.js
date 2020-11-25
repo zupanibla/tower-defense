@@ -10,6 +10,7 @@ import pathTileJson       from './assets/path-tile.json';
 import balisticTurretJson from './assets/balistic-turret.json';
 import flameTurretJson    from './assets/flame-turret.json';
 import laserTurretJson    from './assets/laser-turret.json';
+import oilTurretJson      from './assets/oil-turret.json';
 import snezakJson         from './assets/snezak.json';
 import butcherJson        from './assets/butcher.json';
 import missileJson        from './assets/missile.json';
@@ -50,8 +51,9 @@ export function renderGame(game) {
 		let towerCuboids = null;
 
 		if (game.mouse.tower.type == 'balistic')	towerCuboids = cuboidsFromJson(balisticTurretJson);
-		if (game.mouse.tower.type == 'flame')	   towerCuboids = cuboidsFromJson(flameTurretJson);
-		if (game.mouse.tower.type == 'laser')	   towerCuboids = cuboidsFromJson(laserTurretJson);
+		if (game.mouse.tower.type == 'flame')	    towerCuboids = cuboidsFromJson(flameTurretJson);
+        if (game.mouse.tower.type == 'laser')       towerCuboids = cuboidsFromJson(laserTurretJson);
+        if (game.mouse.tower.type == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
 
 		for (let it of towerCuboids) {
 			it.x = game.mouse.tileX;
@@ -71,14 +73,15 @@ export function renderGame(game) {
 			let towerCuboids = null;
 			
 			if (tw.type == 'balistic') towerCuboids = cuboidsFromJson(balisticTurretJson);
-			if (tw.type == 'flame')	towerCuboids = cuboidsFromJson(flameTurretJson);
-			if (tw.type == 'laser')	towerCuboids = cuboidsFromJson(laserTurretJson);
+			if (tw.type == 'flame')    towerCuboids = cuboidsFromJson(flameTurretJson);
+			if (tw.type == 'laser')	   towerCuboids = cuboidsFromJson(laserTurretJson);
+            if (tw.type == 'oil')      towerCuboids = cuboidsFromJson(oilTurretJson);
 			
 			for (let it of towerCuboids) {
 				it.x   = x;
 				it.y   = y;
 
-				if (it.name != 'stand' && it.name != 'base') {
+				if (it.name != 'stand' && it.name != 'base' && it.name != 'fixed') {
 					it.rot = tw.rot;
 				}
 			}
@@ -102,13 +105,14 @@ export function renderGame(game) {
 			for (let it of enCuboids) {
 				// don't fry them cute eyes
 				if (it.name == 'eyes') continue;
-
-				let k = 1 - Math.min(en.friedness, 100) / 100;
-				it.r = k * it.r;
-				it.g = k * it.g;
-				it.b = k * it.b;
+                applyFriednessFilter(it, en.friedness / 100);
+                applyOilynessFilter( it, en.oilyness / 100);
 			}
-		}
+		} else {
+            for (let it of enCuboids) {
+                applyOilynessFilter(it, en.oilyness / 100);
+            }
+        }
 
 
 		let alpha = 1;
@@ -261,3 +265,15 @@ function cuboidsFromJson(modelJson) {
 	return cuboids;
 }
 
+// params all between 0 and 1
+function applyOilynessFilter(rgb, oilyness) {
+    let oilColor = [47, 214, 100];
+    rgb.r = rgb.r * (1 - oilyness*0.8) + oilColor[0]/256 * oilyness*0.8;
+    rgb.g = rgb.g * (1 - oilyness*0.8) + oilColor[1]/256 * oilyness*0.8;
+    rgb.b = rgb.b * (1 - oilyness*0.8) + oilColor[2]/256 * oilyness*0.8;
+}
+function applyFriednessFilter(rgb, friedness) {
+    rgb.r *= 1 - friedness;
+    rgb.g *= 1 - friedness;
+    rgb.b *= 1 - friedness;
+}

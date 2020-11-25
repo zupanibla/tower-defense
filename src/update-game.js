@@ -62,7 +62,7 @@ export function updateGame(game) {
 			}
 
 			// rotate towards targetRot at ROT_SPEED
-			let ROT_SPEED = 15 / 60;
+			let ROT_SPEED = 5 / 60;
 
 			let a = angleBetween(tw.targetRot, tw.rot);
 			if (Math.abs(a) < ROT_SPEED) {
@@ -122,7 +122,42 @@ export function updateGame(game) {
 
                     // damage
                     tw.targetEn.health    -= 0.5;
-                    tw.targetEn.friedness += 1;
+                    tw.targetEn.burning    = true;
+                    tw.targetEn.friedness  = Math.min(tw.targetEn.friedness + 1, 100);
+                }
+
+                if (tw.type == 'oil') {
+                    // oil origin
+                    let xo = x, yo = y, zo = 0.7;
+
+                    xo += Math.cos(tw.rot - Math.PI / 2) * 0.15;
+                    yo += Math.sin(tw.rot - Math.PI / 2) * 0.15;
+
+                    let OIL_VELOCITY = 0.05;
+
+                    let oilRot = tw.rot - Math.PI / 2 + (Math.random() - 0.5)*(Math.random() - 0.5)*0.2;
+
+                    let vx = Math.cos(oilRot) * OIL_VELOCITY;
+                    let vy = Math.sin(oilRot) * OIL_VELOCITY;
+                    let vz = 0.1;
+
+                    let color = [47, 214, 100];
+
+                    game.particles.push({
+                        type: 'oil',
+                        x: xo,
+                        y: yo,
+                        z: zo,
+                        vx, vy, vz,
+                        rot: 0,
+                        rotv: (Math.random() - 0.5) * 3,
+                        sx: 0.1,
+                        sy: 0.1,
+                        sz: 0.1,
+                        r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+                    });
+
+                    tw.targetEn.oilyness = Math.min(tw.targetEn.oilyness + 1, 100);
                 }
 			}
 
@@ -163,48 +198,71 @@ export function updateGame(game) {
 	// enemies
 	for (let en of game.enemies) {
 
-		// duck
-		if (en.type == 'duck') {
-			en.pathPos += 2.0 / 60;
+        // oil decay
+        en.oilyness = Math.max(0, en.oilyness - 0.1);
 
-			// position on path
-			let [x,  y]  = positionOnPath(en.pathPos, game.path);
-			let [x2, y2] = positionOnPath(en.pathPos + 1, game.path);
-			en.x   = x;
-			en.y   = y;
-			en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
+        // burning
+        if (en.oilyness == 0) {
+            en.burning = false;
+        }
 
-            if (y2 == y && x2 == x) {
-                en.rot = 0;
-            }
+        if (en.burning) {
+            let newOilyness = Math.max(0, en.oilyness - 0.2);
+            en.health -= (en.oilyness - newOilyness);
+            en.friedness = Math.min(100, en.friedness + (en.oilyness - newOilyness));
+            en.oilyness = newOilyness;
 
-			// jumping
-			if (en.z <= 0) {
-				en.z  = 0;
-				en.vz = 0.10;
-			}
+            let colors = [
+                [252, 165, 3],
+                [252, 69, 3],
+                [252, 202, 3],
+                [200, 200, 200],
+                [50, 50, 50],
+            ];
+            let color = colors[~~(Math.random() * colors.length)];
 
-			// apply velocity
-			en.z  += en.vz;
+            game.particles.push({
+                type: 'fire',
+                x: en.x + (Math.random() - 0.5) * 0.2,
+                y: en.y + (Math.random() - 0.5) * 0.2,
+                z: 0.5 + (Math.random() - 0.5) * 0.2,
+                vx: 0, vy: 0, vz: 0,
+                rot: (Math.random() - 0.5),
+                rotv: (Math.random() - 0.5) * 3,
+                sx: 0.1,
+                sy: 0.1,
+                sz: 0.1,
+                r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+            });
+        }
 
-			// gravity
-			en.vz -= 0.010;
-		}
+        // move (slowed by oil)
+		en.pathPos += (2.0 / 60) * (1 - (en.oilyness/100) * 0.5);
 
-		// snezak
-		if (en.type == 'snezak' || en.type == 'butcher') {
-			en.pathPos += 2.0 / 60;
+		// position on path
+		let [x,  y]  = positionOnPath(en.pathPos, game.path);
+		let [x2, y2] = positionOnPath(en.pathPos + 1, game.path);
+		en.x   = x;
+		en.y   = y;
+		en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
 
-			// position on path
-			let [x,  y]  = positionOnPath(en.pathPos, game.path);
-			let [x2, y2] = positionOnPath(en.pathPos + 1, game.path);
-			en.x   = x;
-			en.y   = y;
-			en.rot = Math.atan2(y2-y, x2-x) + Math.PI/2;
-            if (y2 == y && x2 == x) {
-                en.rot = 0;
-            }
-		}
+        if (y2 == y && x2 == x) {
+            en.rot = 0;
+        }
+
+        if (en.type == 'duck') {
+    		// jumping
+    		if (en.z <= 0) {
+    			en.z  = 0;
+    			en.vz = 0.10;
+    		}
+
+    		// apply velocity
+    		en.z  += en.vz;
+
+    		// gravity
+    		en.vz -= 0.010;
+        }
 	}
 
     // enemy death
@@ -265,6 +323,43 @@ export function updateGame(game) {
             }
         }
 
+        if (pt.type == 'oil') {
+            // bounce
+            let BOUNCE_FACTOR = Math.random() * 0.5;
+            if (pt.z <= 0.01 && pt.x >= -0.5 && pt.x <= 11.5 && pt.y >= -0.5 && pt.y <= 11.5) {  // HARDCODED   
+
+                pt.z  = 0;
+                pt.vz = -pt.vz * BOUNCE_FACTOR;
+
+                pt.vx = pt.vx * BOUNCE_FACTOR;
+                pt.vy = pt.vy * BOUNCE_FACTOR;
+
+                let v = Math.sqrt(pt.vx*pt.vx + pt.vy*pt.vy + pt.vz*pt.vz);
+
+                pt.sz /= 2;
+                if (pt.sx < 1) {
+                    pt.sx += 0.1;
+                    pt.sy += 0.1;
+                }
+
+                pt.rotv /= 2;
+                pt.rotv += 2*(Math.random() - 0.5)*2*(Math.random() - 0.5) * v;
+            }
+
+            // gravity
+            if (pt.z > 0) {
+                pt.vz -= 0.01;
+            }
+        }
+
+        if (pt.type == 'fire') {
+            let K = 0.001;
+            pt.vx += (Math.random() - 0.5) * K;
+            pt.vy += (Math.random() - 0.5) * K;
+            pt.vz += Math.random() * K;
+
+        }
+
         // update pos
         pt.x += pt.vx;
         pt.y += pt.vy;
@@ -276,7 +371,9 @@ export function updateGame(game) {
         // decay
         if (pt.type == 'debris') pt.a -= (1/6)/60;
         if (pt.type == 'flame')  pt.a -= 4/60
+        if (pt.type == 'fire')   pt.a -= 1/60
         if (pt.type == 'star')   pt.a -= (1/6)/60;
+        if (pt.type == 'oil')    pt.a -= 1/60;
 
     }
 
@@ -386,7 +483,6 @@ function debrisParticles(x, y, z, r, g, b, d) {
 }
 
 function createStar() {
-
     let STAR_SIZE_MIN = 0.01;
     let STAR_SIZE_MAX = 0.1;
     let STAR_ALIVE_MIN = 1;
@@ -407,6 +503,6 @@ function createStar() {
         sx: starSize,
         sy: starSize,
         sz: starSize,
-        r: 256/256, g: 256/256, b: 0/256, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
+        r: 240/256, g: 240/256, b: 200/256, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
     });
 }

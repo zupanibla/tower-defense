@@ -34,13 +34,13 @@ let game = {
     pathLen: 48,  // HARDCODED
 	time: 0,
 	enemies: [
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0, health: 200, maxHealth: 200, friedness: 0},
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -2,  vz: 0, health: 200, maxHealth: 200, friedness: 0},
-        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -8,  vz: 0, health: 120, maxHealth: 120, friedness: 0},
-        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -10, vz: 0, health: 120, maxHealth: 120, friedness: 0},
-        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 120, maxHealth: 120, friedness: 0},
-        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -14, vz: 0, health: 120, maxHealth: 120, friedness: 0},
-        {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: -20, vz: 0, health: 500, maxHealth: 500, friedness: 0}
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0, health: 200, maxHealth: 200, friedness: 0, oilyness: 0, burning: false},
+        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -2,  vz: 0, health: 200, maxHealth: 200, friedness: 0, oilyness: 0, burning: false},
+        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -8,  vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
+        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -10, vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
+        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
+        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -14, vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
+        // {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: -20, vz: 0, health: 500, maxHealth: 500, friedness: 0}
     ],
     particles: [],
     environment: [
@@ -80,10 +80,17 @@ let game = {
 window.game = game;
 
 game.towers = game.tiles.map(row => row.map(_ => null));
-game.towers[4][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[3][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[2][9]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+// game.towers[4][6]  = {type: 'oil',      rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+// game.towers[4][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+// game.towers[3][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+// game.towers[2][9]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+// game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+
+
+game.towers[11][0]  = {type: 'oil',      rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+game.towers[10][0]  = {type: 'oil',      rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+game.towers[8][2]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+
 
 // centers the game and downscales it if the browser window is too small
 // TODO: this can probably be done less hacky...
