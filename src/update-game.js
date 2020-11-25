@@ -1,8 +1,8 @@
 import {mat4} from 'gl-matrix';
+import {createCombatLogEntry, pauseGame} from './game';
 
 export function updateGame(game) {
 	game.time++;
-    if (game.time % 5 === 0) game.player.money++;
 
     if (game.time === 1) {
         let STAR_AMOUNT = 400;
@@ -10,6 +10,14 @@ export function updateGame(game) {
         for (let i = 0; i < STAR_AMOUNT; i++) {
             createStar();
         }
+    }
+
+    if (game.enemies.length === 0 && game.wave.isActive) {
+        createCombatLogEntry("You survived wave " + game.wave.number + "!");
+        game.wave.number++;
+        document.querySelector('.wave').innerHTML = game.wave.number;
+        game.wave.isActive = false;
+        pauseGame();
     }
 
     // mouse pos to tile pos
@@ -285,6 +293,9 @@ export function updateGame(game) {
             game.enemies.splice(i, 1);
             i--;
 
+            // give money to player
+            game.player.money += en.reward;
+
             // spawn debris
             let color = [0, 0, 0]
             let density = 3;
@@ -305,7 +316,7 @@ export function updateGame(game) {
             game.enemies.splice(i, 1);
             i--;
 
-            game.player.health -= 10;
+            game.player.health -= en.damage;
         }
     }
 
@@ -410,7 +421,7 @@ export function updateGame(game) {
 	// TODO: maybe don't update these values every frame?
 	document.querySelector('.money').innerHTML      = game.player.money;
 	document.querySelector('.health').innerHTML     = game.player.health;
-	document.querySelector('.combat-log').innerHTML = game.ui.combatLog;
+    document.querySelector('.combat-log').innerHTML = game.ui.combatLog;
 }
 
 

@@ -11,6 +11,19 @@ let shopButtons     = [
                       document.querySelector('.tower-2-0'), document.querySelector('.tower-2-1'), document.querySelector('.tower-2-2')
                     ];
 let scaleBodyFactor = 1;
+let enemyTypes      = [
+    {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 2,  friedness: 0, oilyness: 0, burning: false},
+    {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 5,  friedness: 0, oilyness: 0, burning: false},
+    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 20, friedness: 0, oilyness: 0, burning: false}
+];
+let waves           = [
+    [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 2, 0, 1, 0, 1, 0, 2, 0, 2, 0, 1],
+    [1, 1, 2, 1, 0, 0, 2, 1, 1, 2, 2, 0, 0, 2, 2, 2],
+    [1, 2, 2, 1, 1, 1, 1, 2, 1],
+    [1, 2, 1, 2, 2, 0, 0, 0, 0, 2, 2, 1, 2, 2, 1, 0, 0, 0, 0, 0, 3]
+];
 
 let game = {
     width: ui.clientWidth,
@@ -33,15 +46,7 @@ let game = {
     path: [[1,12.5], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 3], [8, 3], [8, -1.5], ],
     pathLen: 48,  // HARDCODED
 	time: 0,
-	enemies: [
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos:  0,  vz: 0, health: 200, maxHealth: 200, friedness: 0, oilyness: 0, burning: false},
-        {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: -2,  vz: 0, health: 200, maxHealth: 200, friedness: 0, oilyness: 0, burning: false},
-        {type: 'duck',          x: 0, y: 0,  z: 4, rot: 0, pathPos: -8,  vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
-        {type: 'duck',          x: 0, y: 0,  z: 8, rot: 0, pathPos: -10, vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
-        {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: -12, vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
-        {type: 'duck',          x: 0, y: 0,  z: 2, rot: 0, pathPos: -14, vz: 0, health: 120, maxHealth: 120, friedness: 0, oilyness: 0, burning: false},
-        // {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: -20, vz: 0, health: 500, maxHealth: 500, friedness: 0}
-    ],
+    enemies: [],
     particles: [],
     environment: [
         {type: 'bluePortal',    x: 8, y: -1, z: -0.35, rot: 0},
@@ -50,7 +55,12 @@ let game = {
     bullets: [],
     player: {
         health: 100,
-        money: 100,
+        money: 200,
+    },
+    
+    wave: {
+        number: 1,
+        isActive: false
     },
     ui: {
         combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'
@@ -58,7 +68,8 @@ let game = {
     shop: [
         {type: 'balistic', cost: 100, button: shopButtons[0]},
         {type: 'flame',    cost: 200, button: shopButtons[1]},
-        {type: 'laser',    cost: 100, button: shopButtons[2]},
+        {type: 'oil',      cost: 400, button: shopButtons[2]},
+        // {type: 'laser',    cost: 100, button: shopButtons[3]},
     ],
     mouse: {
         x: -1,
@@ -80,17 +91,6 @@ let game = {
 window.game = game;
 
 game.towers = game.tiles.map(row => row.map(_ => null));
-// game.towers[4][6]  = {type: 'oil',      rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[4][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-// game.towers[3][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-// game.towers[2][9]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-// game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-
-
-game.towers[11][0]  = {type: 'oil',      rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[10][0]  = {type: 'oil',      rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-game.towers[8][2]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-
 
 // centers the game and downscales it if the browser window is too small
 // TODO: this can probably be done less hacky...
@@ -105,7 +105,7 @@ function scaleBody() {
     document.body.style.transform = 'scale(' + scaleBodyFactor + ')';
 
     // set game in center
-    gameHtml.style.top = (h - game.height * scaleBodyFactor) / 2 / scaleBodyFactor + 'px';
+    gameHtml.style.top  = (h - game.height * scaleBodyFactor) / 2 / scaleBodyFactor + 'px';
     gameHtml.style.left = (w - game.width * scaleBodyFactor)  / 2 / scaleBodyFactor + 'px';
 }
 
@@ -115,7 +115,7 @@ window.addEventListener('resize', scaleBody);
 ui.addEventListener('mousemove', e => {
     var rect = ui.getBoundingClientRect();
     game.mouse.x = Math.round(e.clientX - rect.left) / scaleBodyFactor;
-    game.mouse.y = Math.round(e.clientY - rect.top) / scaleBodyFactor;
+    game.mouse.y = Math.round(e.clientY - rect.top)  / scaleBodyFactor;
 });
 
 ui.addEventListener('mousedown', e => {
@@ -147,8 +147,6 @@ ui.addEventListener('mousedown', e => {
                 game.mouse.tower = null;
             }
         }
-
-        createCombatLogEntry('Clicked on x: ' + game.mouse.x + ', y: ' + game.mouse.y);
     }
 });
 
@@ -163,18 +161,13 @@ ui.addEventListener('mouseup', e => {
 });
 
 pausePlayButton.addEventListener('mouseup', e => {
+    // unpauase
     if (game.isPaused) {
-        pausePlayButton.classList.remove('play-button');
-        pausePlayButton.classList.add('pause-button');
-        createCombatLogEntry('You unpaused the game.');
+        unpauseGame();
     }
+    // pause
     else {
-        pausePlayButton.classList.remove('pause-button');
-        pausePlayButton.classList.add('play-button');
-        createCombatLogEntry('You paused the game.');
     }
-
-    game.isPaused = !game.isPaused;
 });
 
 document.addEventListener('keydown', function(e) {
@@ -207,7 +200,7 @@ for (let i = 0; i < game.shop.length; i++) {
     });
 }
 
-function createCombatLogEntry(s) {
+export function createCombatLogEntry(s) {
     game.ui.combatLog += s + '<br />';
 }
 
@@ -223,6 +216,36 @@ function updateShop() {
             sh.button.classList.add('tower-disabled');
         }
     }
+}
+
+function spawnWave() {
+    if (waves.length < game.wave.number) return;
+
+    let pathPos = 0;
+    for (let enType of waves[game.wave.number - 1]) {
+        if (enType !== 0) {
+            let en = {...enemyTypes[enType-1]};
+            en.pathPos = pathPos;
+            game.enemies.push(en);
+        }
+        pathPos -= 2;
+    }
+
+    game.wave.isActive = true;
+    createCombatLogEntry("Wave " + game.wave.number + " has started...");
+}
+
+export function pauseGame() {
+    pausePlayButton.classList.remove('pause-button');
+    pausePlayButton.classList.add('play-button');
+    game.isPaused = true;
+}
+
+function unpauseGame() {
+    pausePlayButton.classList.remove('play-button');
+    pausePlayButton.classList.add('pause-button');
+    game.isPaused = false;
+    if (!game.wave.isActive) spawnWave();
 }
 
 function ticker() {
