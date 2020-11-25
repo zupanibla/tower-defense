@@ -1,5 +1,6 @@
 import {mat4} from 'gl-matrix';
 import {createCombatLogEntry, pauseGame} from './game';
+import {applyFriednessFilter} from './render-game';
 
 export function updateGame(game) {
 	game.time++;
@@ -211,7 +212,7 @@ export function updateGame(game) {
             game.bullets.splice(i, 1);
             bl.targetEn.health -= 20;
             bl.targetEn.burning = false;
-            game.particles.push(...explosionParticles(bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 4));
+            game.particles.push(...explosionParticles(bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 2));
         }
     }
 
@@ -304,12 +305,13 @@ export function updateGame(game) {
                 density = 4;
             }
             if (en.type == 'duck') {
-                let k = 1 - Math.min(en.friedness, 100) / 100;
-                color = [k * 232/256, k * 220/256, k * 59/256];
+                let rgb = {r: 232/256, g: 220/256, b: 59/256};
+                applyFriednessFilter(rgb, en.friedness / 100);
+                color = [rgb.r, rgb.g, rgb.b];
             }
             if (en.type == 'butcher') {
                 color = [153/256, 0/256, 0/256];
-                density = 6;
+                density = 5;
             }
             game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, density));
         } else if (en.pathPos >= game.pathLen) {  // on portal pass
@@ -509,8 +511,8 @@ function debrisParticles(x, y, z, r, g, b, d) {
 function explosionParticles(x, y, z, r, g, b, d) {
     let CUBE_DENSITY      = d;
     let CUBE_SIZE         = 0.2;
-    let PARTICLE_SIZE     = 0.1;
-    let PARTICLE_VELOCITY = 20/60;
+    let PARTICLE_SIZE     = 0.03;
+    let PARTICLE_VELOCITY = 5/60;
     let ROTATION_SCALE    = 0.3;
 
     let particles = [];

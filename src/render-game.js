@@ -272,8 +272,8 @@ function applyOilynessFilter(rgb, oilyness) {
     rgb.g = rgb.g * (1 - oilyness*0.8) + oilColor[1]/256 * oilyness*0.8;
     rgb.b = rgb.b * (1 - oilyness*0.8) + oilColor[2]/256 * oilyness*0.8;
 }
-function applyFriednessFilter(rgb, friedness) {
-    rgb.r *= 1 - friedness;
-    rgb.g *= 1 - friedness;
-    rgb.b *= 1 - friedness;
+export function applyFriednessFilter(rgb, friedness) {
+    rgb.r *= 1 - 0.65 * friedness;
+    rgb.g *= 1 - 0.85 * friedness;
+    rgb.b *= 1 - 0.95 * friedness;
 }
