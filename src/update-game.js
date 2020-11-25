@@ -186,14 +186,25 @@ export function updateGame(game) {
 			bl.y += dy * BULLET_VELOCITY;
 			bl.z += dz * BULLET_VELOCITY;
 			bl.rot = Math.atan2(dy, dx) + Math.PI/2;
-
-			// on collision
-			if (d < 0.1) {
-				game.bullets.splice(game.bullets.indexOf(bl), 1);
-                bl.targetEn.health -= 20;
-			}
 		}
 	}
+
+    // bullet death
+    for (let i = 0; i < game.bullets.length; i++) {
+        let bl = game.bullets[i];
+
+        let dx = bl.targetEn.x - bl.x;
+        let dy = bl.targetEn.y - bl.y;
+        let dz = bl.targetEn.z - bl.z;
+        let d  = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+        // on collision
+        if (d < 0.1) {
+            game.bullets.splice(i, 1);
+            bl.targetEn.health -= 20;
+            game.particles.push(...explosionParticles(bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 4));
+        }
+    }
 
 	// enemies
 	for (let en of game.enemies) {
@@ -371,6 +382,7 @@ export function updateGame(game) {
         // decay
         if (pt.type == 'debris') pt.a -= (1/6)/60;
         if (pt.type == 'flame')  pt.a -= 4/60
+        if (pt.type == 'explosion') pt.a -= 8/60
         if (pt.type == 'fire')   pt.a -= 1/60
         if (pt.type == 'star')   pt.a -= (1/6)/60;
         if (pt.type == 'oil')    pt.a -= 1/60;
@@ -462,6 +474,44 @@ function debrisParticles(x, y, z, r, g, b, d) {
                 let k2 = k + Math.random() - 0.5; 
                 particles.push({
                     type: 'debris',
+                    x: x + i2 * CUBE_SIZE / CUBE_DENSITY,
+                    y: y + j2 * CUBE_SIZE / CUBE_DENSITY,
+                    z: z + k2 * CUBE_SIZE / CUBE_DENSITY,
+                    vx: i2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    vy: j2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    vz: k2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    rot: 0,
+                    rotv: (Math.random() - 0.5) * ROTATION_SCALE,
+                    sx: PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
+                    sy: PARTICLE_SIZE,
+                    sz: PARTICLE_SIZE,
+                    r, g, b, a: 2,
+                });
+            }
+        }
+    }
+
+    return particles;
+}
+
+function explosionParticles(x, y, z, r, g, b, d) {
+    let CUBE_DENSITY      = d;
+    let CUBE_SIZE         = 0.2;
+    let PARTICLE_SIZE     = 0.1;
+    let PARTICLE_VELOCITY = 20/60;
+    let ROTATION_SCALE    = 0.3;
+
+    let particles = [];
+
+    for (let i = -CUBE_DENSITY/2 + 0.5; i < CUBE_DENSITY/2 + 0.5; i++) {
+        for (let j = -CUBE_DENSITY/2 + 0.5; j < CUBE_DENSITY/2 + 0.5; j++) {
+            for (let k = -CUBE_DENSITY/2 + 0.5; k < CUBE_DENSITY/2 + 0.5; k++) {
+                if (i*i + j*j + k*k > (CUBE_DENSITY/2)*(CUBE_DENSITY/2)) continue;
+                let i2 = i + Math.random() - 0.5; 
+                let j2 = j + Math.random() - 0.5; 
+                let k2 = k + Math.random() - 0.5; 
+                particles.push({
+                    type: 'explosion',
                     x: x + i2 * CUBE_SIZE / CUBE_DENSITY,
                     y: y + j2 * CUBE_SIZE / CUBE_DENSITY,
                     z: z + k2 * CUBE_SIZE / CUBE_DENSITY,

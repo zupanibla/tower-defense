@@ -81,7 +81,7 @@ window.game = game;
 
 game.towers = game.tiles.map(row => row.map(_ => null));
 // game.towers[4][6]  = {type: 'oil',      rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-// game.towers[4][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+game.towers[4][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 // game.towers[3][3]  = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 // game.towers[2][9]  = {type: 'flame',    rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
 // game.towers[9][11] = {type: 'balistic', rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
