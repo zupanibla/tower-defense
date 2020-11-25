@@ -61,6 +61,7 @@ body {
     right: 0;
     margin: 30px;
     text-align: right;
+    text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black;
 }
 .game-ui-bottomleft {
     position: absolute;
@@ -69,6 +70,7 @@ body {
     margin-left: 20px;
     margin-bottom: 10px;
     font-size: 16px;
+    text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black;
 }
 .game-ui-bottomright {
     width: 320;
@@ -83,6 +85,7 @@ body {
     overflow-y: scroll;
     display: flex;
     flex-direction: column-reverse;
+    text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black;
 }
 
 /* buttons */
@@ -145,7 +148,7 @@ body {
 .tower-cost {
     font-size: 16px;
     color: #54fd20;
-    text-shadow: 2px 2px 2px #000000;
+    text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;
     text-align: center;
     position: absolute;
     bottom: 3px;
