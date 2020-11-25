@@ -25,6 +25,8 @@ let waves           = [
     [1, 2, 1, 2, 2, 0, 0, 0, 0, 2, 2, 1, 2, 2, 1, 0, 0, 0, 0, 0, 3]
 ];
 
+let TOWER_COST_MULTIPLIER = 1.15;
+
 let game = {
     width: ui.clientWidth,
     height: ui.clientHeight,
@@ -55,7 +57,7 @@ let game = {
     bullets: [],
     player: {
         health: 100,
-        money: 200,
+        money: 300,
     },
     
     wave: {
@@ -138,8 +140,9 @@ ui.addEventListener('mousedown', e => {
             // place tower
             game.towers[game.mouse.tileY][game.mouse.tileX] =
                 {type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-            // take player money
+            // take player money and up tower cost
             game.player.money -= game.mouse.tower.cost;
+            game.mouse.tower.cost = Math.round(game.mouse.tower.cost * TOWER_COST_MULTIPLIER);
             // on pressing shift don't remove tower from cursor to allow placing multiple towers
             if (!e.shiftKey) {
                 // deselect tower from shop and remove it from cursor

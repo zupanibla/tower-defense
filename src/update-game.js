@@ -2,6 +2,8 @@ import {mat4} from 'gl-matrix';
 import {createCombatLogEntry, pauseGame} from './game';
 import {applyFriednessFilter} from './render-game';
 
+let waveReward = 50;
+
 export function updateGame(game) {
 	game.time++;
 
@@ -13,9 +15,12 @@ export function updateGame(game) {
         }
     }
 
+    // end of wave
     if (game.enemies.length === 0 && game.wave.isActive) {
         createCombatLogEntry("You survived wave " + game.wave.number + "!");
         game.wave.number++;
+        game.player.money += waveReward;
+        waveReward += 10;
         document.querySelector('.wave').innerHTML = game.wave.number;
         game.wave.isActive = false;
         pauseGame();
@@ -311,7 +316,7 @@ export function updateGame(game) {
             }
             if (en.type == 'butcher') {
                 color = [153/256, 0/256, 0/256];
-                density = 5;
+                density = 6;
             }
             game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, density));
         } else if (en.pathPos >= game.pathLen) {  // on portal pass
