@@ -1,11 +1,14 @@
 import {mat4} from 'gl-matrix';
-import {createCombatLogEntry, pauseGame} from './game';
+import {createCombatLogEntry, pauseGame, showEndPopout, waves} from './game';
 import {applyFriednessFilter} from './render-game';
 
 let waveReward = 50;
 
 export function updateGame(game) {
-	game.time++;
+    game.time++;
+    
+    // check if player dead
+    if (game.player.health <= 0) showEndPopout(false);
 
     if (game.time === 1) {
         let STAR_AMOUNT = 400;
@@ -16,7 +19,8 @@ export function updateGame(game) {
     }
 
     // end of wave
-    if (game.enemies.length === 0 && game.wave.isActive) {
+    if (game.enemies.length === 0 && game.wave.isActive && game.player.health > 0) {
+        if (game.wave.number === waves.length) showEndPopout(true);
         createCombatLogEntry("You survived wave " + game.wave.number + "!");
         game.wave.number++;
         game.player.money += waveReward;

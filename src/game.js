@@ -10,13 +10,17 @@ let shopButtons     = [
                       document.querySelector('.tower-1-0'), document.querySelector('.tower-1-1'), document.querySelector('.tower-1-2'),
                       document.querySelector('.tower-2-0'), document.querySelector('.tower-2-1'), document.querySelector('.tower-2-2')
                     ];
+let popout          = document.querySelector('.game-popout');
+let popoutTitle     = document.querySelector('.popout-title');
+let popoutMain      = document.querySelector('.popout-main');
+let popoutPlayAgain = document.querySelector('.popout-play-again');
 let scaleBodyFactor = 1;
 let enemyTypes      = [
-    {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 2,  friedness: 0, oilyness: 0, burning: false},
-    {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 5,  friedness: 0, oilyness: 0, burning: false},
-    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 20, friedness: 0, oilyness: 0, burning: false}
+    {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 5,   friedness: 0, oilyness: 0, burning: false},
+    {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 10,  friedness: 0, oilyness: 0, burning: false},
+    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 20,  friedness: 0, oilyness: 0, burning: false}
 ];
-let waves           = [
+export let waves    = [
     [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
     [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
     [1, 0, 1, 0, 2, 0, 1, 0, 1, 0, 2, 0, 2, 0, 1],
@@ -59,7 +63,6 @@ let game = {
         health: 100,
         money: 300,
     },
-    
     wave: {
         number: 1,
         isActive: false
@@ -173,7 +176,7 @@ pausePlayButton.addEventListener('mouseup', e => {
     }
 });
 
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         // remove tower from cursor and shop selection
         game.mouse.tower = null;
@@ -202,6 +205,11 @@ for (let i = 0; i < game.shop.length; i++) {
         }
     });
 }
+
+popoutPlayAgain.addEventListener('click', e => {
+    popout.classList.add('display-none');
+    resetGame();
+})
 
 export function createCombatLogEntry(s) {
     game.ui.combatLog += s + '<br />';
@@ -249,6 +257,42 @@ function unpauseGame() {
     pausePlayButton.classList.add('pause-button');
     game.isPaused = false;
     if (!game.wave.isActive) spawnWave();
+}
+
+// TODO: reset from original game
+function resetGame() {
+    game.player.health = 100;
+    game.towers = [];
+	game.time = 0,
+    game.enemies = [],
+    game.particles = [],
+    game.bullets = [],
+    game.player.health = 100;
+    game.player.money = 300;
+    game.wave.number = 1;
+    game.wave.isActive = false;
+    game.ui.combatLog ='Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />';
+    game.tower = null;
+    game.isPaused = true;
+    pausePlayButton.classList.remove('unclickable');
+    pauseGame();
+}
+
+export function showEndPopout(isVictory) {
+    popout.classList.remove('display-none');
+    pausePlayButton.classList.add('unclickable');
+    if (isVictory) {
+        popoutTitle.classList.remove('popout-defeat');
+        popoutTitle.classList.add('popout-victory');
+        popoutTitle.innerHTML = "Victory";
+        popoutMain.innerHTML  = "You have defeated the evil forces and stopped them from overcoming the human world! (for now...)"
+    }
+    else {
+        popoutTitle.classList.remove('popout-victory');
+        popoutTitle.classList.add('popout-defeat');
+        popoutTitle.innerHTML = "Defeat";
+        popoutMain.innerHTML  = "The evil forces have managed to invade the human world. The earth is doomed."
+    }
 }
 
 function ticker() {
