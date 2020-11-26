@@ -207,7 +207,8 @@ for (let i = 0; i < game.shop.length; i++) {
 }
 
 popoutPlayAgain.addEventListener('click', e => {
-    popout.classList.add('display-none');
+    popout.classList.add('unclickable');
+    popout.classList.remove('fade');
     resetGame();
 })
 
@@ -262,7 +263,7 @@ function unpauseGame() {
 // TODO: reset from original game
 function resetGame() {
     game.player.health = 100;
-    game.towers = [];
+    game.towers = game.tiles.map(row => row.map(_ => null));
 	game.time = 0,
     game.enemies = [],
     game.particles = [],
@@ -279,8 +280,10 @@ function resetGame() {
 }
 
 export function showEndPopout(isVictory) {
-    popout.classList.remove('display-none');
+    popout.classList.remove('unclickable');
+    popout.classList.add('fade');
     pausePlayButton.classList.add('unclickable');
+
     if (isVictory) {
         popoutTitle.classList.remove('popout-defeat');
         popoutTitle.classList.add('popout-victory');

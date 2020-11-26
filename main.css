@@ -105,6 +105,13 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     background: url('src/ui/background/popout-background.png');
+    opacity: 0;
+    -webkit-transition: opacity 3s;
+    -moz-transition: opacity 3s;     
+    transition: opacity 3s;
+}
+.game-popout.fade {
+    opacity: 1;
 }
 .popout-title {
     position: absolute;
