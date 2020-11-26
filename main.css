@@ -15,6 +15,12 @@
     -ms-user-select: none;
     user-select: none;
 }
+.unclickable {
+    pointer-events: none;
+}
+.display-none {
+    display: none;
+}
 .game {
     position: relative;
     width: 1100;
@@ -90,6 +96,53 @@ body {
     scrollbar-color: #101010 #000000;   /* firefox */
 }
 
+/* victory/defeat popout */
+.game-popout {
+    width: 500px;
+    height: 350px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: url('src/ui/background/popout-background.png');
+}
+.popout-title {
+    position: absolute;
+    text-align: center;
+    color: #54fd20;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 30px;
+    font-size: 40px;
+}
+.popout-victory {
+    color: #54fd20;
+}
+.popout-defeat {
+    color: red;
+}
+.popout-main {
+    width: 460px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+}
+.popout-play-again {
+    color: #afb917;
+    position: absolute;
+    text-align: center;
+    left: 50%;
+    bottom: 30px;
+    transform: translate(-50%, 0);
+}
+.popout-play-again:hover {
+    color: yellow;
+    cursor: pointer;
+}
+
+
 /* buttons */
 
 /* pause-play button */
@@ -135,7 +188,7 @@ body {
 .tower-select {
     width: 220;
     height: 220;
-    background: url('src/ui/buttons/tower-select-background.png');
+    background: url('src/ui/background/tower-select-background.png');
     position: relative;
 }
 .tower-icon {
