@@ -218,7 +218,7 @@ export function updateGame(game) {
         // on collision
         if (d < 0.1) {
             game.bullets.splice(i, 1);
-            bl.targetEn.health -= 20;
+            bl.targetEn.health -= 15;
             game.particles.push(...explosionParticles(bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 2));
         }
     }

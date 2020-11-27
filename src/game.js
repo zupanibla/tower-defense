@@ -16,9 +16,9 @@ let popoutMain      = document.querySelector('.popout-main');
 let popoutPlayAgain = document.querySelector('.popout-play-again');
 let scaleBodyFactor = 1;
 let enemyTypes      = [
-    {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 5,   friedness: 0, oilyness: 0, burning: false},
-    {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 10,  friedness: 0, oilyness: 0, burning: false},
-    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 20,  friedness: 0, oilyness: 0, burning: false}
+    {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15,   friedness: 0, oilyness: 0, burning: false},
+    {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 25,   friedness: 0, oilyness: 0, burning: false},
+    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30,   friedness: 0, oilyness: 0, burning: false}
 ];
 export let waves    = [
     [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
@@ -61,7 +61,7 @@ let game = {
     bullets: [],
     player: {
         health: 100,
-        money: 300,
+        money: 250,
     },
     wave: {
         number: 1,
@@ -71,9 +71,9 @@ let game = {
         combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'
     },
     shop: [
-        {type: 'balistic', cost: 100, button: shopButtons[0]},
-        {type: 'flame',    cost: 200, button: shopButtons[1]},
-        {type: 'oil',      cost: 400, button: shopButtons[2]},
+        {type: 'balistic', cost: 125, button: shopButtons[0]},
+        {type: 'flame',    cost: 250, button: shopButtons[1]},
+        {type: 'oil',      cost: 300, button: shopButtons[2]},
         // {type: 'laser',    cost: 100, button: shopButtons[3]},
     ],
     mouse: {
@@ -91,11 +91,14 @@ let game = {
     },
     isPaused: true,
 }
+game.towers = game.tiles.map(row => row.map(_ => null));
+
+// for reseting game
+let initialGameJson = JSON.stringify(game);
 
 // for debug purposes
 window.game = game;
 
-game.towers = game.tiles.map(row => row.map(_ => null));
 
 // centers the game and downscales it if the browser window is too small
 // TODO: this can probably be done less hacky...
@@ -275,12 +278,13 @@ function resetGame() {
     game.ui.combatLog ='Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />';
     game.mouse.tower = null;
     game.isPaused = true;
-    game.shop[0].cost = 100;
-    game.shop[1].cost = 200;
-    game.shop[2].cost = 400;
+    game.shop[0].cost = 125;
+    game.shop[1].cost = 250;
+    game.shop[2].cost = 300;
     pausePlayButton.classList.remove('unclickable');
     pauseGame();
 }
+window.resetGame = resetGame;
 
 export function showEndPopout(isVictory) {
     popout.classList.remove('unclickable');
