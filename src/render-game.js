@@ -1,22 +1,22 @@
 import {mat4} from 'gl-matrix';
 import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
 
-import duckJson           from './assets/duck.json';
-import floorJson          from './assets/floor.json';
-import tileJson           from './assets/tile.json';
-import greenTileJson      from './assets/green-tile.json';
-import rockyTileJson      from './assets/rocky-tile.json';
-import pathTileJson       from './assets/path-tile.json';
-import balisticTurretJson from './assets/balistic-turret.json';
-import flameTurretJson    from './assets/flame-turret.json';
-import laserTurretJson    from './assets/laser-turret.json';
-import oilTurretJson      from './assets/oil-turret.json';
-import snezakJson         from './assets/snezak.json';
-import butcherJson        from './assets/butcher.json';
-import missileJson        from './assets/missile.json';
-import bluePortalJson     from './assets/blue-portal.json';
-import redPortalJson      from './assets/red-portal.json';
-import greenHighlightJson from './assets/green-highlight.json';
+import duckJson           from './models/duck.json';
+import floorJson          from './models/floor.json';
+import tileJson           from './models/tile.json';
+import greenTileJson      from './models/green-tile.json';
+import rockyTileJson      from './models/rocky-tile.json';
+import pathTileJson       from './models/path-tile.json';
+import balisticTurretJson from './models/balistic-turret.json';
+import flameTurretJson    from './models/flame-turret.json';
+import laserTurretJson    from './models/laser-turret.json';
+import oilTurretJson      from './models/oil-turret.json';
+import snezakJson         from './models/snezak.json';
+import butcherJson        from './models/butcher.json';
+import missileJson        from './models/missile.json';
+import bluePortalJson     from './models/blue-portal.json';
+import redPortalJson      from './models/red-portal.json';
+import greenHighlightJson from './models/green-highlight.json';
 
 
 export function renderGame(game) {
