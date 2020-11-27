@@ -176,6 +176,7 @@ pausePlayButton.addEventListener('mouseup', e => {
     }
     // pause
     else {
+        pauseGame();
     }
 });
 
@@ -305,18 +306,22 @@ export function showEndPopout(isVictory) {
     }
 }
 
+
 function ticker() {
     requestAnimationFrame(ticker);
     
     let timeNow = Date.now();
     let timeBetween = timeNow - timeBefore;
 
+
     if (timeBetween > frameDuration) {
         timeBefore = timeNow - (timeBetween % frameDuration);
 
         // TODO: call updateShop() somewhere else
         updateShop();
-        updateGame(game);
+        if (!game.wave.isActive || !game.isPaused) {
+            updateGame(game);
+        }
         renderGame(game);
     }
 }
