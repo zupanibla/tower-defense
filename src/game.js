@@ -273,8 +273,11 @@ function resetGame() {
     game.wave.number = 1;
     game.wave.isActive = false;
     game.ui.combatLog ='Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />';
-    game.tower = null;
+    game.mouse.tower = null;
     game.isPaused = true;
+    game.shop[0].cost = 100;
+    game.shop[1].cost = 200;
+    game.shop[2].cost = 400;
     pausePlayButton.classList.remove('unclickable');
     pauseGame();
 }

@@ -25,7 +25,6 @@ export function updateGame(game) {
         game.wave.number++;
         game.player.money += waveReward;
         waveReward += 10;
-        document.querySelector('.wave').innerHTML = game.wave.number;
         game.wave.isActive = false;
         pauseGame();
     }
@@ -433,6 +432,7 @@ export function updateGame(game) {
 	document.querySelector('.money').innerHTML      = game.player.money;
 	document.querySelector('.health').innerHTML     = game.player.health;
     document.querySelector('.combat-log').innerHTML = game.ui.combatLog;
+    document.querySelector('.wave').innerHTML       = game.wave.number;
 }
 
 
