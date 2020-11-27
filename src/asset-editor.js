@@ -1,4 +1,4 @@
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix} from './render-cuboids.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
 import {mat4} from 'gl-matrix';
 import * as consoleUtils from './asset-editor-console-utils.js';
 
@@ -476,12 +476,23 @@ function update() {
 
 
 	// rendering
-	// update camera
-	let m = mat4.create();
-	mat4.translate(m, m, [0, 0, -cameraDistance]);
-	mat4.rotateX(m, m, cameraVerticalAngle);
-	mat4.rotateZ(m, m, cameraHorizontalAngle);
-	setViewMatrix(m);
+	// update view matrix
+	let v = mat4.create();
+	mat4.translate(v, v, [0, 0, -cameraDistance]);
+	mat4.rotateX(v, v, cameraVerticalAngle);
+	mat4.rotateZ(v, v, cameraHorizontalAngle);
+	setViewMatrix(v);
+
+    // update projection matrix
+    let p = mat4.create();
+    let w = canvas.clientWidth;
+    let h = canvas.clientHeight;
+    let aspect = w / h;
+    let fovy = Math.PI / 2;
+    let near = 0.1;
+    let far = 1000000;
+    mat4.perspective(p, fovy, aspect, near, far);
+    setProjectionMatrix(p);
 
 	// differences between cuboid and drawable: rgb scale, position scale, position is applyed via pivot,
 	// , no name, no mirror
@@ -489,7 +500,7 @@ function update() {
 		return {
 			x: 0, y: 0, z: 0,
 			sx: cub.sx * (3/256), sy: cub.sy * (3/256), sz: cub.sz * (3/256),
-			r: cub.r/255, g: cub.g/255, b: cub.b/255,
+			r: cub.r/255, g: cub.g/255, b: cub.b/255, a: 1,
 			rot: 0,
 			px: -cub.x * (3/256), py: -cub.y * (3/256), pz: -cub.z * (3/256),
 		}
@@ -503,15 +514,15 @@ function update() {
 		drawables.push({
 			x: 0, y: 0, z: 0, px: 0, py: 0, pz: 0, rot: 0,
 			sx: 10.0, sy: 0.02, sz: 0.02,
-			r: 1, g: 0, b: 0,
+			r: 1, g: 0, b: 0, a: 1,
 		}, {
 			x: 0, y: 0, z: 0, px: 0, py: 0, pz: 0, rot: 0,
 			sx: 0.02, sy: 10.0, sz: 0.02,
-			r: 0, g: 1, b: 0,
+			r: 0, g: 1, b: 0, a: 1,
 		}, {
 			x: 0, y: 0, z: 0, px: 0, py: 0, pz: 0, rot: 0,
 			sx: 0.02, sy: 0.02, sz: 10.0,
-			r: 0, g: 0, b: 1,
+			r: 0, g: 0, b: 1, a: 1,
 		});
 	}
 
@@ -520,7 +531,7 @@ function update() {
 		drawables.push({
 			x: 0, y: 0, z: -4 * (3/256), px: 0, py: 0, pz: 0, rot: 0,
 			sx: 256 * (3/256), sy: 256 * (3/256), sz: 8 * (3/256),
-			r: 1, g: 1, b: 1,
+			r: 1, g: 1, b: 1, a: 1,
 		});
 	}
 

@@ -3,12 +3,16 @@ import shaders from './shaders.js';
 import {mat4} from 'gl-matrix';
 
 
-let canvas, gl, programs, vao, viewMatrix;
+let canvas, gl, programs, vao, viewMatrix, projectionMatrix;
 
-// NOTE a default value is set in initCuboidRenderer
+
 export function setViewMatrix(m) {
 	viewMatrix = m;
 }
+export function setProjectionMatrix(m) {
+    projectionMatrix = m;
+}
+
 
 export function initCuboidRenderer() {
 
@@ -20,12 +24,6 @@ export function initCuboidRenderer() {
 
 	// programs <- {cuboid: (cuboid shader) }
 	programs = compileShaders(gl, shaders);
-
-	// set default viewMatrix
-	let m = mat4.create();
-	mat4.translate(m, m, [0, 0, -5]);
-	mat4.rotateX(m, m, Math.PI * (-1/4));
-	setViewMatrix(m);
 
 	// cuboid
 	let vertices = [
@@ -157,6 +155,7 @@ export function renderCuboids(cuboids) {
 		// calculate and push aMvpMatrix to array
 		let mvpMatrix = mat4.create();
 		mat4.mul(mvpMatrix, viewMatrix, modelMatrix);
+        mat4.mul(mvpMatrix, projectionMatrix, mvpMatrix);
 		mvpMatrixNormalMatrixColorData.push(...mvpMatrix);
 
 		// calculate and push aNormalMatrix to array

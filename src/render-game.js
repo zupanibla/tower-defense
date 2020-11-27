@@ -1,5 +1,5 @@
 import {mat4} from 'gl-matrix';
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix} from './render-cuboids.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
 
 import duckJson           from './assets/duck.json';
 import floorJson          from './assets/floor.json';
@@ -229,12 +229,16 @@ export function initGameRenderer() {
 	// NOTE transformations are applied bottom up
 	let canvas = document.querySelector('.game-canvas');
 
-	let m = mat4.create();
-	mat4.scale(m, m, [120 / canvas.clientWidth, 120 / canvas.clientHeight, -0.001]);  // tile size 120px
-	mat4.rotateX(m, m, Math.PI * (-1/4));   // tilt world
-	mat4.rotateZ(m, m, Math.PI * (-1/4));   // rotate 45deg
-	mat4.translate(m, m, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
-	setViewMatrix(m);
+	let v = mat4.create();
+	mat4.scale(v, v, [120 / canvas.clientWidth, 120 / canvas.clientHeight, -0.001]);  // tile size 120px
+	mat4.rotateX(v, v, Math.PI * (-1/4));   // tilt world
+	mat4.rotateZ(v, v, Math.PI * (-1/4));   // rotate 45deg
+	mat4.translate(v, v, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
+	setViewMatrix(v);
+
+    // TODO move projection component here
+    let p = mat4.create();
+    setProjectionMatrix(p);
 }
 
 function cuboidsFromJson(modelJson) {
