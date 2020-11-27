@@ -29,7 +29,7 @@ export let waves    = [
     [1, 2, 1, 2, 2, 0, 0, 0, 0, 2, 2, 1, 2, 2, 1, 0, 0, 0, 0, 0, 3]
 ];
 
-let TOWER_COST_MULTIPLIER = 1.15;
+let TOWER_COST_MULTIPLIER = 1.25;
 
 let game = {
     width: ui.clientWidth,
@@ -71,7 +71,7 @@ let game = {
         combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'
     },
     shop: [
-        {type: 'balistic', cost: 125, button: shopButtons[0]},
+        {type: 'balistic', cost: 100, button: shopButtons[0]},
         {type: 'flame',    cost: 250, button: shopButtons[1]},
         {type: 'oil',      cost: 300, button: shopButtons[2]},
         // {type: 'laser',    cost: 100, button: shopButtons[3]},
@@ -278,7 +278,7 @@ function resetGame() {
     game.ui.combatLog ='Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />';
     game.mouse.tower = null;
     game.isPaused = true;
-    game.shop[0].cost = 125;
+    game.shop[0].cost = 100;
     game.shop[1].cost = 250;
     game.shop[2].cost = 300;
     pausePlayButton.classList.remove('unclickable');
