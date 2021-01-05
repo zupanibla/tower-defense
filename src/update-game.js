@@ -1,6 +1,7 @@
 import {mat4} from 'gl-matrix';
 import {createCombatLogEntry, pauseGame, showEndPopout, waves} from './game';
 import {applyFriednessFilter} from './render-game';
+import {playSound} from './audio.js'
 
 let waveReward = 50;
 
@@ -298,6 +299,9 @@ export function updateGame(game) {
         let en = game.enemies[i];
 
         if (en.health <= 0) {  // on death
+            // play death sound
+            playSound(0);
+
             game.enemies.splice(i, 1);
             i--;
 

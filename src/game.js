@@ -1,5 +1,12 @@
-import {updateGame} from './update-game.js';
+import {updateGame}                   from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
+import {initAudio}                    from './audio.js';
+
+// init audio after user interaction
+window.addEventListener('mousedown', function handler(e) {
+    e.currentTarget.removeEventListener(e.type, handler);
+    initAudio();
+})
 
 let canvas          = document.querySelector('.game-canvas');
 let ui              = document.querySelector('.game-ui');
