@@ -63,6 +63,58 @@ export function updateGame(game) {
 			let tw = game.towers[y][x];
 			if (tw === null) continue;
 
+            // cooldown
+            if (tw.cooldown > 0) tw.cooldown--;
+
+            if (tw.type == 'blank') continue;
+
+            if (tw.type == 'grappling') {   // HARDCODED for horizontal pulling
+                // targeting
+                if (!tw.targetEn && tw.cooldown <= 0) {
+                    for (let en of game.enemies) {
+                        if (
+                            dist({x,y,z:0}, en) > 2 &&
+                            Math.abs(angleBetween(tw.rot, Math.atan2(en.y - y, en.x - x) + Math.PI / 2)) < 0.001
+                        ) {  // shoot the hook
+                            tw.targetEn = en;
+                            tw.hookDist = 0;
+                            tw.cooldown = 60 * 3;  // TODO al neki
+                        }
+                    }
+                }
+
+                if (!tw.pulling && tw.targetEn) {  // shooting
+                    tw.hookDist += 0.3;
+                    if (x + tw.hookDist > tw.targetEn.x) {
+                        tw.pulling = true;
+                    }
+                }
+
+                if (tw.pulling) {  // pulling
+                    tw.hookDist -= 0.03;
+
+                    if (tw.targetEn) {
+                        tw.targetEn.freeMode = true;
+                        tw.targetEn.x = x + tw.hookDist;
+                        tw.targetEn.rot -= angleBetween(0, tw.targetEn.rot) / 30;
+
+                        if (tw.hookDist <= 1) {  // release enemy
+                            tw.targetEn.pathPos = 18.5;
+                            tw.targetEn.freeMode = false;
+                            tw.targetEn = null;
+                            tw.hookDist -= 0.08;
+                        }
+                    }
+
+                    if (tw.hookDist <= 0) {
+                        tw.pulling  = false;
+                        tw.hookDist = 0;
+                    }
+                }
+
+                continue;
+            }
+
 			// lock on
 			tw.targetEn = null;
 			// target highest pathPos enemy in range
@@ -178,9 +230,6 @@ export function updateGame(game) {
                     tw.targetEn.oilyness = Math.min(tw.targetEn.oilyness + 1, 100);
                 }
 			}
-
-			// cooldown
-			if (tw.cooldown > 0) tw.cooldown--;
 		}
 	}
 
@@ -264,6 +313,9 @@ export function updateGame(game) {
                 r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
             });
         }
+
+        // don't move while hooked
+        if (en.freeMode) continue;
 
         // move (slowed by oil)
 		en.pathPos += (2.0 / 60) * (1 - (en.oilyness/100) * 0.5);

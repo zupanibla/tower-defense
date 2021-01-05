@@ -47,14 +47,14 @@ let game = {
         [1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1],
         [1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1],
         [1, 2, 1, 2, 2, 2, 1, 1, 1, 1, 2, 1],
-        [1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
         [1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1],
+        [1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1],
         [1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1],
         [1, 2, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1],  // 12x12
     ].reverse(),  // bottom left is (0, 0) PepePains
     towers: [],
-    path: [[1,12.5], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 3], [8, 3], [8, -1.5], ],
+    path: [[1,12.5], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 4], [8, 4], [8, -1.5], ],
     pathLen: 48,  // HARDCODED
 	time: 0,
     enemies: [],
@@ -98,12 +98,21 @@ let game = {
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
 
+game.towers[4][4] = {type: 'grappling', rot: Math.PI / 2,     targetRot: Math.PI / 2, targetEn: null, cooldown: 0, hookDist: 0, pulling: false};
+game.towers[4][3] = {type: 'blank',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+
+window.setTimeout(e => {  // TODO za testiranje
+    let en = {...enemyTypes[4]};
+    en.pathPos = 37;
+    game.enemies.push(en);
+    unpauseGame();
+}, 400);
+
 // for reseting game
 let initialGameJson = JSON.stringify(game);
 
 // for debug purposes
 window.game = game;
-
 
 // centers the game and downscales it if the browser window is too small
 // TODO: this can probably be done less hacky...

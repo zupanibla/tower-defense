@@ -1,24 +1,25 @@
 import {mat4} from 'gl-matrix';
 import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
 
-import duckJson           from './models/duck.json';
-import floorJson          from './models/floor.json';
-import tileJson           from './models/tile.json';
-import greenTileJson      from './models/green-tile.json';
-import rockyTileJson      from './models/rocky-tile.json';
-import pathTileJson       from './models/path-tile.json';
-import balisticTurretJson from './models/balistic-turret.json';
-import flameTurretJson    from './models/flame-turret.json';
-import laserTurretJson    from './models/laser-turret.json';
-import oilTurretJson      from './models/oil-turret.json';
-import snezakJson         from './models/snezak.json';
-import butcherJson        from './models/butcher.json';
-import missileJson        from './models/missile.json';
-import bluePortalJson     from './models/blue-portal.json';
-import redPortalJson      from './models/red-portal.json';
-import greenHighlightJson from './models/green-highlight.json';
-import vekJson            from './models/vek.json';
-import vek2Json           from './models/vek2.json';
+import duckJson            from './models/duck.json';
+import floorJson           from './models/floor.json';
+import tileJson            from './models/tile.json';
+import greenTileJson       from './models/green-tile.json';
+import rockyTileJson       from './models/rocky-tile.json';
+import pathTileJson        from './models/path-tile.json';
+import balisticTurretJson  from './models/balistic-turret.json';
+import flameTurretJson     from './models/flame-turret.json';
+import laserTurretJson     from './models/laser-turret.json';
+import grapplingTurretJson from './models/grappling-turret.json';
+import oilTurretJson       from './models/oil-turret.json';
+import snezakJson          from './models/snezak.json';
+import butcherJson         from './models/butcher.json';
+import missileJson         from './models/missile.json';
+import bluePortalJson      from './models/blue-portal.json';
+import redPortalJson       from './models/red-portal.json';
+import greenHighlightJson  from './models/green-highlight.json';
+import vekJson             from './models/vek.json';
+import vek2Json            from './models/vek2.json';
 
 
 export function renderGame(game) {
@@ -74,10 +75,24 @@ export function renderGame(game) {
 
 			let towerCuboids = null;
 			
-			if (tw.type == 'balistic') towerCuboids = cuboidsFromJson(balisticTurretJson);
-			if (tw.type == 'flame')    towerCuboids = cuboidsFromJson(flameTurretJson);
-			if (tw.type == 'laser')	   towerCuboids = cuboidsFromJson(laserTurretJson);
-            if (tw.type == 'oil')      towerCuboids = cuboidsFromJson(oilTurretJson);
+			if (tw.type == 'balistic')  towerCuboids = cuboidsFromJson(balisticTurretJson);
+			if (tw.type == 'flame')     towerCuboids = cuboidsFromJson(flameTurretJson);
+			if (tw.type == 'laser')	    towerCuboids = cuboidsFromJson(laserTurretJson);
+            if (tw.type == 'oil')       towerCuboids = cuboidsFromJson(oilTurretJson);
+            if (tw.type == 'grappling') towerCuboids = cuboidsFromJson(grapplingTurretJson);
+            if (tw.type == 'blank')     towerCuboids = [];
+
+            // hook animation
+            if (tw.type == 'grappling') {
+                for (let it of towerCuboids) {
+                    if (it.name == 'hook') it.py += tw.hookDist;
+                    if (it.name == 'rope') {
+                        it.py += tw.hookDist/2;
+                        it.sy += tw.hookDist;
+                    }
+                }
+            }
+
 			
 			for (let it of towerCuboids) {
 				it.x   = x;
@@ -313,4 +328,9 @@ export function applyFriednessFilter(rgb, friedness) {
     rgb.r *= 1 - friedness;
     rgb.g *= 1 - friedness;
     rgb.b *= 1 - friedness;
+}
+
+// distance between two points : {x,y,z}
+function dist(a, b) {
+    return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
 }
