@@ -15,4 +15,4 @@ node_modules/
 .npm
 dist/
 package-lock.json
-/src/ui/xcf
+/assets/ui/xcf

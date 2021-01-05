@@ -68,7 +68,7 @@ export function initAudio() {
     bufferLoader = new BufferLoader(
         context,
         [
-            'src/assets/sounds/bowling.mp3' // 0
+            '../assets/sounds/bowling.mp3' // 0
         ],
         (bufferList) => BUFFERS = bufferList
     );

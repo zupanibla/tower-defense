@@ -1,24 +1,6 @@
 import {mat4} from 'gl-matrix';
 import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
 
-<<<<<<< HEAD
-import duckJson           from './assets/models/duck.json';
-import floorJson          from './assets/models/floor.json';
-import tileJson           from './assets/models/tile.json';
-import greenTileJson      from './assets/models/green-tile.json';
-import rockyTileJson      from './assets/models/rocky-tile.json';
-import pathTileJson       from './assets/models/path-tile.json';
-import balisticTurretJson from './assets/models/balistic-turret.json';
-import flameTurretJson    from './assets/models/flame-turret.json';
-import laserTurretJson    from './assets/models/laser-turret.json';
-import oilTurretJson      from './assets/models/oil-turret.json';
-import snezakJson         from './assets/models/snezak.json';
-import butcherJson        from './assets/models/butcher.json';
-import missileJson        from './assets/models/missile.json';
-import bluePortalJson     from './assets/models/blue-portal.json';
-import redPortalJson      from './assets/models/red-portal.json';
-import greenHighlightJson from './assets/models/green-highlight.json';
-=======
 import duckJson           from './models/duck.json';
 import floorJson          from './models/floor.json';
 import tileJson           from './models/tile.json';
@@ -37,7 +19,6 @@ import redPortalJson      from './models/red-portal.json';
 import greenHighlightJson from './models/green-highlight.json';
 import vekJson            from './models/vek.json';
 import vek2Json           from './models/vek2.json';
->>>>>>> 1b5ecf911305c4cbb0e88a78c3082597da3e2ba1
 
 
 export function renderGame(game) {
