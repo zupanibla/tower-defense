@@ -27,6 +27,7 @@ export function updateGame(game) {
         game.player.money += waveReward;
         waveReward += 10;
         game.wave.isActive = false;
+        game.grapplingTurret.ready = true;
         pauseGame();
     }
 
@@ -70,7 +71,7 @@ export function updateGame(game) {
 
             if (tw.type == 'grappling') {   // HARDCODED for horizontal pulling
                 // targeting
-                if (!tw.targetEn && tw.cooldown <= 0) {
+                if (!tw.targetEn && tw.ready) {
                     for (let en of game.enemies) {
                         if (
                             dist({x,y,z:0}, en) > 2 &&
@@ -78,7 +79,8 @@ export function updateGame(game) {
                         ) {  // shoot the hook
                             tw.targetEn = en;
                             tw.hookDist = 0;
-                            tw.cooldown = 60 * 3;  // TODO al neki
+                            tw.ready = false;
+                            tw.usedTime = game.time;
                         }
                     }
                 }
@@ -385,6 +387,31 @@ export function updateGame(game) {
         }
     }
 
+    // grappling tower smoke
+    if (!game.grapplingTurret.ready && game.time % 8 == 0) {
+        let colors = [
+            [200, 200, 200],
+            [175, 175, 175],
+            [150, 150, 150],
+            [125, 125, 125],
+            [100, 100, 100],
+        ];
+        let color = colors[~~(Math.random() * colors.length)];
+        game.particles.push({
+            type: 'smoke',
+            x: 3.1,
+            y: 4.1,
+            z: 1.25,
+            vx: 0, vy: 0.01, vz: -0.003,
+            rot: (Math.random() - 0.5),
+            rotv: (Math.random() - 0.5) * 3,
+            sx: 0.1,
+            sy: 0.1,
+            sz: 0.1,
+            r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+        });
+    }
+
     // particles
     for (let pt of game.particles) {
 
@@ -445,7 +472,16 @@ export function updateGame(game) {
             pt.vx += (Math.random() - 0.5) * K;
             pt.vy += (Math.random() - 0.5) * K;
             pt.vz += Math.random() * K;
+        }
 
+        if (pt.type == 'smoke') {
+            let K = 0.001;
+            pt.vx += (Math.random() - 0.5) * K;
+            pt.vy += (Math.random() - 0.5) * K;
+            pt.vx *= 0.985;
+            pt.vy *= 0.985;
+            // pt.vz *= 0.97;
+            pt.vz += Math.random() * K;
         }
 
         // update pos
@@ -457,12 +493,13 @@ export function updateGame(game) {
         pt.rot += pt.rotv;
 
         // decay
-        if (pt.type == 'debris') pt.a -= (1/6)/60;
-        if (pt.type == 'flame')  pt.a -= 4/60
+        if (pt.type == 'debris')    pt.a -= (1/6)/60;
+        if (pt.type == 'flame')     pt.a -= 4/60
         if (pt.type == 'explosion') pt.a -= 8/60
-        if (pt.type == 'fire')   pt.a -= 1/60
-        if (pt.type == 'star')   pt.a -= (1/6)/60;
-        if (pt.type == 'oil')    pt.a -= 1/60;
+        if (pt.type == 'fire')      pt.a -= 1/60
+        if (pt.type == 'smoke')     pt.a -= 1/60
+        if (pt.type == 'star')      pt.a -= (1/6)/60;
+        if (pt.type == 'oil')       pt.a -= 1/60;
 
     }
 

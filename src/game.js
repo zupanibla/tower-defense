@@ -95,11 +95,14 @@ let game = {
         tower: null
     },
     isPaused: true,
+    grapplingTurret: {type: 'grappling', rot: Math.PI / 2, targetRot: Math.PI / 2, targetEn: null, cooldown: 0, hookDist: 0, pulling: false, ready: true, usedTime: -1},
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
 
-game.towers[4][4] = {type: 'grappling', rot: Math.PI / 2,     targetRot: Math.PI / 2, targetEn: null, cooldown: 0, hookDist: 0, pulling: false};
+
+game.towers[4][4] = game.grapplingTurret;
 game.towers[4][3] = {type: 'blank',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+
 
 window.setTimeout(e => {  // TODO za testiranje
     let en = {...enemyTypes[4]};
@@ -263,6 +266,8 @@ function spawnWave() {
 
     game.wave.isActive = true;
     createCombatLogEntry("Wave " + game.wave.number + " has started...");
+
+    game.grapplingTurret.ready = true;
 }
 
 export function pauseGame() {

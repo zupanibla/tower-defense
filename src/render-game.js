@@ -90,6 +90,14 @@ export function renderGame(game) {
                         it.py += tw.hookDist/2;
                         it.sy += tw.hookDist;
                     }
+                    if (it.name == 'indicator') {
+                        let p = Math.min(1, (game.time - tw.usedTime) / 240); 
+                        if (tw.ready) p = 0;
+
+                        it.r = p * it.r + (1-p) * 1;
+                        it.g = p * it.g + (1-p) * 1;
+                        it.b = p * it.b + (1-p) * 0;
+                    }
                 }
             }
 
