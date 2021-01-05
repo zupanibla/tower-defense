@@ -20,6 +20,7 @@ import greenHighlightJson 	from './models/green-highlight.json';
 import vekJson            	from './models/vek.json';
 import vek2Json           	from './models/vek2.json';
 import gooJson				from './models/goo.json';
+import grapplingTurretJson from './models/grappling-turret.json';
 
 
 export function renderGame(game) {
@@ -101,10 +102,24 @@ export function renderGame(game) {
 
 			let towerCuboids = null;
 			
-			if (tw.type == 'balistic') towerCuboids = cuboidsFromJson(balisticTurretJson);
-			if (tw.type == 'flame')    towerCuboids = cuboidsFromJson(flameTurretJson);
-			if (tw.type == 'laser')	   towerCuboids = cuboidsFromJson(laserTurretJson);
-            if (tw.type == 'oil')      towerCuboids = cuboidsFromJson(oilTurretJson);
+			if (tw.type == 'balistic')  towerCuboids = cuboidsFromJson(balisticTurretJson);
+			if (tw.type == 'flame')     towerCuboids = cuboidsFromJson(flameTurretJson);
+			if (tw.type == 'laser')	    towerCuboids = cuboidsFromJson(laserTurretJson);
+            if (tw.type == 'oil')       towerCuboids = cuboidsFromJson(oilTurretJson);
+            if (tw.type == 'grappling') towerCuboids = cuboidsFromJson(grapplingTurretJson);
+            if (tw.type == 'blank')     towerCuboids = [];
+
+            // hook animation
+            if (tw.type == 'grappling') {
+                for (let it of towerCuboids) {
+                    if (it.name == 'hook') it.py += tw.hookDist;
+                    if (it.name == 'rope') {
+                        it.py += tw.hookDist/2;
+                        it.sy += tw.hookDist;
+                    }
+                }
+            }
+
 			
 			for (let it of towerCuboids) {
 				it.x   = x;
@@ -319,4 +334,9 @@ export function applyFriednessFilter(rgb, friedness) {
     rgb.r *= 1 - friedness;
     rgb.g *= 1 - friedness;
     rgb.b *= 1 - friedness;
+}
+
+// distance between two points : {x,y,z}
+function dist(a, b) {
+    return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
 }
