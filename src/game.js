@@ -273,7 +273,7 @@ function resetGame() {
     game.particles = [],
     game.bullets = [],
     game.player.health = 100;
-    game.player.money = 300;
+    game.player.money = 250;
     game.wave.number = 1;
     game.wave.isActive = false;
     game.ui.combatLog ='Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />';

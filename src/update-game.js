@@ -20,9 +20,9 @@ export function updateGame(game) {
 
     // end of wave
     if (game.enemies.length === 0 && game.wave.isActive && game.player.health > 0) {
-        if (game.wave.number === waves.length) showEndPopout(true);
         createCombatLogEntry("You survived wave " + game.wave.number + "!");
-        game.wave.number++;
+        if (game.wave.number === waves.length) showEndPopout(true);
+        else game.wave.number++;
         game.player.money += waveReward;
         waveReward += 10;
         game.wave.isActive = false;
