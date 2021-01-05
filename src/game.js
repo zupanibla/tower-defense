@@ -18,9 +18,13 @@ let scaleBodyFactor = 1;
 let enemyTypes      = [
     {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15,   friedness: 0, oilyness: 0, burning: false},
     {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 25,   friedness: 0, oilyness: 0, burning: false},
-    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30,   friedness: 0, oilyness: 0, burning: false}
+    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30,   friedness: 0, oilyness: 0, burning: false},
+
+    {type: 'vek',           x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15,   friedness: 0, oilyness: 0, burning: false},
+    {type: 'vek2',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15,   friedness: 0, oilyness: 0, burning: false},
 ];
 export let waves    = [
+    [4, 5, 4, 5, 4, 5, 4, 5, 4, 5, 4, 5, 4],
     [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
     [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
     [1, 0, 1, 0, 2, 0, 1, 0, 1, 0, 2, 0, 2, 0, 1],

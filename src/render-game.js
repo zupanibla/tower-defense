@@ -17,6 +17,8 @@ import missileJson        from './models/missile.json';
 import bluePortalJson     from './models/blue-portal.json';
 import redPortalJson      from './models/red-portal.json';
 import greenHighlightJson from './models/green-highlight.json';
+import vekJson            from './models/vek.json';
+import vek2Json           from './models/vek2.json';
 
 
 export function renderGame(game) {
@@ -98,7 +100,38 @@ export function renderGame(game) {
 
 		if (en.type == 'duck')	  enCuboids = cuboidsFromJson(duckJson);
 		if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
-		if (en.type == 'butcher') enCuboids = cuboidsFromJson(butcherJson);
+        if (en.type == 'butcher') enCuboids = cuboidsFromJson(butcherJson);
+        if (en.type == 'vek')     enCuboids = cuboidsFromJson(vekJson);
+        if (en.type == 'vek2')    enCuboids = cuboidsFromJson(vek2Json);
+
+
+        // vek animation
+        if (en.type == 'vek') {
+            for (let it of enCuboids) {
+                if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
+                    it.py += Math.sin(game.time / 2) * 0.03
+                    * Math.sign(it.px)
+                    * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                    it.pz += -Math.cos(game.time / 2) * 0.022
+                    * Math.sign(it.px)
+                    * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                }
+            }
+        }
+
+        // vek2 animation
+        if (en.type == 'vek2') {
+            for (let it of enCuboids) {
+                if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
+                    it.py += Math.sin(game.time / 3) * 0.05
+                             * Math.sign(it.px)
+                             * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                    it.pz += -Math.cos(game.time / 3) * 0.04
+                                 * Math.sign(it.px)
+                                 * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                }
+            }
+        }
 
 		// fried ducks
 		if (en.type == 'duck') {
