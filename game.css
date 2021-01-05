@@ -1,8 +1,8 @@
 /* https://www.dafont.com/04b-03.font */
 @font-face {
     font-family: '04b03';
-    src: url('./src/fonts/04b03.woff2') format('woff2'),
-            url('./src/fonts/04b03.woff') format('woff');
+    src: url('./assets/fonts/04b03.woff2') format('woff2'),
+            url('./assets/fonts/04b03.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -48,6 +48,9 @@ body {
     transform-origin: 0 0;
     overflow-y: hidden;
     overflow-x: hidden;
+
+    cursor: url('./assets/ui/cursor.png'), auto;   
+
 }
 .health {
     color: #54fd20;
@@ -104,7 +107,7 @@ body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background: url('src/ui/background/popout-background.png');
+    background: url('assets/ui/background/popout-background.png');
     opacity: 0;
     -webkit-transition: opacity 3s;
     -moz-transition: opacity 3s;     
@@ -146,7 +149,7 @@ body {
 }
 .popout-play-again:hover {
     color: yellow;
-    cursor: pointer;
+    cursor: url('./assets/ui/cursor.png'), pointer;
 }
 
 
@@ -156,36 +159,36 @@ body {
 .play-button {
     width: 100;
     height: 40;
-    background: url('src/ui/buttons/button-play.png');
+    background: url('assets/ui/buttons/button-play.png');
 }
 .play-button:hover {
     width: 100;
     height: 40;
-    background: url('src/ui/buttons/button-play-hover.png');
-    cursor: pointer;
+    background: url('assets/ui/buttons/button-play-hover.png');
+    cursor: url('./assets/ui/cursor.png'), pointer;
 }
 .play-button:active {
     width: 100;
     height: 40;
-    background: url('src/ui/buttons/button-play-active.png');
-    cursor: pointer;
+    background: url('assets/ui/buttons/button-play-active.png');
+    cursor: url('./assets/ui/cursor.png'), pointer;
 }
 .pause-button {
     width: 100;
     height: 40;
-    background: url('src/ui/buttons/button-pause.png');
+    background: url('assets/ui/buttons/button-pause.png');
 }
 .pause-button:hover {
     width: 100;
     height: 40;
-    background: url('src/ui/buttons/button-pause-hover.png');
-    cursor: pointer;
+    background: url('assets/ui/buttons/button-pause-hover.png');
+    cursor: url('./assets/ui/cursor.png'), pointer;
 }
 .pause-button:active {
     width: 100;
     height: 40;
-    background: url('src/ui/buttons/button-pause-active.png');
-    cursor: pointer;
+    background: url('assets/ui/buttons/button-pause-active.png');
+    cursor: url('./assets/ui/cursor.png'), pointer;
 }
 .pause-play-button {
     margin-bottom: 5px;
@@ -195,17 +198,17 @@ body {
 .tower-select {
     width: 220;
     height: 220;
-    background: url('src/ui/background/tower-select-background.png');
+    background: url('assets/ui/background/tower-select-background.png');
     position: relative;
 }
 .tower-icon {
     width: 60;
     height: 60;
-    cursor: pointer;
+    cursor: url('./assets/ui/cursor.png'), pointer;
     position: absolute;
 }
 .tower-disabled {
-    cursor: default;
+    cursor: url('./assets/ui/cursor.png'), default;
 }
 .tower-cost {
     font-size: 16px;
@@ -226,173 +229,173 @@ body {
 
 /* tower 0 0 */
 .tower-0-0 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-ballistic-turret.png');
     top: 12px;
     left: 12px;
 }
 .tower-0-0:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-0-0:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-0-0.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-0-0.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 0 1 */
 .tower-0-1 {
-    background: url('src/ui/buttons/button-flame-turret.png');
+    background: url('assets/ui/buttons/button-flame-turret.png');
     top: 12px;
     left: 80px;
 }
 .tower-0-1:hover {
-    background: url('src/ui/buttons/button-flame-turret-hover.png');
+    background: url('assets/ui/buttons/button-flame-turret-hover.png');
 }
 .tower-0-1:active {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('assets/ui/buttons/button-flame-turret-active.png');
 }
 .tower-0-1.tower-selected {
-    background: url('src/ui/buttons/button-flame-turret-active.png');
+    background: url('assets/ui/buttons/button-flame-turret-active.png');
 }
 .tower-0-1.tower-disabled {
-    background: url('src/ui/buttons/button-flame-turret-disabled.png');
+    background: url('assets/ui/buttons/button-flame-turret-disabled.png');
 }
 
 /* tower 0 2 */
 .tower-0-2 {
-    background: url('src/ui/buttons/button-oil-turret.png');
+    background: url('assets/ui/buttons/button-oil-turret.png');
     top: 12px;
     left: 148px;
 }
 .tower-0-2:hover {
-    background: url('src/ui/buttons/button-oil-turret-hover.png');
+    background: url('assets/ui/buttons/button-oil-turret-hover.png');
 }
 .tower-0-2:active {
-    background: url('src/ui/buttons/button-oil-turret-active.png');
+    background: url('assets/ui/buttons/button-oil-turret-active.png');
 }
 .tower-0-2.tower-selected {
-    background: url('src/ui/buttons/button-oil-turret-active.png');
+    background: url('assets/ui/buttons/button-oil-turret-active.png');
 }
 .tower-0-2.tower-disabled {
-    background: url('src/ui/buttons/button-oil-turret-disabled.png');
+    background: url('assets/ui/buttons/button-oil-turret-disabled.png');
 }
 
 /* tower 1 0 */
 .tower-1-0 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-ballistic-turret.png');
     top: 80px;
     left: 12px;
 }
 .tower-1-0:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-1-0:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-0.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-0.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 1 1 */
 .tower-1-1 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-ballistic-turret.png');
     top: 80px;
     left: 80px;
 }
 .tower-1-1:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-1-1:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-1.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-1.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 1 2 */
 .tower-1-2 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-ballistic-turret.png');
     top: 80px;
     left: 148px;
 }
 .tower-1-2:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-1-2:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-2.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-1-2.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 2 0 */
 .tower-2-0 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-ballistic-turret.png');
     top: 148px;
     left: 12px;
 }
 .tower-2-0:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-2-0:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-0.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-0.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 2 1 */
 .tower-2-1 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-ballistic-turret.png');
     top: 148px;
     left: 80px;
 }
 .tower-2-1:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-2-1:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-1.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-1.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* tower 2 2 */
 .tower-2-2 {
-    background: url('src/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-ballistic-turret.png');
     top: 148px;
     left: 148px;
 }
 .tower-2-2:hover {
-    background: url('src/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
 }
 .tower-2-2:active {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-2.tower-selected {
-    background: url('src/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
 }
 .tower-2-2.tower-disabled {
-    background: url('src/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
 }
 
 /* scrollbar */

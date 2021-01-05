@@ -1,0 +1,41 @@
+[
+  {
+    "name": "body",
+    "mirror": false,
+    "x": 0,
+    "y": -3.5,
+    "z": 0,
+    "sx": 20,
+    "sy": 73,
+    "sz": 20,
+    "r": 237,
+    "g": 237,
+    "b": 237
+  },
+  {
+    "name": "horizontal wings",
+    "mirror": false,
+    "x": 0,
+    "y": 16,
+    "z": 0,
+    "sx": 40,
+    "sy": 32,
+    "sz": 4,
+    "r": 207,
+    "g": 38,
+    "b": 59
+  },
+  {
+    "name": "vertical wings",
+    "mirror": false,
+    "x": 0,
+    "y": 16,
+    "z": 0,
+    "sx": 4,
+    "sy": 32,
+    "sz": 44,
+    "r": 207,
+    "g": 38,
+    "b": 59
+  }
+]

@@ -1,6 +1,7 @@
 import {mat4} from 'gl-matrix';
 import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
 
+<<<<<<< HEAD
 import duckJson           from './assets/models/duck.json';
 import floorJson          from './assets/models/floor.json';
 import tileJson           from './assets/models/tile.json';
@@ -17,6 +18,26 @@ import missileJson        from './assets/models/missile.json';
 import bluePortalJson     from './assets/models/blue-portal.json';
 import redPortalJson      from './assets/models/red-portal.json';
 import greenHighlightJson from './assets/models/green-highlight.json';
+=======
+import duckJson           from './models/duck.json';
+import floorJson          from './models/floor.json';
+import tileJson           from './models/tile.json';
+import greenTileJson      from './models/green-tile.json';
+import rockyTileJson      from './models/rocky-tile.json';
+import pathTileJson       from './models/path-tile.json';
+import balisticTurretJson from './models/balistic-turret.json';
+import flameTurretJson    from './models/flame-turret.json';
+import laserTurretJson    from './models/laser-turret.json';
+import oilTurretJson      from './models/oil-turret.json';
+import snezakJson         from './models/snezak.json';
+import butcherJson        from './models/butcher.json';
+import missileJson        from './models/missile.json';
+import bluePortalJson     from './models/blue-portal.json';
+import redPortalJson      from './models/red-portal.json';
+import greenHighlightJson from './models/green-highlight.json';
+import vekJson            from './models/vek.json';
+import vek2Json           from './models/vek2.json';
+>>>>>>> 1b5ecf911305c4cbb0e88a78c3082597da3e2ba1
 
 
 export function renderGame(game) {
@@ -98,7 +119,38 @@ export function renderGame(game) {
 
 		if (en.type == 'duck')	  enCuboids = cuboidsFromJson(duckJson);
 		if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
-		if (en.type == 'butcher') enCuboids = cuboidsFromJson(butcherJson);
+        if (en.type == 'butcher') enCuboids = cuboidsFromJson(butcherJson);
+        if (en.type == 'vek')     enCuboids = cuboidsFromJson(vekJson);
+        if (en.type == 'vek2')    enCuboids = cuboidsFromJson(vek2Json);
+
+
+        // vek animation
+        if (en.type == 'vek') {
+            for (let it of enCuboids) {
+                if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
+                    it.py += Math.sin(game.time / 2) * 0.03
+                    * Math.sign(it.px)
+                    * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                    it.pz += -Math.cos(game.time / 2) * 0.022
+                    * Math.sign(it.px)
+                    * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                }
+            }
+        }
+
+        // vek2 animation
+        if (en.type == 'vek2') {
+            for (let it of enCuboids) {
+                if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
+                    it.py += Math.sin(game.time / 3) * 0.05
+                             * Math.sign(it.px)
+                             * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                    it.pz += -Math.cos(game.time / 3) * 0.04
+                                 * Math.sign(it.px)
+                                 * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                }
+            }
+        }
 
 		// fried ducks
 		if (en.type == 'duck') {
