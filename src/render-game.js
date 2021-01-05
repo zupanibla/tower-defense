@@ -1,25 +1,26 @@
 import {mat4} from 'gl-matrix';
 import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
 
-import duckJson            from './models/duck.json';
-import floorJson           from './models/floor.json';
-import tileJson            from './models/tile.json';
-import greenTileJson       from './models/green-tile.json';
-import rockyTileJson       from './models/rocky-tile.json';
-import pathTileJson        from './models/path-tile.json';
-import balisticTurretJson  from './models/balistic-turret.json';
-import flameTurretJson     from './models/flame-turret.json';
-import laserTurretJson     from './models/laser-turret.json';
+import duckJson           	from './models/duck.json';
+import floorJson          	from './models/floor.json';
+import tileJson           	from './models/tile.json';
+import greenTileJson      	from './models/green-tile.json';
+import rockyTileJson      	from './models/rocky-tile.json';
+import pathTileJson       	from './models/path-tile.json';
+import balisticTurretJson 	from './models/balistic-turret.json';
+import flameTurretJson    	from './models/flame-turret.json';
+import laserTurretJson    	from './models/laser-turret.json';
+import oilTurretJson      	from './models/oil-turret.json';
+import snezakJson         	from './models/snezak.json';
+import butcherJson        	from './models/butcher.json';
+import missileJson        	from './models/missile.json';
+import bluePortalJson     	from './models/blue-portal.json';
+import redPortalJson      	from './models/red-portal.json';
+import greenHighlightJson 	from './models/green-highlight.json';
+import vekJson            	from './models/vek.json';
+import vek2Json           	from './models/vek2.json';
+import gooJson				from './models/goo.json';
 import grapplingTurretJson from './models/grappling-turret.json';
-import oilTurretJson       from './models/oil-turret.json';
-import snezakJson          from './models/snezak.json';
-import butcherJson         from './models/butcher.json';
-import missileJson         from './models/missile.json';
-import bluePortalJson      from './models/blue-portal.json';
-import redPortalJson       from './models/red-portal.json';
-import greenHighlightJson  from './models/green-highlight.json';
-import vekJson             from './models/vek.json';
-import vek2Json            from './models/vek2.json';
 
 
 export function renderGame(game) {
@@ -43,6 +44,32 @@ export function renderGame(game) {
 
 			cuboids.push(...tileCuboids);
 		}
+	}
+
+	// environment
+	for (let en of game.environment) {
+
+		// bluePortal, redPortal
+		let enCuboids = [];
+
+		if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
+		if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
+
+		for (let it of enCuboids) {
+			it.x   = en.x;
+			it.y   = en.y;
+			it.z   = en.z;
+			it.rot = en.rot;
+
+			// make the opening part of the portal transparent
+			if (en.type == 'bluePortal' || en.type == 'redPortal') {
+				if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
+					it.a   = 0.6;
+				}
+			}   
+		}
+
+		cuboids.push(...enCuboids);
 	}
 
 	// handle tower on mouse
@@ -126,6 +153,7 @@ export function renderGame(game) {
         if (en.type == 'butcher') enCuboids = cuboidsFromJson(butcherJson);
         if (en.type == 'vek')     enCuboids = cuboidsFromJson(vekJson);
         if (en.type == 'vek2')    enCuboids = cuboidsFromJson(vek2Json);
+        if (en.type == 'goo')     enCuboids = cuboidsFromJson(gooJson);
 
 
         // vek animation
@@ -154,7 +182,7 @@ export function renderGame(game) {
                                  * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
             }
-        }
+		}
 
 		// fried ducks
 		if (en.type == 'duck') {
@@ -172,15 +200,19 @@ export function renderGame(game) {
 
 
 		let alpha = 1;
+		if (en.type == 'goo') {
+            alpha = 0.5;
+		}
 		// fade in enemies when they come out of portal (first 0.5 of the path)
 		if (en.pathPos < 0.5) {
-			alpha = Math.max(0, en.pathPos) * 2;
+			alpha = Math.max(0, en.pathPos) * alpha * 2;
 		}
 		// fade out enemies when that go in portal (last 0.5 of the path)
 		if (en.pathPos > game.pathLen - 0.5) {
-			// TODO visual bug: health bars make blue portal transparent
-			alpha = 1 - Math.min(en.pathPos - (game.pathLen-0.5), 0.5) * 2;
+			alpha = 1 - Math.min(en.pathPos - (game.pathLen-0.5), 0.5) * alpha * 2;
 		}
+
+		
 
 		for (let it of enCuboids) {
 			it.x   = en.x;
@@ -216,32 +248,6 @@ export function renderGame(game) {
 		};
 
 		cuboids.push(green, red);
-	}
-	
-	// environment
-	for (let en of game.environment) {
-
-		// bluePortal, redPortal
-		let enCuboids = [];
-
-		if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
-		if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
-
-		for (let it of enCuboids) {
-			it.x   = en.x;
-			it.y   = en.y;
-			it.z   = en.z;
-			it.rot = en.rot;
-
-			// make the opening part of the portal transparent
-			if (en.type == 'bluePortal' || en.type == 'redPortal') {
-				if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
-					it.a   = 0.6;
-				}
-			}   
-		}
-
-		cuboids.push(...enCuboids);
 	}
 
 	// bullets
