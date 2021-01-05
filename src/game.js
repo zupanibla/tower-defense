@@ -2,12 +2,6 @@ import {updateGame}                   from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
 import {initAudio}                    from './audio.js';
 
-// init audio after user interaction
-window.addEventListener('mousedown', function handler(e) {
-    e.currentTarget.removeEventListener(e.type, handler);
-    initAudio();
-})
-
 let canvas          = document.querySelector('.game-canvas');
 let ui              = document.querySelector('.game-ui');
 let gameHtml        = document.querySelector('.game');
@@ -23,21 +17,21 @@ let popoutMain      = document.querySelector('.popout-main');
 let popoutPlayAgain = document.querySelector('.popout-play-again');
 let scaleBodyFactor = 1;
 let enemyTypes      = [
-    {type: 'duck',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15,   friedness: 0, oilyness: 0, burning: false},
-    {type: 'snezak',        x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 25,   friedness: 0, oilyness: 0, burning: false},
-    {type: 'butcher',       x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30,   friedness: 0, oilyness: 0, burning: false},
+    {type: 'duck',          x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'snezak',        x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 25, friedness: 0, oilyness: 0, burning: false},
+    {type: 'butcher',       x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30, friedness: 0, oilyness: 0, burning: false},
 
-    {type: 'vek',           x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15,   friedness: 0, oilyness: 0, burning: false},
-    {type: 'vek2',          x: 0, y: 0,  z: 0, rot: 0, pathPos: 0,  vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15,   friedness: 0, oilyness: 0, burning: false},
+    {type: 'vek',           x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'vek2',          x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
 ];
-export let waves    = [
-    [4, 5, 4, 5, 4, 5, 4, 5, 4, 5, 4, 5, 4],
-    [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
-    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 0, 2, 0, 1, 0, 1, 0, 2, 0, 2, 0, 1],
-    [1, 1, 2, 1, 0, 0, 2, 1, 1, 2, 2, 0, 0, 2, 2, 2],
-    [1, 2, 2, 1, 1, 1, 1, 2, 1],
-    [1, 2, 1, 2, 2, 0, 0, 0, 0, 2, 2, 1, 2, 2, 1, 0, 0, 0, 0, 0, 3]
+export let waves = [
+    [3, -4, 4, -4, 3, -4, 4, -4, 3],
+    [0, -4, 0, -4, 0, -4, 0, -4, 0],
+    [0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0],
+    [0, -2, 0, -2, 1, -2, 0, -2, 0, -2, 1, -2, 1, -2, 0],
+    [0, 0, 1, 0, -4, 1, 0, 0, 1, 1, -4, 1, 1, 1],
+    [0, 1, 1, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 1, 1, -8, 1, 1, 0, 1, 1, 0, -10, 2]
 ];
 
 let TOWER_COST_MULTIPLIER = 1.25;
@@ -250,12 +244,12 @@ function spawnWave() {
 
     let pathPos = 0;
     for (let enType of waves[game.wave.number - 1]) {
-        if (enType !== 0) {
-            let en = {...enemyTypes[enType-1]};
+        if (enType >= 0) {
+            let en = {...enemyTypes[enType]};
             en.pathPos = pathPos;
             game.enemies.push(en);
         }
-        pathPos -= 2;
+        pathPos -= enType < 0 ? -enType : 1;
     }
 
     game.wave.isActive = true;
@@ -336,6 +330,12 @@ function ticker() {
         renderGame(game);
     }
 }
+
+// init audio after user interaction
+window.addEventListener('mousedown', function handler(e) {
+    e.currentTarget.removeEventListener(e.type, handler);
+    initAudio();
+})
 
 initGameRenderer();
 let fps = 65;  // TODO
