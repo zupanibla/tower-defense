@@ -62,7 +62,7 @@ export function updateGame(game) {
 	for (let y = 0; y < game.towers.length; y++) {
 		for (let x = 0; x < game.towers[y].length; x++) {
 			let tw = game.towers[y][x];
-			if (tw === null) continue;
+            if (tw === null) continue;
 
             // cooldown
             if (tw.cooldown > 0) tw.cooldown--;
@@ -196,6 +196,12 @@ export function updateGame(game) {
                     tw.targetEn.health    -= 0.5;
                     tw.targetEn.burning    = true;
                     tw.targetEn.friedness  = Math.min(tw.targetEn.friedness + 1, 100);
+
+                    // sound
+                    if (!tw.sound) {
+                        tw.sound = playSound(4);
+                        tw.sound.loop = true;
+                    }
                 }
 
                 // TODO: less oil particles
@@ -231,6 +237,12 @@ export function updateGame(game) {
                     });
 
                     tw.targetEn.oilyness = Math.min(tw.targetEn.oilyness + 1, 100);
+
+                    // sound
+                    if (!tw.sound) {
+                        tw.sound = playSound(6);
+                        tw.sound.loop = true;
+                    }
                 }
 
                 if (tw.type == 'nova') {
@@ -250,9 +262,18 @@ export function updateGame(game) {
                         en.health -= 20;
                     }
 
+                    playSound(1);
+
                     tw.cooldown = 120;
                 }
-			}
+            }
+            // not shooting
+            else {
+                if (tw.sound) {
+                    tw.sound.loop = false;
+                    tw.sound = null;
+                }
+            }
 		}
 	}
 
@@ -292,6 +313,7 @@ export function updateGame(game) {
         if (d < 0.1) {
             game.bullets.splice(i, 1);
             bl.targetEn.health -= 15;
+            playSound(2);
             game.particles.push(...explosionParticles(bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 2, 2, 5, 0.03));
         }
     }
@@ -400,9 +422,7 @@ export function updateGame(game) {
                 let density = 2;
                 if (en.type == 'goo-small') game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.03));
                 if (en.type == 'goo')       game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.05));
-                if (en.type == 'goo-big')   game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));
-
-                
+                if (en.type == 'goo-big')   game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));  
             }
             
             if (en.jumpCooldown > 0) en.jumpCooldown--;
@@ -442,10 +462,17 @@ export function updateGame(game) {
                 color = [153/256, 0/256, 0/256];
                 density = 6;
             }
+            if (en.type == 'vek') {
+                color = [100/256, 120/256, 100/256];
+            }
+            if (en.type == 'vek2') {
+                color = [200/256, 155/256, 90/256];
+            }
             if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
                 color = [70/256, 206/256, 74/256];
                 alpha = 0.5;
                 density = 3;
+                playSound(5);
             }
             if (en.type == 'goo-small') {
                 size = 0.06;
@@ -484,7 +511,7 @@ export function updateGame(game) {
                 goo2.z = en.z;
                 goo2.jumpCooldown = en.jumpCooldown;
                 game.enemies.push(goo1);
-                game.enemies.push(goo2);
+                game.enemies.push(goo2)
             }
 
             
@@ -492,6 +519,7 @@ export function updateGame(game) {
             game.enemies.splice(i, 1);
             i--;
 
+            playSound(3);
             game.player.health -= en.damage;
         }
     }

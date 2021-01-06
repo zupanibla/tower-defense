@@ -55,6 +55,7 @@ class BufferLoader {
 let context;
 let bufferLoader;
 let BUFFERS;
+let BUFFERS_GAIN = [0.1, 0.1, 0.8, 0.07, 0.3, 0.7, 0.1];
 
 export function initAudio() {
     try {
@@ -68,7 +69,14 @@ export function initAudio() {
     bufferLoader = new BufferLoader(
         context,
         [
-            '../assets/sounds/bowling.mp3' // 0
+            '../assets/sounds/bowling.mp3',             // 0
+            '../assets/sounds/zap.mp3',                 // 1
+            '../assets/sounds/pow.mp3',                 // 2
+            '../assets/sounds/lose-health.mp3',         // 3
+            '../assets/sounds/flamethrower.mp3',        // 4
+            '../assets/sounds/goo-split.mp3',           // 5
+            '../assets/sounds/oil.mp3',                 // 6
+
         ],
         (bufferList) => BUFFERS = bufferList
     );
@@ -79,6 +87,9 @@ export function initAudio() {
 export function playSound(bufferIndex) {
     let source = context.createBufferSource();
     source.buffer = BUFFERS[bufferIndex];
-    source.connect(context.destination);
+    const gainNode = context.createGain();
+    gainNode.gain.value = BUFFERS_GAIN[bufferIndex];
+    source.connect(gainNode).connect(context.destination);
     source.start(0);
+    return source;
 }
