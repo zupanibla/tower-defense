@@ -17,15 +17,15 @@ let popoutMain      = document.querySelector('.popout-main');
 let popoutPlayAgain = document.querySelector('.popout-play-again');
 let scaleBodyFactor = 1;
 export let enemyTypes      = [
-    {type: 'duck',          x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
-    {type: 'snezak',        x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 25, friedness: 0, oilyness: 0, burning: false},
-    {type: 'butcher',       x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30, friedness: 0, oilyness: 0, burning: false},
+    {type: 'duck',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'snezak',        x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 25, friedness: 0, oilyness: 0, burning: false},
+    {type: 'butcher',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30, friedness: 0, oilyness: 0, burning: false},
 
-    {type: 'vek',           x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
-    {type: 'vek2',          x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
-    {type: 'goo-small',     x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health:  60, maxHealth:  60, reward: 10,  damage:  5, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
-    {type: 'goo',           x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 10, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
-    {type: 'goo-big',       x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 240, maxHealth: 240, reward: 40,  damage: 20, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'vek',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'vek2',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'goo-small',     x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health:  60, maxHealth:  60, reward: 10,  damage:  5, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'goo',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 10, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'goo-big',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 240, maxHealth: 240, reward: 40,  damage: 20, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
 ];
 export let waves = [
     [7, -4, 3, -4, 4, -4, 7, -4, 3],
@@ -69,7 +69,7 @@ let game = {
     bullets: [],
     player: {
         health: 100,
-        money: 250,
+        money: 100000, // 250
     },
     wave: {
         number: 1,
@@ -82,6 +82,7 @@ let game = {
         {type: 'balistic', cost: 100, button: shopButtons[0]},
         {type: 'flame',    cost: 250, button: shopButtons[1]},
         {type: 'oil',      cost: 300, button: shopButtons[2]},
+        {type: 'nova',     cost: 500, button: shopButtons[3]},
         // {type: 'laser',    cost: 100, button: shopButtons[3]},
     ],
     mouse: {
@@ -295,7 +296,7 @@ function resetGame() {
     game.particles = [],
     game.bullets = [],
     game.player.health = 100;
-    game.player.money = 250;
+    game.player.money = 100000; // 250
     game.wave.number = 1;
     game.wave.isActive = false;
     game.ui.combatLog ='Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />';
@@ -304,6 +305,7 @@ function resetGame() {
     game.shop[0].cost = 100;
     game.shop[1].cost = 250;
     game.shop[2].cost = 300;
+    game.shop[3].cost = 500;
     pausePlayButton.classList.remove('unclickable');
     pauseGame();
 }

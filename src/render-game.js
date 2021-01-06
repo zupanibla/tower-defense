@@ -11,6 +11,7 @@ import balisticTurretJson 	from './models/balistic-turret.json';
 import flameTurretJson    	from './models/flame-turret.json';
 import laserTurretJson    	from './models/laser-turret.json';
 import oilTurretJson      	from './models/oil-turret.json';
+import novaTurretJson		from './models/nova-turret.json';
 import snezakJson         	from './models/snezak.json';
 import butcherJson        	from './models/butcher.json';
 import missileJson        	from './models/missile.json';
@@ -85,7 +86,8 @@ export function renderGame(game) {
 		if (game.mouse.tower.type == 'balistic')	towerCuboids = cuboidsFromJson(balisticTurretJson);
 		if (game.mouse.tower.type == 'flame')	    towerCuboids = cuboidsFromJson(flameTurretJson);
         if (game.mouse.tower.type == 'laser')       towerCuboids = cuboidsFromJson(laserTurretJson);
-        if (game.mouse.tower.type == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
+		if (game.mouse.tower.type == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
+		if (game.mouse.tower.type == 'nova')		towerCuboids = cuboidsFromJson(novaTurretJson);
 
 		for (let it of towerCuboids) {
 			it.x = game.mouse.tileX;
@@ -108,7 +110,8 @@ export function renderGame(game) {
 			if (tw.type == 'flame')     towerCuboids = cuboidsFromJson(flameTurretJson);
 			if (tw.type == 'laser')	    towerCuboids = cuboidsFromJson(laserTurretJson);
             if (tw.type == 'oil')       towerCuboids = cuboidsFromJson(oilTurretJson);
-            if (tw.type == 'grappling') towerCuboids = cuboidsFromJson(grapplingTurretJson);
+			if (tw.type == 'grappling') towerCuboids = cuboidsFromJson(grapplingTurretJson);
+			if (tw.type == 'nova')		towerCuboids = cuboidsFromJson(novaTurretJson);
             if (tw.type == 'blank')     towerCuboids = [];
 
             // hook animation
@@ -126,6 +129,19 @@ export function renderGame(game) {
                         it.r = p * it.r + (1-p) * 1;
                         it.g = p * it.g + (1-p) * 1;
                         it.b = p * it.b + (1-p) * 0;
+                    }
+                }
+			}
+			
+			// nova tower regen animation
+			if (tw.type == 'nova') {
+                for (let it of towerCuboids) {
+                    if (it.name == 'base') {
+                        let p = (1 - tw.cooldown / 120); 
+
+                        it.r = p * it.r;
+                        it.g = p * it.g;
+                        it.b = p * it.b;
                     }
                 }
             }
