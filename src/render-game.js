@@ -20,7 +20,9 @@ import greenHighlightJson 	from './models/green-highlight.json';
 import vekJson            	from './models/vek.json';
 import vek2Json           	from './models/vek2.json';
 import gooJson				from './models/goo.json';
-import grapplingTurretJson from './models/grappling-turret.json';
+import gooSmallJson			from './models/goo-small.json';
+import gooBigJson			from './models/goo-big.json';
+import grapplingTurretJson  from './models/grappling-turret.json';
 
 
 export function renderGame(game) {
@@ -148,12 +150,14 @@ export function renderGame(game) {
 		// duck, snezak
 		let enCuboids = [];
 
-		if (en.type == 'duck')	  enCuboids = cuboidsFromJson(duckJson);
-		if (en.type == 'snezak')  enCuboids = cuboidsFromJson(snezakJson);
-        if (en.type == 'butcher') enCuboids = cuboidsFromJson(butcherJson);
-        if (en.type == 'vek')     enCuboids = cuboidsFromJson(vekJson);
-        if (en.type == 'vek2')    enCuboids = cuboidsFromJson(vek2Json);
-        if (en.type == 'goo')     enCuboids = cuboidsFromJson(gooJson);
+		if (en.type == 'duck')	  	enCuboids = cuboidsFromJson(duckJson);
+		if (en.type == 'snezak')  	enCuboids = cuboidsFromJson(snezakJson);
+        if (en.type == 'butcher') 	enCuboids = cuboidsFromJson(butcherJson);
+        if (en.type == 'vek')     	enCuboids = cuboidsFromJson(vekJson);
+        if (en.type == 'vek2')    	enCuboids = cuboidsFromJson(vek2Json);
+        if (en.type == 'goo')     	enCuboids = cuboidsFromJson(gooJson);
+		if (en.type == 'goo-small') enCuboids = cuboidsFromJson(gooSmallJson);
+		if (en.type == 'goo-big')	enCuboids = cuboidsFromJson(gooBigJson);
 
 
         // vek animation
@@ -200,8 +204,8 @@ export function renderGame(game) {
 
 
 		let alpha = 1;
-		if (en.type == 'goo') {
-            alpha = 0.5;
+		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
+            alpha = 0.6;
 		}
 		// fade in enemies when they come out of portal (first 0.5 of the path)
 		if (en.pathPos < 0.5) {
@@ -220,12 +224,12 @@ export function renderGame(game) {
 			it.a   = alpha;
 		}
 		// goo flatten on landing
-		if (en.type == 'goo') {
+		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
             for (let it of enCuboids) {
 				if (en.jumpCooldown < 15) {
-					it.sz *= 0.5 + 0.5 * en.jumpCooldown / 15;
-					it.sx *= 1 + 0.5 * (1 - en.jumpCooldown / 15);
-					it.sy *= 1 + 0.5 * (1 - en.jumpCooldown / 15);
+					it.sz *= 0.5 + 0.5 * en.jumpCooldown / 45;
+					it.sx *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
+					it.sy *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
 				}
 			}
 		}

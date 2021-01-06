@@ -1,5 +1,5 @@
 import {mat4} from 'gl-matrix';
-import {createCombatLogEntry, pauseGame, showEndPopout, waves} from './game';
+import {createCombatLogEntry, pauseGame, showEndPopout, waves, enemyTypes} from './game';
 import {applyFriednessFilter} from './render-game';
 import {playSound} from './audio.js'
 
@@ -320,7 +320,7 @@ export function updateGame(game) {
         if (en.freeMode) continue;
 
         // move (slowed by oil)
-        if (en.type != 'goo') {
+        if (en.type != 'goo' && en.type != 'goo-small' && en.type != 'goo-big') {
             en.pathPos += (2.0 / 60) * (1 - (en.oilyness/100) * 0.5);
         }
         // goo movement
@@ -355,7 +355,7 @@ export function updateGame(game) {
     		en.vz -= 0.010;
         }
 
-        if (en.type == 'goo') {
+        if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
             // jump
             if (en.z <= 0 && en.jumpCooldown <= 0) {
                 en.vz = 0.15;
@@ -377,7 +377,11 @@ export function updateGame(game) {
             if (en.jumpCooldown == 15) {
                 let color = [70/256, 206/256, 74/256]
                 let density = 2;
-                game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));
+                if (en.type == 'goo-small') game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.03));
+                if (en.type == 'goo')       game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.05));
+                if (en.type == 'goo-big')   game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));
+
+                
             }
             
             en.jumpCooldown--;
@@ -399,8 +403,11 @@ export function updateGame(game) {
             game.player.money += en.reward;
 
             // spawn debris
+            let alpha = 1;
             let color = [0, 0, 0]
             let density = 3;
+            let velocity = 20;
+            let size = 0.1;
             if (en.type == 'snezak') {
                 color = [217/256, 218/256, 242/256];
                 density = 4;
@@ -414,7 +421,52 @@ export function updateGame(game) {
                 color = [153/256, 0/256, 0/256];
                 density = 6;
             }
-            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 1, density, 20, 0.1));
+            if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
+                color = [70/256, 206/256, 74/256];
+                alpha = 0.5;
+                density = 3;
+            }
+            if (en.type == 'goo-small') {
+                size = 0.06;
+                velocity = 13;
+            }
+            if (en.type == 'goo-big') {
+                size = 0.15;
+                velocity = 13;
+                density = 4;
+            }
+
+            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, alpha, density, velocity, size));
+
+            // split goo
+            if (en.type == 'goo') {
+                let goo1 = {...enemyTypes[5]};
+                goo1.pathPos = en.pathPos + 0.5;
+                goo1.z = en.z;
+                goo1.jumpCooldown = en.jumpCooldown;
+                let goo2 = {...enemyTypes[5]};
+                goo2.pathPos = en.pathPos - 0.5;
+                goo2.z = en.z;
+                goo2.jumpCooldown = en.jumpCooldown;
+                game.enemies.push(goo1);
+                game.enemies.push(goo2);
+            }
+
+            // split big goo
+            if (en.type == 'goo-big') {
+                let goo1 = {...enemyTypes[6]};
+                goo1.pathPos = en.pathPos + 0.5;
+                goo1.z = en.z;
+                goo1.jumpCooldown = en.jumpCooldown;
+                let goo2 = {...enemyTypes[6]};
+                goo2.pathPos = en.pathPos - 0.5;
+                goo2.z = en.z;
+                goo2.jumpCooldown = en.jumpCooldown;
+                game.enemies.push(goo1);
+                game.enemies.push(goo2);
+            }
+
+            
         } else if (en.pathPos >= game.pathLen) {  // on portal pass
             game.enemies.splice(i, 1);
             i--;
