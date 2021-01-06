@@ -23,10 +23,10 @@ let enemyTypes      = [
 
     {type: 'vek',           x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
     {type: 'vek2',          x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
-    {type: 'goo',           x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'goo',           x: 0, y: 0, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
 ];
 export let waves = [
-    [5, -4, 5, -4, 5, -4, 5, -4, 5],
+    [5, -4, 3, -4, 4, -4, 5, -4, 3],
     [3, -4, 4, -4, 3, -4, 4, -4, 3],
     [0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0],
     [0, -2, 0, -2, 1, -2, 0, -2, 0, -2, 1, -2, 1, -2, 0],

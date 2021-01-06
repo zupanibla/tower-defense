@@ -320,8 +320,16 @@ export function updateGame(game) {
         if (en.freeMode) continue;
 
         // move (slowed by oil)
-		en.pathPos += (2.0 / 60) * (1 - (en.oilyness/100) * 0.5);
-
+        if (en.type != 'goo') {
+            en.pathPos += (2.0 / 60) * (1 - (en.oilyness/100) * 0.5);
+        }
+        // goo movement
+        else {
+            if (en.z > 0) {
+                en.pathPos += (3.0 / 60) * (1 - (en.oilyness/100) * 0.5);
+            }
+        }
+		
 		// position on path
 		let [x,  y]  = positionOnPath(en.pathPos, game.path);
 		let [x2, y2] = positionOnPath(en.pathPos + 1, game.path);
@@ -345,6 +353,34 @@ export function updateGame(game) {
 
     		// gravity
     		en.vz -= 0.010;
+        }
+
+        if (en.type == 'goo') {
+            // jump
+            if (en.z <= 0 && en.jumpCooldown <= 0) {
+                en.vz = 0.15;
+                en.jumpCooldown = 45;
+            }
+
+    		// apply velocity
+    		en.z  += en.vz;
+
+    		// gravity
+            en.vz -= 0.010;
+            
+            // don't go below surface
+    		if (en.z <= 0) {
+    			en.z  = 0;
+            }
+
+            // spawn particles on landing
+            if (en.jumpCooldown == 15) {
+                let color = [70/256, 206/256, 74/256]
+                let density = 2;
+                game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));
+            }
+            
+            en.jumpCooldown--;
         }
 	}
 
@@ -378,7 +414,7 @@ export function updateGame(game) {
                 color = [153/256, 0/256, 0/256];
                 density = 6;
             }
-            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, density));
+            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 1, density, 20, 0.1));
         } else if (en.pathPos >= game.pathLen) {  // on portal pass
             game.enemies.splice(i, 1);
             i--;
@@ -571,11 +607,11 @@ function randomBetween(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function debrisParticles(x, y, z, r, g, b, d) {
+function debrisParticles(x, y, z, r, g, b, a, d, v, s) {
     let CUBE_DENSITY      = d;
     let CUBE_SIZE         = 0.2;
-    let PARTICLE_SIZE     = 0.1;
-    let PARTICLE_VELOCITY = 20/60;
+    let PARTICLE_SIZE     = s;
+    let PARTICLE_VELOCITY = v/60;
     let ROTATION_SCALE    = 0.3;
 
     let particles = [];
@@ -600,7 +636,7 @@ function debrisParticles(x, y, z, r, g, b, d) {
                     sx: PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
                     sy: PARTICLE_SIZE,
                     sz: PARTICLE_SIZE,
-                    r, g, b, a: 2,
+                    r, g, b, a: a,
                 });
             }
         }

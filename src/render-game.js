@@ -212,8 +212,6 @@ export function renderGame(game) {
 			alpha = 1 - Math.min(en.pathPos - (game.pathLen-0.5), 0.5) * alpha * 2;
 		}
 
-		
-
 		for (let it of enCuboids) {
 			it.x   = en.x;
 			it.y   = en.y;
@@ -221,6 +219,17 @@ export function renderGame(game) {
 			it.rot = en.rot;
 			it.a   = alpha;
 		}
+		// goo flatten on landing
+		if (en.type == 'goo') {
+            for (let it of enCuboids) {
+				if (en.jumpCooldown < 15) {
+					it.sz *= 0.5 + 0.5 * en.jumpCooldown / 15;
+					it.sx *= 1 + 0.5 * (1 - en.jumpCooldown / 15);
+					it.sy *= 1 + 0.5 * (1 - en.jumpCooldown / 15);
+				}
+			}
+		}
+
 		cuboids.push(...enCuboids);
 
 		// health bar
