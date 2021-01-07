@@ -19,7 +19,8 @@ export function updateGame(game) {
         }
     }
 
-    if (game.time % 4 == 0) createSnow();
+    let snowFrequency = Math.max(0, Math.sin(2 * Math.PI * (0.5 + game.time / (120 * 60)))) * 1/3;
+    if (game.time % ~~(1/snowFrequency) == 1) createSnow();
 
     // end of wave
     if (game.enemies.length === 0 && game.wave.isActive && game.player.health > 0) {
