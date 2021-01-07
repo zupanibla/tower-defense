@@ -58,7 +58,7 @@ let game = {
     ].reverse(),  // bottom left is (0, 0) PepePains
     towers: [],
     path: [[1,12.5], [1, 1], [5, 1], [5, 5], [3, 5], [3, 10], [10, 10], [10, 4], [8, 4], [8, -1.5], ],
-    pathLen: 48,  // HARDCODED
+    pathLen: 47,  // HARDCODED
 	time: 0,
     enemies: [],
     particles: [],
