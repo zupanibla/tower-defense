@@ -434,8 +434,6 @@ export function updateGame(game) {
         let en = game.enemies[i];
 
         if (en.health <= 0) {  // on death
-            // play death sound
-            playSound(0);
 
             game.enemies.splice(i, 1);
             i--;
@@ -464,9 +462,11 @@ export function updateGame(game) {
             }
             if (en.type == 'vek') {
                 color = [100/256, 120/256, 100/256];
+                playSound(8);
             }
             if (en.type == 'vek2') {
                 color = [200/256, 155/256, 90/256];
+                playSound(9);
             }
             if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
                 color = [70/256, 206/256, 74/256];

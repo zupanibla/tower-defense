@@ -55,7 +55,8 @@ class BufferLoader {
 let context;
 let bufferLoader;
 let BUFFERS;
-let BUFFERS_GAIN = [0.1, 0.1, 0.8, 0.07, 0.3, 0.7, 0.1];
+//                   0    1    2     3    4    5    6    7    8    9
+let BUFFERS_GAIN = [0.1, 0.1, 0.4, 0.07, 0.3, 0.7, 0.1, 0.3, 0.1, 0.2];
 
 export function initAudio() {
     try {
@@ -76,7 +77,9 @@ export function initAudio() {
             '../assets/sounds/flamethrower.mp3',        // 4
             '../assets/sounds/goo-split.mp3',           // 5
             '../assets/sounds/oil.mp3',                 // 6
-
+            '../assets/sounds/place-turret.mp3',        // 7
+            '../assets/sounds/vek-death.mp3',           // 8
+            '../assets/sounds/vek2-death.mp3',          // 9
         ],
         (bufferList) => BUFFERS = bufferList
     );

@@ -1,6 +1,6 @@
 import {updateGame}                   from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
-import {initAudio}                    from './audio.js';
+import {initAudio, playSound}                    from './audio.js';
 
 let canvas          = document.querySelector('.game-canvas');
 let ui              = document.querySelector('.game-ui');
@@ -167,6 +167,7 @@ ui.addEventListener('mousedown', e => {
             // place tower
             game.towers[game.mouse.tileY][game.mouse.tileX] =
                 {type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+            playSound(7);
             // take player money and up tower cost
             game.player.money -= game.mouse.tower.cost;
             game.mouse.tower.cost = Math.round(game.mouse.tower.cost * TOWER_COST_MULTIPLIER);
