@@ -19,6 +19,8 @@ export function updateGame(game) {
         }
     }
 
+    if (game.time % 4 == 0) createSnow();
+
     // end of wave
     if (game.enemies.length === 0 && game.wave.isActive && game.player.health > 0) {
         createCombatLogEntry("You survived wave " + game.wave.number + "!");
@@ -621,6 +623,14 @@ export function updateGame(game) {
             pt.vz += Math.random() * K;
         }
 
+        if (pt.type == 'snow') {
+            if (pt.z <= 0) {
+                pt.vz = 0;
+                pt.rotv = 0;
+                pt.z -= 0.00005;
+            }
+        }
+
         // update pos
         pt.x += pt.vx;
         pt.y += pt.vy;
@@ -638,6 +648,7 @@ export function updateGame(game) {
         if (pt.type == 'smoke')     pt.a -= 1/60
         if (pt.type == 'star')      pt.a -= (1/6)/60;
         if (pt.type == 'oil')       pt.a -= 1/60;
+        if (pt.type == 'snow')      pt.a -= (1/12)/60;
 
     }
 
@@ -819,6 +830,31 @@ function novaParticles(x, y, z, r, g, b, a, d, v, s) {
     }
 
     return particles;
+}
+
+function createSnow() {
+    let SNOW_SIZE_MIN = 0.03;
+    let SNOW_SIZE_MAX = 0.1;
+    let ROTATION_SCALE = 0.3;
+    let PARTICLE_VELOCITY = 0.05;
+
+    let snowSize = randomBetween(SNOW_SIZE_MIN, SNOW_SIZE_MAX);
+
+    game.particles.push({
+        type: 'snow',
+        x: randomBetween(-0.5, 11.5),    // HARDCODED
+        y: randomBetween(-0.5, 11.5),    // HARDCODED
+        z: 10,
+        vx: 0,
+        vy: 0,
+        vz: -PARTICLE_VELOCITY,
+        rot: 0,
+        rotv: (Math.random() - 0.5) * ROTATION_SCALE,
+        sx: snowSize,
+        sy: snowSize,
+        sz: snowSize,
+        r: 240/256, g: 240/256, b: 255/256, a: 2,
+    });
 }
 
 function createStar() {

@@ -5,8 +5,10 @@ import duckJson           	from './models/duck.json';
 import floorJson          	from './models/floor.json';
 import tileJson           	from './models/tile.json';
 import greenTileJson      	from './models/green-tile.json';
-import rockyTileJson      	from './models/rocky-tile.json';
-import pathTileJson       	from './models/path-tile.json';
+import iceTileJson          from './models/ice-tile.json';
+import mountainTileJson     from './models/mountain-tile.json';
+import snowTileJson        from './models/snow-tile.json';
+import asphaltTileJson      from './models/asphalt-tile.json';
 import balisticTurretJson 	from './models/balistic-turret.json';
 import flameTurretJson    	from './models/flame-turret.json';
 import laserTurretJson    	from './models/laser-turret.json';
@@ -32,13 +34,15 @@ export function renderGame(game) {
 	let cuboids = [];
 
 	// tiles
-	for (let y = 0; y < game.tiles.length; y++) {
+	for (let y = game.tiles.length-1; y >= 0; y--) {
 		for (let x = 0; x < game.tiles[y].length; x++) {
 			let tile = game.tiles[y][x];
 			let tileCuboids = null;
 
-			if (tile == 1) tileCuboids = cuboidsFromJson(rockyTileJson);
-			if (tile == 2) tileCuboids = cuboidsFromJson(pathTileJson);
+			if (tile == 1) tileCuboids = cuboidsFromJson(snowTileJson);
+            if (tile == 2) tileCuboids = cuboidsFromJson(asphaltTileJson);
+            if (tile == 3) tileCuboids = cuboidsFromJson(iceTileJson);
+            if (tile == 4) tileCuboids = cuboidsFromJson(mountainTileJson);
 
 			for (let it of tileCuboids) {
 				it.x = x;
