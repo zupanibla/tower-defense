@@ -32,93 +32,93 @@ import grapplingTurretJson  from './models/grappling-turret.json';
 
 
 export function renderGame(game) {
-	adjustCanvasSize();
+    adjustCanvasSize();
 
-	let cuboids = [];
+    let cuboids = [];
 
-	// tiles
-	for (let y = game.tiles.length-1; y >= 0; y--) {
-		for (let x = 0; x < game.tiles[y].length; x++) {
-			let tile = game.tiles[y][x];
-			let tileCuboids = null;
+    // tiles
+    for (let y = game.tiles.length-1; y >= 0; y--) {
+        for (let x = 0; x < game.tiles[y].length; x++) {
+            let tile = game.tiles[y][x];
+            let tileCuboids = null;
 
-			if (tile == 1) tileCuboids = cuboidsFromJson(snowTileJson);
+            if (tile == 1) tileCuboids = cuboidsFromJson(snowTileJson);
             if (tile == 2) tileCuboids = cuboidsFromJson(asphaltTileJson);
             if (tile == 3) tileCuboids = cuboidsFromJson(iceTileJson);
             if (tile == 4) tileCuboids = cuboidsFromJson(mountainTileJson);
 
-			for (let it of tileCuboids) {
-				it.x = x;
-				it.y = y;
-			}
+            for (let it of tileCuboids) {
+                it.x = x;
+                it.y = y;
+            }
 
-			cuboids.push(...tileCuboids);
-		}
-	}
+            cuboids.push(...tileCuboids);
+        }
+    }
 
-	// environment
-	for (let en of game.environment) {
+    // environment
+    for (let en of game.environment) {
 
-		// bluePortal, redPortal
-		let enCuboids = [];
+        // bluePortal, redPortal
+        let enCuboids = [];
 
-		if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
-		if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
+        if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
+        if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
 
-		for (let it of enCuboids) {
-			it.x   = en.x;
-			it.y   = en.y;
-			it.z   = en.z;
-			it.rot = en.rot;
+        for (let it of enCuboids) {
+            it.x   = en.x;
+            it.y   = en.y;
+            it.z   = en.z;
+            it.rot = en.rot;
 
-			// make the opening part of the portal transparent
-			if (en.type == 'bluePortal' || en.type == 'redPortal') {
-				if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
-					it.a   = 0.6;
-				}
-			}   
-		}
+            // make the opening part of the portal transparent
+            if (en.type == 'bluePortal' || en.type == 'redPortal') {
+                if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
+                    it.a   = 0.6;
+                }
+            }   
+        }
 
-		cuboids.push(...enCuboids);
-	}
+        cuboids.push(...enCuboids);
+    }
 
-	// handle tower on mouse
-	if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
-		game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
-		&& game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2) {
+    // handle tower on mouse
+    if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
+        game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
+        && game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2) {
 
-		// show tower on mouse while placing
-		let towerCuboids = null;
+        // show tower on mouse while placing
+        let towerCuboids = null;
 
-		if (game.mouse.tower.type == 'balistic')	towerCuboids = cuboidsFromJson(balisticTurretJson);
-		if (game.mouse.tower.type == 'flame')	    towerCuboids = cuboidsFromJson(flameTurretJson);
+        if (game.mouse.tower.type == 'balistic')    towerCuboids = cuboidsFromJson(balisticTurretJson);
+        if (game.mouse.tower.type == 'flame')       towerCuboids = cuboidsFromJson(flameTurretJson);
         if (game.mouse.tower.type == 'laser')       towerCuboids = cuboidsFromJson(laserTurretJson);
-		if (game.mouse.tower.type == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
-		if (game.mouse.tower.type == 'nova')		towerCuboids = cuboidsFromJson(novaTurretJson);
+        if (game.mouse.tower.type == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
+        if (game.mouse.tower.type == 'nova')        towerCuboids = cuboidsFromJson(novaTurretJson);
 
-		for (let it of towerCuboids) {
-			it.x = game.mouse.tileX;
-			it.y = game.mouse.tileY;
-			it.a = 0.6;
-		}
+        for (let it of towerCuboids) {
+            it.x = game.mouse.tileX;
+            it.y = game.mouse.tileY;
+            it.a = 0.6;
+        }
 
-		cuboids.push(...towerCuboids);
-	}
+        cuboids.push(...towerCuboids);
+    }
 
-	// towers
-	for (let y = 0; y < game.towers.length; y++) {
-		for (let x = 0; x < game.towers[y].length; x++) {
-			let tw = game.towers[y][x];
-			if (tw === null) continue;
+    // towers
+    for (let y = 0; y < game.towers.length; y++) {
+        for (let x = 0; x < game.towers[y].length; x++) {
+            let tw = game.towers[y][x];
+            if (tw === null) continue;
 
-			let towerCuboids = null;
-			
-			if (tw.type == 'balistic')  towerCuboids = cuboidsFromJson(balisticTurretJson);
-			if (tw.type == 'flame')     towerCuboids = cuboidsFromJson(flameTurretJson);
-			if (tw.type == 'laser')	    towerCuboids = cuboidsFromJson(laserTurretJson);
+            let towerCuboids = null;
+            
+            if (tw.type == 'balistic')  towerCuboids = cuboidsFromJson(balisticTurretJson);
+            if (tw.type == 'flame')     towerCuboids = cuboidsFromJson(flameTurretJson);
+            if (tw.type == 'laser')     towerCuboids = cuboidsFromJson(laserTurretJson);
             if (tw.type == 'oil')       towerCuboids = cuboidsFromJson(oilTurretJson);
-			if (tw.type == 'grappling') towerCuboids = cuboidsFromJson(grapplingTurretJson);
-			if (tw.type == 'nova')		towerCuboids = cuboidsFromJson(novaTurretJson);
+            if (tw.type == 'grappling') towerCuboids = cuboidsFromJson(grapplingTurretJson);
+            if (tw.type == 'nova')      towerCuboids = cuboidsFromJson(novaTurretJson);
             if (tw.type == 'blank')     towerCuboids = [];
 
             // hook animation
@@ -138,10 +138,10 @@ export function renderGame(game) {
                         it.b = p * it.b + (1-p) * 0;
                     }
                 }
-			}
-			
-			// nova tower regen animation
-			if (tw.type == 'nova') {
+            }
+            
+            // nova tower regen animation
+            if (tw.type == 'nova') {
                 for (let it of towerCuboids) {
                     if (it.name == 'base') {
                         let p = (1 - tw.cooldown / 120); 
@@ -227,7 +227,7 @@ export function renderGame(game) {
 
 
         if (en.type == 'vek') {
-			// vek animation
+            // vek animation
             for (let it of enCuboids) {
                 if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
                     it.py += Math.sin(game.time / 2) * 0.03
@@ -237,7 +237,7 @@ export function renderGame(game) {
                     			* Math.sign(it.px)
                     			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
-			}
+            }
         }
 
         // vek2 animation
@@ -252,7 +252,7 @@ export function renderGame(game) {
                                 * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
             }
-		}
+        }
 
 		// scarab animation
 		if (en.type == 'scarab-blue' || en.type == 'scarab-yellow') {
@@ -275,16 +275,16 @@ export function renderGame(game) {
 				if (it.name == 'eyes') continue;
                 applyFriednessFilter(it, en.friedness / 100);
                 applyOilynessFilter( it, en.oilyness / 100);
-			}
-		} else {
+            }
+        } else {
             for (let it of enCuboids) {
                 applyOilynessFilter(it, en.oilyness / 100);
             }
         }
 
 
-		let alpha = 1;
-		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
+        let alpha = 1;
+        if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
             alpha = 0.6;
 		}
 		// fade in enemies when they come out of portal (first 0.5 of the path)
@@ -351,18 +351,18 @@ export function renderGame(game) {
 
 
 export function initGameRenderer() {
-	initCuboidRenderer();
+    initCuboidRenderer();
 
-	// set camera, isometric view
-	// NOTE transformations are applied bottom up
-	let canvas = document.querySelector('.game-canvas');
+    // set camera, isometric view
+    // NOTE transformations are applied bottom up
+    let canvas = document.querySelector('.game-canvas');
 
-	let v = mat4.create();
-	mat4.scale(v, v, [120 / canvas.clientWidth, 120 / canvas.clientHeight, -0.001]);  // tile size 120px
-	mat4.rotateX(v, v, Math.PI * (-1/4));   // tilt world
-	mat4.rotateZ(v, v, Math.PI * (-1/4));   // rotate 45deg
-	mat4.translate(v, v, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
-	setViewMatrix(v);
+    let v = mat4.create();
+    mat4.scale(v, v, [120 / canvas.clientWidth, 120 / canvas.clientHeight, -0.001]);  // tile size 120px
+    mat4.rotateX(v, v, Math.PI * (-1/4));   // tilt world
+    mat4.rotateZ(v, v, Math.PI * (-1/4));   // rotate 45deg
+    mat4.translate(v, v, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
+    setViewMatrix(v);
 
     // TODO move projection component here
     let p = mat4.create();
@@ -370,31 +370,31 @@ export function initGameRenderer() {
 }
 
 function cuboidsFromJson(modelJson) {
-	let cuboids = [];
+    let cuboids = [];
 
-	for (let it of modelJson) {
-		cuboids.push({
-			name: it.name,
-			x: 0, y: 0, z: 0,
-			sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
-			r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
-			rot: 0,
-			px: -it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
-		});
+    for (let it of modelJson) {
+        cuboids.push({
+            name: it.name,
+            x: 0, y: 0, z: 0,
+            sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
+            r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
+            rot: 0,
+            px: -it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
+        });
 
-		if (it.mirror) {
-			cuboids.push({
-				name: it.name,
-				x: 0, y: 0, z: 0,
-				sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
-				r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
-				rot: 0,
-				px: +it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
-			});
-		}
-	}
+        if (it.mirror) {
+            cuboids.push({
+                name: it.name,
+                x: 0, y: 0, z: 0,
+                sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
+                r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
+                rot: 0,
+                px: +it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
+            });
+        }
+    }
 
-	return cuboids;
+    return cuboids;
 }
 
 // params all between 0 and 1

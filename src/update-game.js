@@ -148,13 +148,44 @@ export function updateGame(game) {
 
 			// shooting
 			if (tw.targetEn && tw.rot == tw.targetRot && tw.cooldown == 0) {
-                if (tw.type == 'balistic' || tw.type == 'laser') {
+                if (tw.type == 'balistic') {
     				game.bullets.push({
     					type: 'missile',
     					x, y, z: 0.5,
     					rot: 0,
     					targetEn: tw.targetEn,
     				});
+                    tw.cooldown = 60;
+                }
+
+                if (tw.type == 'laser') {
+                    for (let en of game.enemies) {
+                        // calculate distance between enemy and laser
+                        // d1: projection length; x1, y1: projection coords, d2: result
+                        let d1 = -Math.sin(-tw.rot) * (en.x - x) + -Math.cos(-tw.rot) * (en.y - y);
+                        let x1 = x + -Math.sin(-tw.rot) * d1;
+                        let y1 = y + -Math.cos(-tw.rot) * d1;
+                        let d2 = Math.sqrt((en.x - x1)*(en.x - x1) + (en.y - y1)*(en.y - y1));
+
+                        // damage
+                        if (d2 <= 0.5) en.health -= 20;
+                        else if (d2 <= 1 && en.type == 'goo-boss') en.health -= 20;
+                    }
+
+                    game.particles.push({
+                        type: 'laser',
+                        x: x +  -Math.sin(-tw.rot) * 50.2,
+                        y: y +  -Math.cos(-tw.rot) * 50.2,
+                        z: 0.5,
+                        vx: 0, vy: 0, vz: 0,
+                        rot: tw.rot,
+                        rotv: 0,
+                        sx: 0.1,
+                        sz: 0.1,
+                        sy: 100,
+                        r: 200/255, g: 255/255, b: 255/255, a: 2.5,
+                    });
+
                     tw.cooldown = 60;
                 }
 
@@ -693,6 +724,12 @@ export function updateGame(game) {
             }
         }
 
+        if (pt.type == 'laser') {
+            pt.sz += 0.02;
+            pt.sx += 0.02;
+            pt.a  -= 0.07;
+        }
+
         // update pos
         pt.x += pt.vx;
         pt.y += pt.vy;
@@ -712,6 +749,7 @@ export function updateGame(game) {
         if (pt.type == 'star')      pt.a -= (1/6)/60;
         if (pt.type == 'oil')       pt.a -= 1/60;
         if (pt.type == 'snow')      pt.a -= (1/12)/60;
+        if (pt.type == 'laser')     pt.a -= 4/60;
 
     }
 
