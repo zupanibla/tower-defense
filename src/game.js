@@ -17,18 +17,19 @@ let popoutMain      = document.querySelector('.popout-main');
 let popoutPlayAgain = document.querySelector('.popout-play-again');
 let scaleBodyFactor = 1;
 export let enemyTypes      = [
-    {type: 'duck',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
-    {type: 'snezak',        x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 50,  damage: 25, friedness: 0, oilyness: 0, burning: false},
-    {type: 'butcher',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 500, maxHealth: 500, reward: 100, damage: 30, friedness: 0, oilyness: 0, burning: false},
+    {type: 'duck',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'snezak',        x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 50,  damage:  25, friedness: 0, oilyness: 0, burning: false},
+    {type: 'butcher',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 500, maxHealth: 500, reward: 100, damage:  30, friedness: 0, oilyness: 0, burning: false},
 
-    {type: 'vek',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false, hasArmor: true},
-    {type: 'vek2',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 15, friedness: 0, oilyness: 0, burning: false},
-    {type: 'goo-small',     x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health:  60, maxHealth:  60, reward: 10,  damage:  5, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
-    {type: 'goo',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage: 10, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
-    {type: 'goo-big',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 240, maxHealth: 240, reward: 40,  damage: 20, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'vek',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  15, friedness: 0, oilyness: 0, burning: false, hasArmor: true},
+    {type: 'vek2',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  15, friedness: 0, oilyness: 0, burning: false},
+    {type: 'goo-small',     x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health:  60, maxHealth:  60, reward: 10,  damage:   3, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'goo',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  10, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'goo-big',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 240, maxHealth: 240, reward: 40,  damage:  30, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'goo-boss',      x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 480, maxHealth: 480, reward: 40,  damage: 100, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
 ];
 export let waves = [
-    [7, -4, 3, -4, 4, -4, 7, -4, 3],
+    [8, -4, 3, -4, 4, -4, 7, -4, 3],
     [3, -4, 4, -4, 3, -4, 4, -4, 3],
     [0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0],
     [0, -2, 0, -2, 1, -2, 0, -2, 0, -2, 1, -2, 1, -2, 0],

@@ -370,14 +370,20 @@ export function updateGame(game) {
         // don't move while hooked
         if (en.freeMode) continue;
 
+        let speed = 2;
+        if (en.type == 'goo-boss')  speed = 1;
+        if (en.type == 'goo-big')   speed = 1.5;
+        if (en.type == 'goo')       speed = 2;
+        if (en.type == 'goo-small') speed = 3;
+
         // move (slowed by oil)
-        if (en.type != 'goo' && en.type != 'goo-small' && en.type != 'goo-big') {
-            en.pathPos += (2.0 / 60) * (1 - (en.oilyness/100) * 0.5);
+        if (en.type != 'goo' && en.type != 'goo-small' && en.type != 'goo-big' && en.type != 'goo-boss') {
+            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
         }
         // goo movement
         else {
             if (en.z > 0) {
-                en.pathPos += (3.0 / 60) * (1 - (en.oilyness/100) * 0.5);
+                en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
             }
         }
 		
@@ -406,7 +412,7 @@ export function updateGame(game) {
     		en.vz -= 0.010;
         }
 
-        if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
+        if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
             // jump
             if (en.z <= 0 && en.jumpCooldown == 0) {
                 en.vz = 0.15;
@@ -430,7 +436,8 @@ export function updateGame(game) {
                 let density = 2;
                 if (en.type == 'goo-small') game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.03));
                 if (en.type == 'goo')       game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.05));
-                if (en.type == 'goo-big')   game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));  
+                if (en.type == 'goo-big')   game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));
+                if (en.type == 'goo-boss')  game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.1));
             }
             
             if (en.jumpCooldown > 0) en.jumpCooldown--;
@@ -476,7 +483,7 @@ export function updateGame(game) {
                 color = [200/256, 155/256, 90/256];
                 playSound(9);
             }
-            if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
+            if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
                 color = [70/256, 206/256, 74/256];
                 alpha = 0.5;
                 density = 3;
@@ -486,7 +493,15 @@ export function updateGame(game) {
                 size = 0.06;
                 velocity = 13;
             }
+            if (en.type == 'goo') {
+                size = 0.08;
+                velocity = 13;
+            }
             if (en.type == 'goo-big') {
+                size = 0.10;
+                velocity = 13;
+            }
+            if (en.type == 'goo-boss') {
                 size = 0.15;
                 velocity = 13;
             }
@@ -503,8 +518,8 @@ export function updateGame(game) {
                 goo2.pathPos = en.pathPos - 0.5;
                 goo2.z = en.z;
                 goo2.jumpCooldown = en.jumpCooldown;
-                game.enemies.push(goo1);
-                game.enemies.push(goo2);
+                game.enemies.unshift(goo1);
+                game.enemies.unshift(goo2);
             }
 
             // split big goo
@@ -517,8 +532,22 @@ export function updateGame(game) {
                 goo2.pathPos = en.pathPos - 0.5;
                 goo2.z = en.z;
                 goo2.jumpCooldown = en.jumpCooldown;
-                game.enemies.push(goo1);
-                game.enemies.push(goo2)
+                game.enemies.unshift(goo1);
+                game.enemies.unshift(goo2)
+            }
+
+            // split boss goo
+            if (en.type == 'goo-boss') {
+                let goo1 = {...enemyTypes[7]};
+                goo1.pathPos = en.pathPos + 1;
+                goo1.z = en.z;
+                goo1.jumpCooldown = en.jumpCooldown;
+                let goo2 = {...enemyTypes[7]};
+                goo2.pathPos = en.pathPos - 1;
+                goo2.z = en.z;
+                goo2.jumpCooldown = en.jumpCooldown;
+                game.enemies.unshift(goo1);
+                game.enemies.unshift(goo2)
             }
 
             

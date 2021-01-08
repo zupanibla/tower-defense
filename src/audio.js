@@ -70,18 +70,18 @@ export function initAudio() {
     bufferLoader = new BufferLoader(
         context,
         [
-            '../assets/sounds/bowling.mp3',             // 0
-            '../assets/sounds/zap.mp3',                 // 1
-            '../assets/sounds/pow.mp3',                 // 2
-            '../assets/sounds/lose-health.mp3',         // 3
-            '../assets/sounds/flamethrower.mp3',        // 4
-            '../assets/sounds/goo-split.mp3',           // 5
-            '../assets/sounds/oil.mp3',                 // 6
-            '../assets/sounds/place-turret.mp3',        // 7
-            '../assets/sounds/vek-death.mp3',           // 8
-            '../assets/sounds/vek2-death.mp3',          // 9
-            '../assets/sounds/armor-break.mp3',         // 10
-            '../assets/sounds/clank.mp3',               // 10
+            '/assets/sounds/bowling.mp3',             // 0
+            '/assets/sounds/zap.mp3',                 // 1
+            '/assets/sounds/pow.mp3',                 // 2
+            '/assets/sounds/lose-health.mp3',         // 3
+            '/assets/sounds/flamethrower.mp3',        // 4
+            '/assets/sounds/goo-split.mp3',           // 5
+            '/assets/sounds/oil.mp3',                 // 6
+            '/assets/sounds/place-turret.mp3',        // 7
+            '/assets/sounds/vek-death.mp3',           // 8
+            '/assets/sounds/vek2-death.mp3',          // 9
+            '/assets/sounds/armor-break.mp3',         // 10
+            '/assets/sounds/clank.mp3',               // 11
 
         ],
         (bufferList) => BUFFERS = bufferList

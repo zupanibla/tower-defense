@@ -25,6 +25,7 @@ import vek2Json           	from './models/vek2.json';
 import gooJson				from './models/goo.json';
 import gooSmallJson			from './models/goo-small.json';
 import gooBigJson			from './models/goo-big.json';
+import gooBossJson			from './models/goo-boss.json';
 import grapplingTurretJson  from './models/grappling-turret.json';
 
 
@@ -164,8 +165,48 @@ export function renderGame(game) {
 		}
 	}
 
+	// particles
+	for (let pt of game.particles) {
+		let cub = {
+			name: 'particle',
+			x: pt.x, y: pt.y, z: pt.z, rot: pt.rot,
+			sx: pt.sx, sy: pt.sy, sz: pt.sz,
+			px: 0, py: 0, pz: -pt.sz/2,
+			r: pt.r, g: pt.g, b: pt.b, a: pt.a,
+		}
+		cuboids.push(cub);
+	}
+
 	// enemies
-	for (let en of game.enemies) {
+	for (let en of [...game.enemies].reverse()) {
+
+		// health bar
+		let size    = 0.6/100;
+		let zOffset = -1.5;
+		if (en.type == 'butcher') zOffset = -3;
+		if (en.type == 'goo-boss') zOffset = -3;
+		if (en.type == 'goo-big') zOffset = -2;
+		
+		let green = {
+			x: en.x, y: en.y, z: 0,
+			name: 'green',
+			pz: zOffset, py: 0,
+			sz: 10/256,    sy: 10/256,
+			sx: en.health * size, px: (en.maxHealth - en.health)/2 * size,
+			r: 0, g: 1, b: 0, a: 1,
+			rot: Math.PI / 4,
+		};
+		let red = {
+			x: en.x, y: en.y, z: 0,
+			name: 'green',
+			pz: zOffset, py: 0,
+			sz: 10/256,  sy: 10/256,
+			sx: (en.maxHealth - en.health) * size, px: -en.health/2 * size,
+			r: 1, g: 0, b: 0, a: 1,
+			rot: Math.PI / 4,
+		};
+
+		cuboids.push(green, red);
 
 		// duck, snezak
 		let enCuboids = [];
@@ -178,6 +219,7 @@ export function renderGame(game) {
         if (en.type == 'goo')     	enCuboids = cuboidsFromJson(gooJson);
 		if (en.type == 'goo-small') enCuboids = cuboidsFromJson(gooSmallJson);
 		if (en.type == 'goo-big')	enCuboids = cuboidsFromJson(gooBigJson);
+		if (en.type == 'goo-boss')	enCuboids = cuboidsFromJson(gooBossJson);
 
 
         if (en.type == 'vek') {
@@ -224,7 +266,7 @@ export function renderGame(game) {
 
 
 		let alpha = 1;
-		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
+		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
             alpha = 0.6;
 		}
 		// fade in enemies when they come out of portal (first 0.5 of the path)
@@ -244,7 +286,7 @@ export function renderGame(game) {
 			it.a   = alpha;
 		}
 		// goo flatten on landing
-		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big') {
+		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
             for (let it of enCuboids) {
 				if (en.jumpCooldown < 15) {
 					it.sz *= 0.5 + 0.5 * en.jumpCooldown / 45;
@@ -263,32 +305,6 @@ export function renderGame(game) {
 		}
 
 		cuboids.push(...enCuboids);
-
-		// health bar
-		let size    = 0.6/100;
-		let zOffset = -1.5;
-		if (en.type == 'butcher') zOffset = -3;
-		
-		let green = {
-			x: en.x, y: en.y, z: 0,
-			name: 'green',
-			pz: zOffset, py: 0,
-			sz: 10/256,    sy: 10/256,
-			sx: en.health * size, px: (en.maxHealth - en.health)/2 * size,
-			r: 0, g: 1, b: 0, a: 1,
-			rot: Math.PI / 4,
-		};
-		let red = {
-			x: en.x, y: en.y, z: 0,
-			name: 'green',
-			pz: zOffset, py: 0,
-			sz: 10/256,  sy: 10/256,
-			sx: (en.maxHealth - en.health) * size, px: -en.health/2 * size,
-			r: 1, g: 0, b: 0, a: 1,
-			rot: Math.PI / 4,
-		};
-
-		cuboids.push(green, red);
 	}
 
 	// bullets
@@ -307,19 +323,6 @@ export function renderGame(game) {
 
 		cuboids.push(...blCuboids);
 	}
-
-	// particles
-	for (let pt of game.particles) {
-		let cub = {
-			name: 'particle',
-			x: pt.x, y: pt.y, z: pt.z, rot: pt.rot,
-			sx: pt.sx, sy: pt.sy, sz: pt.sz,
-			px: 0, py: 0, pz: -pt.sz/2,
-			r: pt.r, g: pt.g, b: pt.b, a: pt.a,
-		}
-		cuboids.push(cub);
-	}
-
 
 	renderCuboids(cuboids);
 }
