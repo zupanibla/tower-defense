@@ -55,8 +55,8 @@ class BufferLoader {
 let context;
 let bufferLoader;
 let BUFFERS;
-//                   0    1    2     3    4    5    6    7    8    9
-let BUFFERS_GAIN = [0.1, 0.1, 0.4, 0.07, 0.3, 0.7, 0.1, 0.3, 0.1, 0.2];
+//                   0    1     2     3    4    5    6     7    8    9
+let BUFFERS_GAIN = [0.1, 0.07, 0.4, 0.03, 0.3, 0.7, 0.08, 0.3, 0.1, 0.2];
 
 export function initAudio() {
     try {

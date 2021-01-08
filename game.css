@@ -286,21 +286,21 @@ body {
 
 /* tower 1 0 */
 .tower-1-0 {
-    background: url('assets/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-nova-turret.png');
     top: 80px;
     left: 12px;
 }
 .tower-1-0:hover {
-    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-nova-turret-hover.png');
 }
 .tower-1-0:active {
-    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-nova-turret-active.png');
 }
 .tower-1-0.tower-selected {
-    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-nova-turret-active.png');
 }
 .tower-1-0.tower-disabled {
-    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-nova-turret-disabled.png');
 }
 
 /* tower 1 1 */

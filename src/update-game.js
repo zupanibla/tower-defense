@@ -631,6 +631,7 @@ export function updateGame(game) {
 
         // decay
         if (pt.type == 'debris')    pt.a -= (1/6)/60;
+        if (pt.type == 'snow')      pt.a -= (1/12)/60;
         if (pt.type == 'flame')     pt.a -= 4/60
         if (pt.type == 'explosion') pt.a -= 8/60
         if (pt.type == 'nova')      pt.a -= 10/60
@@ -842,6 +843,6 @@ function createStar() {
         sx: starSize,
         sy: starSize,
         sz: starSize,
-        r: 240/256, g: 240/256, b: 200/256, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
+        r: 240/256, g: 240/256, b: 100/256, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
     });
 }
