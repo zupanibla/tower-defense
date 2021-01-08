@@ -84,7 +84,7 @@ let game = {
         {type: 'flame',    cost: 250, button: shopButtons[1]},
         {type: 'oil',      cost: 300, button: shopButtons[2]},
         {type: 'nova',     cost: 500, button: shopButtons[3]},
-        // {type: 'laser',    cost: 100, button: shopButtons[3]},
+        {type: 'laser',    cost: 100, button: shopButtons[4]},
     ],
     mouse: {
         x: -1,
@@ -110,9 +110,10 @@ game.towers[4][3] = {type: 'blank',     rot: 0, targetRot: 0, targetEn: null, co
 
 
 window.setTimeout(e => {  // TODO za testiranje
-    let en = {...enemyTypes[4]};
-    en.pathPos = 37;
-    game.enemies.push(en);
+    // let en = {...enemyTypes[4]};
+    // en.pathPos = 37;
+    // game.enemies.push(en);
+    game.towers[10][0] = {type: 'laser',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
     unpauseGame();
 }, 400);
 
