@@ -131,6 +131,9 @@ export function initCuboidRenderer() {
 // }[]
 export function renderCuboids(cuboids) {
 
+    let vpMatrix = mat4.create();
+    mat4.mul(vpMatrix, projectionMatrix, viewMatrix);
+    
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	// TODO no idea what this does
@@ -154,14 +157,12 @@ export function renderCuboids(cuboids) {
 
 		// calculate and push aMvpMatrix to array
 		let mvpMatrix = mat4.create();
-		mat4.mul(mvpMatrix, viewMatrix, modelMatrix);
-        mat4.mul(mvpMatrix, projectionMatrix, mvpMatrix);
+		mat4.mul(mvpMatrix, vpMatrix, modelMatrix);
 		mvpMatrixNormalMatrixColorData.push(...mvpMatrix);
 
 		// calculate and push aNormalMatrix to array
 		let normalMatrix = mat4.create();
-		mat4.rotateZ(normalMatrix, normalMatrix, cub.rot);
-		mat4.invert(normalMatrix, normalMatrix);
+		mat4.rotateZ(normalMatrix, normalMatrix, -cub.rot);
 		mat4.transpose(normalMatrix, normalMatrix);
 		mvpMatrixNormalMatrixColorData.push(...normalMatrix);
 
