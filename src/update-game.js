@@ -181,7 +181,7 @@ export function updateGame(game) {
                         type: 'laser',
                         x: x +  -Math.sin(-tw.rot) * 50.2,
                         y: y +  -Math.cos(-tw.rot) * 50.2,
-                        z: 0.5,
+                        z: 0.35,
                         vx: 0, vy: 0, vz: 0,
                         rot: tw.rot,
                         rotv: 0,
@@ -246,42 +246,54 @@ export function updateGame(game) {
 
                 // TODO: less oil particles
                 if (tw.type == 'oil') {
-                    // oil origin
-                    let xo = x, yo = y, zo = 0.7;
+                    if (game.time % 3 == 0) {
+                        // oil origin
+                        let xo = x, yo = y, zo = 0.7;
 
-                    xo += Math.cos(tw.rot - Math.PI / 2) * 0.15;
-                    yo += Math.sin(tw.rot - Math.PI / 2) * 0.15;
+                        xo += Math.cos(tw.rot - Math.PI / 2) * 0.15;
+                        yo += Math.sin(tw.rot - Math.PI / 2) * 0.15;
 
-                    let OIL_VELOCITY = 0.05;
+                        let OIL_VELOCITY = 0.05;
 
-                    let oilRot = tw.rot - Math.PI / 2 + (Math.random() - 0.5)*(Math.random() - 0.5)*0.2;
+                        let oilRot = tw.rot - Math.PI / 2 + (Math.random() - 0.5)*(Math.random() - 0.5)*0.2;
 
-                    let vx = Math.cos(oilRot) * OIL_VELOCITY;
-                    let vy = Math.sin(oilRot) * OIL_VELOCITY;
-                    let vz = 0.1;
+                        let vx = Math.cos(oilRot) * OIL_VELOCITY;
+                        let vy = Math.sin(oilRot) * OIL_VELOCITY;
+                        let vz = 0.1;
 
-                    let color = [47, 214, 100];
+                        let color = [47, 214, 100];
 
-                    game.particles.push({
-                        type: 'oil',
-                        x: xo,
-                        y: yo,
-                        z: zo,
-                        vx, vy, vz,
-                        rot: 0,
-                        rotv: (Math.random() - 0.5) * 3,
-                        sx: 0.1,
-                        sy: 0.1,
-                        sz: 0.1,
-                        r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
-                    });
+                        game.particles.push({
+                            type: 'oil',
+                            x: xo,
+                            y: yo,
+                            z: zo,
+                            vx, vy, vz,
+                            rot: 0,
+                            rotv: (Math.random() - 0.5) * 3,
+                            sx: 0.15,
+                            sy: 0.15,
+                            sz: 0.15,
+                            r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
+                        });
+                    }
 
-                    tw.targetEn.oilyness = Math.min(tw.targetEn.oilyness + 1, 100);
+                    // oil aoe
+                    for (let en of game.enemies) {
+                        if (Math.abs(en.pathPos - tw.targetEn.pathPos) < 1) {
+                            en.oilyness = Math.min(en.oilyness + 1, 100);
+
+                            // scarabs get extra slow
+                            if (en.type == 'scarab-blue' || en.type == 'scarab-yellow') {
+                                en.oilyness = Math.min(en.oilyness + 1, 100);
+                            }
+                        }
+                    }
 
                     // sound
                     if (!tw.sound) {
                         tw.sound = playSound(6);
-                        tw.sound.loop = true;
+                        if (tw.sound) tw.sound.loop = true;
                     }
                 }
 
@@ -416,14 +428,18 @@ export function updateGame(game) {
         if (en.type == 'scarab-yellow') speed = 5;
 
         // move (slowed by oil)
-        if (en.type != 'goo' && en.type != 'goo-small' && en.type != 'goo-big' && en.type != 'goo-boss') {
-            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
-        }
         // goo movement
-        else {
+        if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
             if (en.z > 0) {
                 en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
             }
+        }
+        // scarabs get extra slow
+        else if (en.type == 'scarab-blue' || en.type == 'scarab-yellow') {
+            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.7);
+        }
+        else {
+            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
         }
 		
 		// position on path

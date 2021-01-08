@@ -119,6 +119,24 @@ let game = {
 game.towers = game.tiles.map(row => row.map(_ => null));
 
 
+<<<<<<< HEAD
+=======
+game.towers[4][4] = game.grapplingTurret;
+game.towers[4][3] = {type: 'blank',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+
+
+window.setTimeout(e => {  // TODO za testiranje
+    // let en = {...enemyTypes[4]};
+    // en.pathPos = 37;
+    // game.enemies.push(en);
+    game.towers[5][0] = {type: 'oil',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+    unpauseGame();
+}, 400);
+
+// for reseting game
+let initialGameJson = JSON.stringify(game);
+
+>>>>>>> 77cf0c419299cd69209ec015819d3b139279a7fc
 // for debug purposes
 window.game = game;
 
