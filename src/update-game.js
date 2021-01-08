@@ -592,7 +592,7 @@ export function updateGame(game) {
                 let goo2 = {...enemyTypes[5]};
                 goo2.pathPos = en.pathPos - 0.5;
                 goo2.z = en.z;
-                pos = positionOnPath(goo1.pathPos);
+                pos = positionOnPath(goo2.pathPos);
                 goo2.x = pos[0];
                 goo2.y = pos[1];
                 goo2.jumpCooldown = en.jumpCooldown;
@@ -612,7 +612,7 @@ export function updateGame(game) {
                 let goo2 = {...enemyTypes[6]};
                 goo2.pathPos = en.pathPos - 0.5;
                 goo2.z = en.z;
-                pos = positionOnPath(goo1.pathPos);
+                pos = positionOnPath(goo2.pathPos);
                 goo2.x = pos[0];
                 goo2.y = pos[1];
                 goo2.jumpCooldown = en.jumpCooldown;
@@ -632,7 +632,7 @@ export function updateGame(game) {
                 let goo2 = {...enemyTypes[7]};
                 goo2.pathPos = en.pathPos - 1;
                 goo2.z = en.z;
-                pos = positionOnPath(goo1.pathPos);
+                pos = positionOnPath(goo2.pathPos);
                 goo2.x = pos[0];
                 goo2.y = pos[1];
                 goo2.jumpCooldown = en.jumpCooldown;
