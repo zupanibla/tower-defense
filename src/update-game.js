@@ -315,9 +315,14 @@ export function updateGame(game) {
         // on collision
         if (d < 0.1) {
             game.bullets.splice(i, 1);
-            bl.targetEn.health -= 15;
-            playSound(2);
             game.particles.push(...explosionParticles(bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 2, 2, 5, 0.03));
+            if (bl.targetEn.hasArmor) {
+                playSound(11);
+            }
+            else {
+                bl.targetEn.health -= 15;
+                playSound(2);
+            }
         }
     }
 
@@ -432,7 +437,7 @@ export function updateGame(game) {
         }
 	}
 
-    // enemy death
+    // enemy death / health change effects
     for (let i = 0; i < game.enemies.length; i++) {
         let en = game.enemies[i];
 
@@ -447,17 +452,17 @@ export function updateGame(game) {
             // spawn debris
             let alpha = 1;
             let color = [0, 0, 0]
-            let density = 3;
+            let density = 4;
             let velocity = 20;
             let size = 0.1;
             if (en.type == 'snezak') {
                 color = [217/256, 218/256, 242/256];
-                density = 4;
             }
             if (en.type == 'duck') {
                 let rgb = {r: 232/256, g: 220/256, b: 59/256};
                 applyFriednessFilter(rgb, en.friedness / 100);
                 color = [rgb.r, rgb.g, rgb.b];
+                density = 3;
             }
             if (en.type == 'butcher') {
                 color = [153/256, 0/256, 0/256];
@@ -484,7 +489,6 @@ export function updateGame(game) {
             if (en.type == 'goo-big') {
                 size = 0.15;
                 velocity = 13;
-                density = 4;
             }
 
             game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, alpha, density, velocity, size));
@@ -524,6 +528,14 @@ export function updateGame(game) {
 
             playSound(3);
             game.player.health -= en.damage;
+        }
+
+        // vek armor break
+        if (en.type == 'vek' && en.hasArmor && en.health <= en.maxHealth / 2) {
+            let color = [125/256, 80/256, 80/256];
+            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 1, 3, 20, 0.1));
+            playSound(10);
+            en.hasArmor = false;
         }
     }
 

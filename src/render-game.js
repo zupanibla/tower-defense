@@ -180,8 +180,8 @@ export function renderGame(game) {
 		if (en.type == 'goo-big')	enCuboids = cuboidsFromJson(gooBigJson);
 
 
-        // vek animation
         if (en.type == 'vek') {
+			// vek animation
             for (let it of enCuboids) {
                 if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
                     it.py += Math.sin(game.time / 2) * 0.03
@@ -191,7 +191,7 @@ export function renderGame(game) {
                     * Math.sign(it.px)
                     * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
-            }
+			}
         }
 
         // vek2 animation
@@ -250,6 +250,14 @@ export function renderGame(game) {
 					it.sz *= 0.5 + 0.5 * en.jumpCooldown / 45;
 					it.sx *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
 					it.sy *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
+				}
+			}
+		}
+		// remove vek armor on less than half hp
+		if (en.type == 'vek' && !en.hasArmor) {
+			for (let it of enCuboids) {
+				if (it.name == 'armor') {
+					it.a = 0;
 				}
 			}
 		}
