@@ -192,7 +192,7 @@ export function updateGame(game) {
                         sx: 0.1,
                         sy: 0.1,
                         sz: 0.1,
-                        r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+                        r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
                     });
 
                     // damage
@@ -236,7 +236,7 @@ export function updateGame(game) {
                         sx: 0.1,
                         sy: 0.1,
                         sz: 0.1,
-                        r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+                        r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
                     });
 
                     tw.targetEn.oilyness = Math.min(tw.targetEn.oilyness + 1, 100);
@@ -363,7 +363,7 @@ export function updateGame(game) {
                 sx: 0.1,
                 sy: 0.1,
                 sz: 0.1,
-                r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+                r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
             });
         }
 
@@ -371,10 +371,12 @@ export function updateGame(game) {
         if (en.freeMode) continue;
 
         let speed = 2;
-        if (en.type == 'goo-boss')  speed = 1;
-        if (en.type == 'goo-big')   speed = 1.5;
-        if (en.type == 'goo')       speed = 2;
-        if (en.type == 'goo-small') speed = 3;
+        if (en.type == 'goo-boss')      speed = 1;
+        if (en.type == 'goo-big')       speed = 1.5;
+        if (en.type == 'goo')           speed = 2;
+        if (en.type == 'goo-small')     speed = 2.5;
+        if (en.type == 'scarab-blue')   speed = 3.5;
+        if (en.type == 'scarab-yellow') speed = 5;
 
         // move (slowed by oil)
         if (en.type != 'goo' && en.type != 'goo-small' && en.type != 'goo-big' && en.type != 'goo-boss') {
@@ -432,7 +434,7 @@ export function updateGame(game) {
 
             // spawn particles on landing
             if (en.jumpCooldown == 15) {
-                let color = [70/256, 206/256, 74/256]
+                let color = [70/255, 206/255, 74/255]
                 let density = 2;
                 if (en.type == 'goo-small') game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.03));
                 if (en.type == 'goo')       game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.05));
@@ -463,28 +465,28 @@ export function updateGame(game) {
             let velocity = 20;
             let size = 0.1;
             if (en.type == 'snezak') {
-                color = [217/256, 218/256, 242/256];
+                color = [217/255, 218/255, 242/255];
             }
             if (en.type == 'duck') {
-                let rgb = {r: 232/256, g: 220/256, b: 59/256};
+                let rgb = {r: 232/255, g: 220/255, b: 59/255};
                 applyFriednessFilter(rgb, en.friedness / 100);
                 color = [rgb.r, rgb.g, rgb.b];
                 density = 3;
             }
             if (en.type == 'butcher') {
-                color = [153/256, 0/256, 0/256];
+                color = [153/255, 0/255, 0/255];
                 density = 6;
             }
             if (en.type == 'vek') {
-                color = [100/256, 120/256, 100/256];
+                color = [100/255, 120/255, 100/255];
                 playSound(8);
             }
             if (en.type == 'vek2') {
-                color = [200/256, 155/256, 90/256];
+                color = [200/255, 155/255, 90/255];
                 playSound(9);
             }
             if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
-                color = [70/256, 206/256, 74/256];
+                color = [70/255, 206/255, 74/255];
                 alpha = 0.5;
                 density = 3;
                 playSound(5);
@@ -504,6 +506,24 @@ export function updateGame(game) {
             if (en.type == 'goo-boss') {
                 size = 0.15;
                 velocity = 13;
+            }
+            if (en.type == 'scarab-blue') {
+                let rgb = {r: 55/255, g: 225/255, b: 197/255};
+                applyFriednessFilter(rgb, en.friedness / 100);
+                color = [rgb.r, rgb.g, rgb.b];
+                density = 3;
+                size = 0.07;
+                let alpha = 0.7;
+                playSound(12);
+            }
+            if (en.type == 'scarab-yellow') {
+                let rgb = {r: 228/255, g: 232/255, b: 33/255};
+                applyFriednessFilter(rgb, en.friedness / 100);
+                color = [rgb.r, rgb.g, rgb.b];
+                density = 3;
+                size = 0.07;
+                let alpha = 0.7;
+                playSound(12);
             }
 
             game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, alpha, density, velocity, size));
@@ -561,7 +581,7 @@ export function updateGame(game) {
 
         // vek armor break
         if (en.type == 'vek' && en.hasArmor && en.health <= en.maxHealth / 2) {
-            let color = [125/256, 80/256, 80/256];
+            let color = [125/255, 80/255, 80/255];
             game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 1, 3, 20, 0.1));
             playSound(10);
             en.hasArmor = false;
@@ -589,7 +609,7 @@ export function updateGame(game) {
             sx: 0.1,
             sy: 0.1,
             sz: 0.1,
-            r: color[0]/256, g: color[1]/256, b: color[2]/256, a: 2.5,
+            r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
         });
     }
 
@@ -896,7 +916,7 @@ function createSnow() {
         sx: snowSize,
         sy: snowSize,
         sz: snowSize,
-        r: 240/256, g: 240/256, b: 255/256, a: 2,
+        r: 240/255, g: 240/255, b: 255/255, a: 2,
     });
 }
 
@@ -921,6 +941,6 @@ function createStar() {
         sx: starSize,
         sy: starSize,
         sz: starSize,
-        r: 240/256, g: 240/256, b: 100/256, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
+        r: 240/255, g: 240/255, b: 100/255, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
     });
 }

@@ -26,6 +26,8 @@ import gooJson				from './models/goo.json';
 import gooSmallJson			from './models/goo-small.json';
 import gooBigJson			from './models/goo-big.json';
 import gooBossJson			from './models/goo-boss.json';
+import yellowScarabJson		from './models/scarab-yellow.json';
+import blueScarabJson		from './models/scarab-blue.json';
 import grapplingTurretJson  from './models/grappling-turret.json';
 
 
@@ -211,15 +213,17 @@ export function renderGame(game) {
 		// duck, snezak
 		let enCuboids = [];
 
-		if (en.type == 'duck')	  	enCuboids = cuboidsFromJson(duckJson);
-		if (en.type == 'snezak')  	enCuboids = cuboidsFromJson(snezakJson);
-        if (en.type == 'butcher') 	enCuboids = cuboidsFromJson(butcherJson);
-        if (en.type == 'vek')     	enCuboids = cuboidsFromJson(vekJson);
-        if (en.type == 'vek2')    	enCuboids = cuboidsFromJson(vek2Json);
-        if (en.type == 'goo')     	enCuboids = cuboidsFromJson(gooJson);
-		if (en.type == 'goo-small') enCuboids = cuboidsFromJson(gooSmallJson);
-		if (en.type == 'goo-big')	enCuboids = cuboidsFromJson(gooBigJson);
-		if (en.type == 'goo-boss')	enCuboids = cuboidsFromJson(gooBossJson);
+		if (en.type == 'duck')	  		enCuboids = cuboidsFromJson(duckJson);
+		if (en.type == 'snezak')  		enCuboids = cuboidsFromJson(snezakJson);
+        if (en.type == 'butcher') 		enCuboids = cuboidsFromJson(butcherJson);
+        if (en.type == 'vek')     		enCuboids = cuboidsFromJson(vekJson);
+        if (en.type == 'vek2')    		enCuboids = cuboidsFromJson(vek2Json);
+        if (en.type == 'goo')     		enCuboids = cuboidsFromJson(gooJson);
+		if (en.type == 'goo-small') 	enCuboids = cuboidsFromJson(gooSmallJson);
+		if (en.type == 'goo-big')		enCuboids = cuboidsFromJson(gooBigJson);
+		if (en.type == 'goo-boss')		enCuboids = cuboidsFromJson(gooBossJson);
+		if (en.type == 'scarab-blue')	enCuboids = cuboidsFromJson(blueScarabJson);
+		if (en.type == 'scarab-yellow')	enCuboids = cuboidsFromJson(yellowScarabJson);
 
 
         if (en.type == 'vek') {
@@ -227,11 +231,11 @@ export function renderGame(game) {
             for (let it of enCuboids) {
                 if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
                     it.py += Math.sin(game.time / 2) * 0.03
-                    * Math.sign(it.px)
-                    * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                    			* Math.sign(it.px)
+                    			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                     it.pz += -Math.cos(game.time / 2) * 0.022
-                    * Math.sign(it.px)
-                    * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                    			* Math.sign(it.px)
+                    			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
 			}
         }
@@ -241,13 +245,27 @@ export function renderGame(game) {
             for (let it of enCuboids) {
                 if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
                     it.py += Math.sin(game.time / 3) * 0.05
-                             * Math.sign(it.px)
-                             * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                             	* Math.sign(it.px)
+                             	* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                     it.pz += -Math.cos(game.time / 3) * 0.04
-                                 * Math.sign(it.px)
-                                 * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                                * Math.sign(it.px)
+                                * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
             }
+		}
+
+		// scarab animation
+		if (en.type == 'scarab-blue' || en.type == 'scarab-yellow') {
+            for (let it of enCuboids) {
+                if (['legs1', 'legs1inner', 'legs3'].includes(it.name)) {
+                    it.py += Math.sin(game.time / 2) * 0.03
+                    			* Math.sign(it.px)
+                    			* (['legs3'].includes(it.name) ? -2 : 2);
+                    it.pz += -Math.cos(game.time / 2) * 0.022
+                    			* Math.sign(it.px)
+                    			* (['legs3'].includes(it.name) ? -2 : 2);
+                }
+			}
 		}
 
 		// fried ducks
@@ -284,6 +302,8 @@ export function renderGame(game) {
 			it.z   = en.z;
 			it.rot = en.rot;
 			it.a   = alpha;
+
+			if (it.name == 'canister') it.a = 0.7;
 		}
 		// goo flatten on landing
 		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
@@ -303,6 +323,8 @@ export function renderGame(game) {
 				}
 			}
 		}
+
+		
 
 		cuboids.push(...enCuboids);
 	}

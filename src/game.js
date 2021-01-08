@@ -27,9 +27,11 @@ export let enemyTypes      = [
     {type: 'goo',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  10, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
     {type: 'goo-big',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 240, maxHealth: 240, reward: 40,  damage:  30, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
     {type: 'goo-boss',      x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 480, maxHealth: 480, reward: 40,  damage: 100, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
+    {type: 'scarab-blue',   x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  10, friedness: 0, oilyness: 0, burning: false},
+    {type: 'scarab-yellow', x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 40,  damage:  10, friedness: 0, oilyness: 0, burning: false},
 ];
 export let waves = [
-    [8, -4, 3, -4, 4, -4, 7, -4, 3],
+    [8, -4, 9, -4, 10, -4, 3, -4, 4, -4, 7, -4, 3, -4, 4, -4, 9, -4, 10],
     [3, -4, 4, -4, 3, -4, 4, -4, 3],
     [0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0],
     [0, -2, 0, -2, 1, -2, 0, -2, 0, -2, 1, -2, 1, -2, 0],
@@ -291,6 +293,7 @@ function unpauseGame() {
 
 // TODO: reset from original game
 function resetGame() {
+    stopLoopingSounds();
     game.player.health = 100;
     game.towers = game.tiles.map(row => row.map(_ => null));
 	game.time = 0,
