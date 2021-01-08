@@ -85,7 +85,7 @@ export function renderGame(game) {
     // handle tower on mouse
     if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
         game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
-        && game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2) {
+        && game.tiles[game.mouse.tileY][game.mouse.tileX] == 1) {
 
         // show tower on mouse while placing
         let towerCuboids = null;

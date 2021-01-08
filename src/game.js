@@ -162,7 +162,7 @@ ui.addEventListener('mousedown', e => {
         // check if trying to place tower
         if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
             game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
-            && game.tiles[game.mouse.tileY][game.mouse.tileX] !== 2 &&
+            && game.tiles[game.mouse.tileY][game.mouse.tileX] == 1 &&
             game.mouse.isDown && game.player.money >= game.mouse.tower.cost) {
 
             // place tower
@@ -307,9 +307,9 @@ function resetGame() {
     game.isPaused = true;
     game.shop[0].cost = 100;
     game.shop[1].cost = 250;
-    game.shop[2].cost = 300;
-    game.shop[3].cost = 500;
-    game.shop[4].cost = 700;
+    game.shop[2].cost = 400;
+    game.shop[3].cost = 700;
+    game.shop[4].cost = 1000;
     pausePlayButton.classList.remove('unclickable');
     pauseGame();
 }
