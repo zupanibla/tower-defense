@@ -88,6 +88,7 @@ export function initAudio() {
 }
 
 export function playSound(bufferIndex) {
+    if (!context) return null;
     let source = context.createBufferSource();
     source.buffer = BUFFERS[bufferIndex];
     const gainNode = context.createGain();

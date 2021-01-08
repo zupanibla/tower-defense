@@ -73,7 +73,7 @@ export function initCuboidRenderer() {
 		20, 21, 22,     20, 22, 23,   // left
 	];
 
-	gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black
+	gl.clearColor(25/255, 27/255, 33/255, 1.0);  // Clear to dark gray  // background
 	gl.clearDepth(1.0);                 // Clear everything
 	gl.enable(gl.DEPTH_TEST);           // Enable depth testing
 	gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
