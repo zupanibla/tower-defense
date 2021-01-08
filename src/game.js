@@ -331,6 +331,21 @@ export function showEndPopout(isVictory) {
     }
 }
 
+function stopLoopingSounds() {
+    for (let y = 0; y < game.towers.length; y++) {
+        for (let x = 0; x < game.towers[y].length; x++) {
+            let tw = game.towers[y][x];
+            if (tw && tw.sound) {
+                tw.sound.loop = false;
+                tw.sound = null;
+            }
+        }
+    }
+}
+
+document.addEventListener("visibilitychange", function() {
+    if (document.hidden) stopLoopingSounds();
+});
 
 function ticker() {
     requestAnimationFrame(ticker);
@@ -346,6 +361,9 @@ function ticker() {
         updateShop();
         if (!game.wave.isActive || !game.isPaused) {
             updateGame(game);
+        }
+        else {
+            stopLoopingSounds();
         }
         renderGame(game);
     }
