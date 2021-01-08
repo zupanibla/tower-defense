@@ -1,6 +1,8 @@
 // code snippets from: https://www.html5rocks.com/en/tutorials/webaudio/intro/
 // license: https://creativecommons.org/licenses/by/3.0/
 
+// Sound effects obtained from https://www.zapsplat.com
+
 class BufferLoader {
 
     constructor(context, urlList, callback) {
@@ -84,7 +86,6 @@ export function initAudio() {
             '/assets/sounds/clank.mp3',               // 11
             '/assets/sounds/scarab-death.mp3',        // 12
             '/assets/sounds/laser.mp3',               // 13
-
         ],
         (bufferList) => BUFFERS = bufferList
     );
