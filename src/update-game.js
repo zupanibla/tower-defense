@@ -123,7 +123,12 @@ export function updateGame(game) {
 			// lock on
 			tw.targetEn = null;
 			// target highest pathPos enemy in range
-			let RANGE = 3;
+            let RANGE = 3.5;
+            if (tw.type == 'oil')    RANGE = 2.5;
+            if (tw.type == 'flame')  RANGE = 2.9;
+            if (tw.type == 'nova')   RANGE = 3.1;
+            if (tw.type == 'laser')  RANGE = 2.9;
+
 			for (let en of game.enemies) {
 				if (dist({x,y,z:0}, en) > RANGE) continue;
 				if (!tw.targetEn || en.pathPos > tw.targetEn.pathPos) {
@@ -186,6 +191,7 @@ export function updateGame(game) {
                         r: 200/255, g: 255/255, b: 255/255, a: 2.5,
                     });
 
+                    playSound(13);
                     tw.cooldown = 60;
                 }
 
@@ -402,10 +408,10 @@ export function updateGame(game) {
         if (en.freeMode) continue;
 
         let speed = 2;
-        if (en.type == 'goo-boss')      speed = 1;
-        if (en.type == 'goo-big')       speed = 1.5;
+        if (en.type == 'goo-boss')      speed = 1.5;
+        if (en.type == 'goo-big')       speed = 1.75;
         if (en.type == 'goo')           speed = 2;
-        if (en.type == 'goo-small')     speed = 2.5;
+        if (en.type == 'goo-small')     speed = 2.25;
         if (en.type == 'scarab-blue')   speed = 3.5;
         if (en.type == 'scarab-yellow') speed = 5;
 
