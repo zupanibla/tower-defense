@@ -564,18 +564,14 @@ export function updateGame(game) {
                 velocity = 13;
             }
             if (en.type == 'scarab-blue') {
-                let rgb = {r: 55/255, g: 225/255, b: 197/255};
-                applyFriednessFilter(rgb, en.friedness / 100);
-                color = [rgb.r, rgb.g, rgb.b];
+                color = [55/255, 225/255, 197/255];
                 density = 3;
                 size = 0.07;
                 let alpha = 0.7;
                 playSound(12);
             }
             if (en.type == 'scarab-yellow') {
-                let rgb = {r: 228/255, g: 232/255, b: 33/255};
-                applyFriednessFilter(rgb, en.friedness / 100);
-                color = [rgb.r, rgb.g, rgb.b];
+                color = [228/255, 232/255, 33/255];
                 density = 3;
                 size = 0.07;
                 let alpha = 0.7;
@@ -589,10 +585,16 @@ export function updateGame(game) {
                 let goo1 = {...enemyTypes[5]};
                 goo1.pathPos = en.pathPos + 0.5;
                 goo1.z = en.z;
+                let pos = positionOnPath(goo1.pathPos);
+                goo1.x = pos[0];
+                goo1.y = pos[1];
                 goo1.jumpCooldown = en.jumpCooldown;
                 let goo2 = {...enemyTypes[5]};
                 goo2.pathPos = en.pathPos - 0.5;
                 goo2.z = en.z;
+                pos = positionOnPath(goo1.pathPos);
+                goo2.x = pos[0];
+                goo2.y = pos[1];
                 goo2.jumpCooldown = en.jumpCooldown;
                 game.enemies.unshift(goo1);
                 game.enemies.unshift(goo2);
@@ -603,10 +605,16 @@ export function updateGame(game) {
                 let goo1 = {...enemyTypes[6]};
                 goo1.pathPos = en.pathPos + 0.5;
                 goo1.z = en.z;
+                let pos = positionOnPath(goo1.pathPos);
+                goo1.x = pos[0];
+                goo1.y = pos[1];
                 goo1.jumpCooldown = en.jumpCooldown;
                 let goo2 = {...enemyTypes[6]};
                 goo2.pathPos = en.pathPos - 0.5;
                 goo2.z = en.z;
+                pos = positionOnPath(goo1.pathPos);
+                goo2.x = pos[0];
+                goo2.y = pos[1];
                 goo2.jumpCooldown = en.jumpCooldown;
                 game.enemies.unshift(goo1);
                 game.enemies.unshift(goo2)
@@ -617,10 +625,16 @@ export function updateGame(game) {
                 let goo1 = {...enemyTypes[7]};
                 goo1.pathPos = en.pathPos + 1;
                 goo1.z = en.z;
+                let pos = positionOnPath(goo1.pathPos);
+                goo1.x = pos[0];
+                goo1.y = pos[1];
                 goo1.jumpCooldown = en.jumpCooldown;
                 let goo2 = {...enemyTypes[7]};
                 goo2.pathPos = en.pathPos - 1;
                 goo2.z = en.z;
+                pos = positionOnPath(goo1.pathPos);
+                goo2.x = pos[0];
+                goo2.y = pos[1];
                 goo2.jumpCooldown = en.jumpCooldown;
                 game.enemies.unshift(goo1);
                 game.enemies.unshift(goo2)
