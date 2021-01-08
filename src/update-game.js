@@ -192,7 +192,7 @@ export function updateGame(game) {
                     });
 
                     playSound(13);
-                    tw.cooldown = 60;
+                    tw.cooldown = 90;
                 }
 
                 if (tw.type == 'flame') {
@@ -311,7 +311,7 @@ export function updateGame(game) {
 
                     for (let en of game.enemies) {
                         if (dist({x,y,z:0}, en) > RANGE) continue;
-                        en.health -= 20;
+                        en.health -= 18;
                     }
 
                     playSound(1);
@@ -424,22 +424,22 @@ export function updateGame(game) {
         if (en.type == 'goo-big')       speed = 1.75;
         if (en.type == 'goo')           speed = 2;
         if (en.type == 'goo-small')     speed = 2.25;
-        if (en.type == 'scarab-blue')   speed = 3.5;
-        if (en.type == 'scarab-yellow') speed = 5;
+        if (en.type == 'scarab-blue')   speed = 4;
+        if (en.type == 'scarab-yellow') speed = 6;
 
         // move (slowed by oil)
         // goo movement
         if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
             if (en.z > 0) {
-                en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
+                en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.3);
             }
         }
         // scarabs get extra slow
         else if (en.type == 'scarab-blue' || en.type == 'scarab-yellow') {
-            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.7);
+            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
         }
         else {
-            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.5);
+            en.pathPos += (speed / 60) * (1 - (en.oilyness/100) * 0.3);
         }
 		
 		// position on path

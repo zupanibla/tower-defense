@@ -28,7 +28,7 @@ export let enemyTypes      = [
     {type: 'goo-big',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 240, maxHealth: 240, reward: 50,  damage:  15, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
     {type: 'goo-boss',      x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 480, maxHealth: 480, reward: 150, damage:  50, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
     {type: 'scarab-blue',   x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 50,  damage:  10, friedness: 0, oilyness: 0, burning: false},
-    {type: 'scarab-yellow', x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 100, damage:  10, friedness: 0, oilyness: 0, burning: false},
+    {type: 'scarab-yellow', x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 300, maxHealth: 300, reward: 100, damage:  10, friedness: 0, oilyness: 0, burning: false},
 ];
 export let waves = [
     [4, -6, 4, -6, 4, -6, 4, -6, 4, -6, 4, -6, 4, -6, 4, -6, 4, -6, 4],
@@ -94,11 +94,11 @@ let game = {
         combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'
     },
     shop: [
-        {type: 'balistic', cost: 100, button: shopButtons[0]},
-        {type: 'flame',    cost: 250, button: shopButtons[1]},
-        {type: 'oil',      cost: 300, button: shopButtons[2]},
-        {type: 'nova',     cost: 500, button: shopButtons[3]},
-        {type: 'laser',    cost: 700, button: shopButtons[4]},
+        {type: 'balistic', cost:  100, button: shopButtons[0]},
+        {type: 'flame',    cost:  250, button: shopButtons[1]},
+        {type: 'oil',      cost:  400, button: shopButtons[2]},
+        {type: 'nova',     cost:  700, button: shopButtons[3]},
+        {type: 'laser',    cost: 1000, button: shopButtons[4]},
     ],
     mouse: {
         x: -1,
@@ -119,24 +119,6 @@ let game = {
 game.towers = game.tiles.map(row => row.map(_ => null));
 
 
-<<<<<<< HEAD
-=======
-game.towers[4][4] = game.grapplingTurret;
-game.towers[4][3] = {type: 'blank',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-
-
-window.setTimeout(e => {  // TODO za testiranje
-    // let en = {...enemyTypes[4]};
-    // en.pathPos = 37;
-    // game.enemies.push(en);
-    game.towers[5][0] = {type: 'oil',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
-    unpauseGame();
-}, 400);
-
-// for reseting game
-let initialGameJson = JSON.stringify(game);
-
->>>>>>> 77cf0c419299cd69209ec015819d3b139279a7fc
 // for debug purposes
 window.game = game;
 
@@ -375,8 +357,8 @@ function ticker() {
     let timeBetween = timeNow - timeBefore;
 
 
-    //if (timeBetween > frameDuration) {
-    //    timeBefore = timeNow - (timeBetween % frameDuration);
+    if (timeBetween > frameDuration) {
+        timeBefore = timeNow - (timeBetween % frameDuration);
 
         // TODO: call updateShop() somewhere else
         updateShop();
@@ -387,7 +369,7 @@ function ticker() {
             stopLoopingSounds();
         }
         renderGame(game);
-    //}
+    }
 }
 
 // init audio after user interaction

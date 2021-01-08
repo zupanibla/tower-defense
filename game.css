@@ -305,21 +305,21 @@ body {
 
 /* tower 1 1 */
 .tower-1-1 {
-    background: url('assets/ui/buttons/button-ballistic-turret.png');
+    background: url('assets/ui/buttons/button-laser-turret.png');
     top: 80px;
     left: 80px;
 }
 .tower-1-1:hover {
-    background: url('assets/ui/buttons/button-ballistic-turret-hover.png');
+    background: url('assets/ui/buttons/button-laser-turret-hover.png');
 }
 .tower-1-1:active {
-    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-laser-turret-active.png');
 }
 .tower-1-1.tower-selected {
-    background: url('assets/ui/buttons/button-ballistic-turret-active.png');
+    background: url('assets/ui/buttons/button-laser-turret-active.png');
 }
 .tower-1-1.tower-disabled {
-    background: url('assets/ui/buttons/button-ballistic-turret-disabled.png');
+    background: url('assets/ui/buttons/button-laser-turret-disabled.png');
 }
 
 /* tower 1 2 */
