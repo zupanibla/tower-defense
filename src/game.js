@@ -31,7 +31,7 @@ export let enemyTypes      = [
     {type: 'scarab-yellow', x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 40,  damage:  10, friedness: 0, oilyness: 0, burning: false},
 ];
 export let waves = [
-    [8, -4, 9, -4, 10, -4, 3, -4, 4, -4, 7, -4, 3, -4, 4, -4, 9, -4, 10],
+    [9, -4, 9, -4, 10, -4, 3, -4, 4, -4, 7, -4, 3, -4, 4, -4, 9, -4, 10],
     [3, -4, 4, -4, 3, -4, 4, -4, 3],
     [0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0, -2, 0],
     [0, -2, 0, -2, 1, -2, 0, -2, 0, -2, 1, -2, 1, -2, 0],
@@ -115,7 +115,7 @@ window.setTimeout(e => {  // TODO za testiranje
     // let en = {...enemyTypes[4]};
     // en.pathPos = 37;
     // game.enemies.push(en);
-    game.towers[10][0] = {type: 'laser',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+    game.towers[5][0] = {type: 'oil',     rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
     unpauseGame();
 }, 400);
 

@@ -7,7 +7,7 @@ import tileJson           	from './models/tile.json';
 import greenTileJson      	from './models/green-tile.json';
 import iceTileJson          from './models/ice-tile.json';
 import mountainTileJson     from './models/mountain-tile.json';
-import snowTileJson        from './models/snow-tile.json';
+import snowTileJson         from './models/snow-tile.json';
 import asphaltTileJson      from './models/asphalt-tile.json';
 import balisticTurretJson 	from './models/balistic-turret.json';
 import flameTurretJson    	from './models/flame-turret.json';
