@@ -176,7 +176,7 @@ export function updateGame(game) {
                         type: 'laser',
                         x: x +  -Math.sin(-tw.rot) * 50.2,
                         y: y +  -Math.cos(-tw.rot) * 50.2,
-                        z: 0.5,
+                        z: 0.35,
                         vx: 0, vy: 0, vz: 0,
                         rot: tw.rot,
                         rotv: 0,
