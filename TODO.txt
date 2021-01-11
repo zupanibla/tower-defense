@@ -1,0 +1,9 @@
+- optimize render cuboids
+- rework fire mechanics/somehow communicate to the player that flame turret is single target and ignites oil
+- favicon
+- fullscreen
+- no select on whole page
+- inspect behavior on mobile
+- game speed control
+- behavior on slowdown (reduce number of particles/skip frames)
+- placing towers during pause
