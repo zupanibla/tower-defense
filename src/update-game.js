@@ -3,7 +3,7 @@ import {createCombatLogEntry, pauseGame, showEndPopout, waves, enemyTypes} from 
 import {applyFriednessFilter} from './render-game';
 import {playSound} from './audio.js'
 
-let waveReward = 50;
+export let waveReward = 50;
 
 export function updateGame(game) {
     game.time++;
@@ -26,7 +26,7 @@ export function updateGame(game) {
     if (game.enemies.length === 0 && game.wave.isActive && game.player.health > 0) {
         createCombatLogEntry("You survived wave " + game.wave.number + "!");
         if (game.wave.number == 4) createCombatLogEntry("The next wave contains spiders with armor! Missile turrets just won't do against them.");
-        if (game.wave.number == 6) createCombatLogEntry("Get ready for some fast scarabs! Make sure you have an oil turret or two to slow them down.");
+        if (game.wave.number == 5) createCombatLogEntry("Get ready for some fast scarabs! Make sure you have an oil turret or two to slow them down.");
         if (game.wave.number == 9) createCombatLogEntry("Good luck with the next one.");
         if (game.wave.number === waves.length) showEndPopout(true);
         else game.wave.number++;

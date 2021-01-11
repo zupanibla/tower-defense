@@ -1,6 +1,6 @@
-import {updateGame}                   from './update-game.js';
+import {updateGame, waveReward}                   from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
-import {initAudio, playSound}                    from './audio.js';
+import {initAudio, playSound}         from './audio.js';
 
 let canvas          = document.querySelector('.game-canvas');
 let ui              = document.querySelector('.game-ui');
@@ -311,6 +311,7 @@ function resetGame() {
     game.shop[3].cost = 700;
     game.shop[4].cost = 1000;
     pausePlayButton.classList.remove('unclickable');
+    waveReward = 50;
     pauseGame();
 }
 window.resetGame = resetGame;
