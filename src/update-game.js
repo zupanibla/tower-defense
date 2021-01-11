@@ -1021,3 +1021,7 @@ function createStar() {
         r: 240/255, g: 240/255, b: 100/255, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
     });
 }
+
+export function setWaveReward() {
+    waveReward = 50;
+}
