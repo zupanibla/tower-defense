@@ -359,8 +359,8 @@ function ticker() {
     let timeBetween = timeNow - timeBefore;
 
 
-    //if (timeBetween > frameDuration) {
-    //    timeBefore = timeNow - (timeBetween % frameDuration);
+    if (timeBetween > frameDuration) {
+        timeBefore = timeNow - (timeBetween % frameDuration);
 
         // TODO: call updateShop() somewhere else
         updateShop();
@@ -371,7 +371,7 @@ function ticker() {
             stopLoopingSounds();
         }
         renderGame(game);
-    //}
+    }
 }
 
 // init audio after user interaction
