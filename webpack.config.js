@@ -17,8 +17,8 @@ module.exports = [{
 	},
 },
 {	// asset-editor.js
-	mode: 'development',
-	devtool: 'inline-source-map',
+    mode: 'development',
+    devtool: 'inline-source-map',
 	entry: './src/asset-editor.js',
 	output: {
 		filename: 'asset-editor.js',
