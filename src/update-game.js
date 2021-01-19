@@ -33,7 +33,6 @@ export function updateGame(game) {
         game.player.money += waveReward;
         waveReward += 10;
         game.wave.isActive = false;
-        game.grapplingTurret.ready = true;
         pauseGame();
     }
 
@@ -74,54 +73,6 @@ export function updateGame(game) {
             if (tw.cooldown > 0) tw.cooldown--;
 
             if (tw.type == 'blank') continue;
-
-            if (tw.type == 'grappling') {   // HARDCODED for horizontal pulling
-                // targeting
-                if (!tw.targetEn && tw.ready) {
-                    for (let en of game.enemies) {
-                        if (
-                            dist({x,y,z:0}, en) > 2 &&
-                            Math.abs(angleBetween(tw.rot, Math.atan2(en.y - y, en.x - x) + Math.PI / 2)) < 0.001
-                        ) {  // shoot the hook
-                            tw.targetEn = en;
-                            tw.hookDist = 0;
-                            tw.ready = false;
-                            tw.usedTime = game.time;
-                        }
-                    }
-                }
-
-                if (!tw.pulling && tw.targetEn) {  // shooting
-                    tw.hookDist += 0.3;
-                    if (x + tw.hookDist > tw.targetEn.x) {
-                        tw.pulling = true;
-                    }
-                }
-
-                if (tw.pulling) {  // pulling
-                    tw.hookDist -= 0.03;
-
-                    if (tw.targetEn) {
-                        tw.targetEn.freeMode = true;
-                        tw.targetEn.x = x + tw.hookDist;
-                        tw.targetEn.rot -= angleBetween(0, tw.targetEn.rot) / 30;
-
-                        if (tw.hookDist <= 1) {  // release enemy
-                            tw.targetEn.pathPos = 18.5;
-                            tw.targetEn.freeMode = false;
-                            tw.targetEn = null;
-                            tw.hookDist -= 0.08;
-                        }
-                    }
-
-                    if (tw.hookDist <= 0) {
-                        tw.pulling  = false;
-                        tw.hookDist = 0;
-                    }
-                }
-
-                continue;
-            }
 
 			// lock on
 			tw.targetEn = null;
@@ -656,31 +607,6 @@ export function updateGame(game) {
             playSound(10);
             en.hasArmor = false;
         }
-    }
-
-    // grappling tower smoke
-    if (!game.grapplingTurret.ready && game.time % 8 == 0) {
-        let colors = [
-            [200, 200, 200],
-            [175, 175, 175],
-            [150, 150, 150],
-            [125, 125, 125],
-            [100, 100, 100],
-        ];
-        let color = colors[~~(Math.random() * colors.length)];
-        game.particles.push({
-            type: 'smoke',
-            x: 3.1,
-            y: 4.1,
-            z: 1.25,
-            vx: 0, vy: 0.01, vz: -0.003,
-            rot: (Math.random() - 0.5),
-            rotv: (Math.random() - 0.5) * 3,
-            sx: 0.1,
-            sy: 0.1,
-            sz: 0.1,
-            r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
-        });
     }
 
     // particles

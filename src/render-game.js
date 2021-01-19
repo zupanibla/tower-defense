@@ -28,7 +28,6 @@ import gooBigJson			from './models/goo-big.json';
 import gooBossJson			from './models/goo-boss.json';
 import yellowScarabJson		from './models/scarab-yellow.json';
 import blueScarabJson		from './models/scarab-blue.json';
-import grapplingTurretJson  from './models/grappling-turret.json';
 
 
 export function renderGame(game) {
@@ -117,28 +116,8 @@ export function renderGame(game) {
             if (tw.type == 'flame')     towerCuboids = cuboidsFromJson(flameTurretJson);
             if (tw.type == 'laser')     towerCuboids = cuboidsFromJson(laserTurretJson);
             if (tw.type == 'oil')       towerCuboids = cuboidsFromJson(oilTurretJson);
-            if (tw.type == 'grappling') towerCuboids = cuboidsFromJson(grapplingTurretJson);
             if (tw.type == 'nova')      towerCuboids = cuboidsFromJson(novaTurretJson);
             if (tw.type == 'blank')     towerCuboids = [];
-
-            // hook animation
-            if (tw.type == 'grappling') {
-                for (let it of towerCuboids) {
-                    if (it.name == 'hook') it.py += tw.hookDist;
-                    if (it.name == 'rope') {
-                        it.py += tw.hookDist/2;
-                        it.sy += tw.hookDist;
-                    }
-                    if (it.name == 'indicator') {
-                        let p = Math.min(1, (game.time - tw.usedTime) / 240); 
-                        if (tw.ready) p = 0;
-
-                        it.r = p * it.r + (1-p) * 1;
-                        it.g = p * it.g + (1-p) * 1;
-                        it.b = p * it.b + (1-p) * 0;
-                    }
-                }
-            }
             
             // nova tower regen animation
             if (tw.type == 'nova') {

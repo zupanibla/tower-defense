@@ -114,7 +114,6 @@ let game = {
         tower: null
     },
     isPaused: true,
-    grapplingTurret: {type: 'grappling', rot: Math.PI / 2, targetRot: Math.PI / 2, targetEn: null, cooldown: 0, hookDist: 0, pulling: false, ready: true, usedTime: -1},
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
 
@@ -272,8 +271,6 @@ function spawnWave() {
 
     game.wave.isActive = true;
     createCombatLogEntry("Wave " + game.wave.number + " has started...");
-
-    game.grapplingTurret.ready = true;
 }
 
 export function pauseGame() {
