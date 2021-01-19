@@ -370,9 +370,6 @@ export function updateGame(game) {
             });
         }
 
-        // don't move while hooked
-        if (en.freeMode) continue;
-
         let speed = 2;
         if (en.type == 'goo-boss')      speed = 1.5;
         if (en.type == 'goo-big')       speed = 1.75;
