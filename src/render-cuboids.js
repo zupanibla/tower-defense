@@ -29,40 +29,40 @@ export function initCuboidRenderer() {
 	let vertices = [
 		 // aPosition                 // aNormal
 		 // Front face
-		-1.0, -1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
-		 1.0, -1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
-		 1.0,  1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
-		-1.0,  1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
+		-1.0, -1.0,  1.0, /**/  0.0,  0.0,  1.0,
+		 1.0, -1.0,  1.0, /**/  0.0,  0.0,  1.0,
+		 1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
+		-1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
 
 		 // Back face
-		-1.0, -1.0, -1.0,  1.0, /**/  0.0,  0.0, -1.0,
-		-1.0,  1.0, -1.0,  1.0, /**/  0.0,  0.0, -1.0,
-		 1.0,  1.0, -1.0,  1.0, /**/  0.0,  0.0, -1.0,
-		 1.0, -1.0, -1.0,  1.0, /**/  0.0,  0.0, -1.0,
+		-1.0, -1.0, -1.0, /**/  0.0,  0.0, -1.0,
+		-1.0,  1.0, -1.0, /**/  0.0,  0.0, -1.0,
+		 1.0,  1.0, -1.0, /**/  0.0,  0.0, -1.0,
+		 1.0, -1.0, -1.0, /**/  0.0,  0.0, -1.0,
 
 		 // Top face
-		-1.0,  1.0, -1.0,  1.0, /**/  0.0,  1.0,  0.0,
-		-1.0,  1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
-		 1.0,  1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
-		 1.0,  1.0, -1.0,  1.0, /**/  0.0,  1.0,  0.0,
+		-1.0,  1.0, -1.0, /**/  0.0,  1.0,  0.0,
+		-1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
+		 1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
+		 1.0,  1.0, -1.0, /**/  0.0,  1.0,  0.0,
 
 		 // Bottom face
-		-1.0, -1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
-		 1.0, -1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
-		 1.0, -1.0,  1.0,  1.0, /**/  0.0, -1.0,  0.0,
-		-1.0, -1.0,  1.0,  1.0, /**/  0.0, -1.0,  0.0,
+		-1.0, -1.0, -1.0, /**/  0.0, -1.0,  0.0,
+		 1.0, -1.0, -1.0, /**/  0.0, -1.0,  0.0,
+		 1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
+		-1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
 
 		 // Right face
-		 1.0, -1.0, -1.0,  1.0, /**/  1.0,  0.0,  0.0,
-		 1.0,  1.0, -1.0,  1.0, /**/  1.0,  0.0,  0.0,
-		 1.0,  1.0,  1.0,  1.0, /**/  1.0,  0.0,  0.0,
-		 1.0, -1.0,  1.0,  1.0, /**/  1.0,  0.0,  0.0,
+		 1.0, -1.0, -1.0, /**/  1.0,  0.0,  0.0,
+		 1.0,  1.0, -1.0, /**/  1.0,  0.0,  0.0,
+		 1.0,  1.0,  1.0, /**/  1.0,  0.0,  0.0,
+		 1.0, -1.0,  1.0, /**/  1.0,  0.0,  0.0,
 
 		 // Left face
-		-1.0, -1.0, -1.0,  1.0, /**/ -1.0,  0.0,  0.0,
-		-1.0, -1.0,  1.0,  1.0, /**/ -1.0,  0.0,  0.0,
-		-1.0,  1.0,  1.0,  1.0, /**/ -1.0,  0.0,  0.0,
-		-1.0,  1.0, -1.0,  1.0, /**/ -1.0,  0.0,  0.0,
+		-1.0, -1.0, -1.0, /**/ -1.0,  0.0,  0.0,
+		-1.0, -1.0,  1.0, /**/ -1.0,  0.0,  0.0,
+		-1.0,  1.0,  1.0, /**/ -1.0,  0.0,  0.0,
+		-1.0,  1.0, -1.0, /**/ -1.0,  0.0,  0.0,
 	];
 	let indices = [
 		0,  1,  2,      0,  2,  3,    // front
@@ -74,12 +74,12 @@ export function initCuboidRenderer() {
 	];
 
 	gl.clearColor(15/255, 16/255, 22/255, 1.0);  // Clear to dark gray  // background
-	gl.clearDepth(1.0);                 // Clear everything
-	gl.enable(gl.DEPTH_TEST);           // Enable depth testing
-	gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
-	gl.enable(gl.CULL_FACE);            // Don't draw back faces (effeciency)
+	gl.clearDepth(1.0);                          // Clear everything
+	gl.enable(gl.DEPTH_TEST);                    // Enable depth testing
+	gl.depthFunc(gl.LEQUAL);                     // Near things obscure far things
+	gl.enable(gl.CULL_FACE);                     // Don't draw back faces (effeciency)
 
-    gl.enable(gl.BLEND);                // enable alpha
+    gl.enable(gl.BLEND);                         // enable alpha
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 	// TODO no idea what this does
@@ -98,34 +98,23 @@ export function initCuboidRenderer() {
 
 	// aPosition: enable and layout
 	gl.enableVertexAttribArray(0);
-	gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 28, 0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);              // aPosition
 
 	// aNormal: enable and layout
 	gl.enableVertexAttribArray(1);
-	gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 28, 16);
+    gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);             // aNormal
 
-	// aMvpMatrix: enable and make instanced
-	for (var i = 0; i < 4; i++) {
-		gl.enableVertexAttribArray(2 + i);
-		gl.vertexAttribDivisor(2 + i, 1);
+    // aCubPos, aCubSize, aCubPivot, aCubRot, aColor: enable and make instanced
+	for (var i = 2; i <= 6; i++) {
+		gl.enableVertexAttribArray(i);
+		gl.vertexAttribDivisor(i, 1);
 	}
-
-	// aNormalMatrix: enable and make instanced
-	for (var i = 0; i < 4; i++) {
-		gl.enableVertexAttribArray(6 + i);
-		gl.vertexAttribDivisor(6 + i, 1);
-	}
-
-	// aColor: enable and make instanced
-	gl.enableVertexAttribArray(10);
-	gl.vertexAttribPointer(10, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + 64);
-	gl.vertexAttribDivisor(10, 1);
 }
 
 // cuboids: {
 //     x, y, z,    // position
 //     sx, sy, sz, // size
-//     r, g, b, a,    // color
+//     r, g, b, a, // color
 //     rot,        // rotation around z axis
 //     px, py, pz  // pivot
 // }[]
@@ -139,54 +128,32 @@ export function renderCuboids(cuboids) {
 	// TODO no idea what this does
 	gl.bindVertexArray(vao);
 
-	let program = programs.cuboid;
-	gl.useProgram(program.program);
+	gl.useProgram(programs.cuboid.program);
 
-	// mvpMatrixNormalMatrixColorData <-
-	// <- [mvpR1, mvpR2, mvpR3, mvpR4, mvpR1, normalR1, normalR2, normalR3, normalR4, color, ...]
-	let mvpMatrixNormalMatrixColorData = [];
+    // set viewProjection matrix
+    gl.uniformMatrix4fv(programs.cuboid.uniforms.uVpMatrix, false, vpMatrix);
 
+    // generate cuboids data buffer and push it
+	let cuboidsData = [];
+ 
 	for (let cub of cuboids) {
-		// model matrix
-		let modelMatrix = mat4.create();
-		mat4.translate(modelMatrix, modelMatrix, [cub.x, cub.y, cub.z]);
-		mat4.rotateZ(  modelMatrix, modelMatrix, cub.rot);
-		mat4.translate(modelMatrix, modelMatrix, [-cub.px, -cub.py, -cub.pz]);
-		// divide sx,sy,sz by 2 because mesh size is 2
-		mat4.scale(    modelMatrix, modelMatrix, [cub.sx/2, cub.sy/2, cub.sz/2]);
-
-		// calculate and push aMvpMatrix to array
-		let mvpMatrix = mat4.create();
-		mat4.mul(mvpMatrix, vpMatrix, modelMatrix);
-		mvpMatrixNormalMatrixColorData.push(...mvpMatrix);
-
-		// calculate and push aNormalMatrix to array
-		let normalMatrix = mat4.create();
-		mat4.rotateZ(normalMatrix, normalMatrix, -cub.rot);
-		mat4.transpose(normalMatrix, normalMatrix);
-		mvpMatrixNormalMatrixColorData.push(...normalMatrix);
-
-		// push aColor to array
-		mvpMatrixNormalMatrixColorData.push(cub.r, cub.g, cub.b, cub.a);
+        cuboidsData.push(cub.x, cub.y, cub.z,
+                         cub.sx, cub.sy, cub.sz,
+                         cub.px, cub.py, cub.pz,
+                         cub.rot,
+                         cub.r, cub.g, cub.b, cub.a);
 	}
 
-	// push mvp matrices, normal matrices, colors to GPU
-	let mvpMatrixNormalMatrixColorBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, mvpMatrixNormalMatrixColorBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mvpMatrixNormalMatrixColorData), gl.DYNAMIC_DRAW);
+	let cuboidsDataBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, cuboidsDataBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cuboidsData), gl.DYNAMIC_DRAW);
 
-	// aMvpMatrix: layout
-	for (var i = 0; i < 4; i++) {
-		gl.vertexAttribPointer(2 + i, 4, gl.FLOAT, false, 64 + 64 + 16, i * 16);
-	}
-
-	// aNormalMatrix: layout
-	for (var i = 0; i < 4; i++) {
-		gl.vertexAttribPointer(6 + i, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + i * 16);
-	}
-
-	// aColors: layout
-	gl.vertexAttribPointer(10, 4, gl.FLOAT, false, 64 + 64 + 16, 64 + 64);
+    // aCubPos, aCubSize, aCubPivot, aCubRot, aColor: layout
+    gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 56, 0);              // aCubPos
+    gl.vertexAttribPointer(3, 3, gl.FLOAT, false, 56, 4 * 3);          // aCubSize
+    gl.vertexAttribPointer(4, 3, gl.FLOAT, false, 56, 4 * (3+3));      // aCubPivot
+    gl.vertexAttribPointer(5, 1, gl.FLOAT, false, 56, 4 * (3+3+3));    // aCubRot
+	gl.vertexAttribPointer(6, 4, gl.FLOAT, false, 56, 4 * (3+3+3+1));  // aColor
 
 	gl.drawElementsInstanced(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0, cuboids.length);
 }
