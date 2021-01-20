@@ -83,17 +83,18 @@ export function renderGame(game) {
 
     // handle tower on mouse
     if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
-        game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
+        game.selectedShopItemIdx != -1 && game.towers[game.mouse.tileY][game.mouse.tileX] === null
         && game.tiles[game.mouse.tileY][game.mouse.tileX] == 1) {
 
         // show tower on mouse while placing
         let towerCuboids = null;
 
-        if (game.mouse.tower.type == 'balistic')    towerCuboids = cuboidsFromJson(balisticTurretJson);
-        if (game.mouse.tower.type == 'flame')       towerCuboids = cuboidsFromJson(flameTurretJson);
-        if (game.mouse.tower.type == 'laser')       towerCuboids = cuboidsFromJson(laserTurretJson);
-        if (game.mouse.tower.type == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
-        if (game.mouse.tower.type == 'nova')        towerCuboids = cuboidsFromJson(novaTurretJson);
+        let selectedTowerType = game.shopItems[game.selectedShopItemIdx].type;
+        if (selectedTowerType == 'balistic')    towerCuboids = cuboidsFromJson(balisticTurretJson);
+        if (selectedTowerType == 'flame')       towerCuboids = cuboidsFromJson(flameTurretJson);
+        if (selectedTowerType == 'laser')       towerCuboids = cuboidsFromJson(laserTurretJson);
+        if (selectedTowerType == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
+        if (selectedTowerType == 'nova')        towerCuboids = cuboidsFromJson(novaTurretJson);
 
         for (let it of towerCuboids) {
             it.x = game.mouse.tileX;
@@ -325,6 +326,7 @@ export function renderGame(game) {
 		cuboids.push(...blCuboids);
 	}
 
+    if (game.time % 60 == 0) console.log(`${cuboids.length} cuboids/frame`);
 	renderCuboids(cuboids);
 }
 

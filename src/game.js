@@ -1,4 +1,4 @@
-import {updateGame, setWaveReward}                   from './update-game.js';
+import {updateGame, setWaveReward}    from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
 import {initAudio, playSound}         from './audio.js';
 
@@ -93,13 +93,6 @@ let game = {
     ui: {
         combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'
     },
-    shop: [
-        {type: 'balistic', cost:  100, button: shopButtons[0]},
-        {type: 'flame',    cost:  250, button: shopButtons[1]},
-        {type: 'oil',      cost:  400, button: shopButtons[2]},
-        {type: 'nova',     cost:  700, button: shopButtons[3]},
-        {type: 'laser',    cost: 1000, button: shopButtons[4]},
-    ],
     mouse: {
         x: -1,
         y: -1,
@@ -114,12 +107,18 @@ let game = {
         tower: null
     },
     isPaused: true,
+    shopItems: [
+        {type: 'balistic', cost:  100},
+        {type: 'flame',    cost:  250},
+        {type: 'oil',      cost:  400},
+        {type: 'nova',     cost:  700},
+        {type: 'laser',    cost: 1000},
+    ],
+    selectedShopItemIdx: -1,
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
 
-
-// for debug purposes
-window.game = game;
+let initialGameStateJSON = JSON.stringify(game);
 
 // centers the game and downscales it if the browser window is too small
 // TODO: this can probably be done less hacky...
@@ -150,32 +149,37 @@ ui.addEventListener('mousemove', e => {
 ui.addEventListener('mousedown', e => {
     // left click
     if (e.button === 0) {
-        var rect = ui.getBoundingClientRect();
-        game.mouse.x = Math.round(e.clientX - rect.left);
-        game.mouse.y = Math.round(e.clientY - rect.top);
-        game.mouse.isDown = true;
+        var rect             = ui.getBoundingClientRect();
+        game.mouse.x         = Math.round(e.clientX - rect.left);
+        game.mouse.y         = Math.round(e.clientY - rect.top);
+        game.mouse.isDown    = true;
         game.mouse.clickTime = game.time;
-        game.mouse.clickX = game.mouse.x;
-        game.mouse.clickY = game.mouse.y;
+        game.mouse.clickX    = game.mouse.x;
+        game.mouse.clickY    = game.mouse.y;
+        
+        let selectedShopItem = game.shopItems[game.selectedShopItemIdx];
 
         // check if trying to place tower
-        if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
-            game.mouse.tower !== null && game.towers[game.mouse.tileY][game.mouse.tileX] === null
+        if (selectedShopItem &&
+            game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
+            game.towers[game.mouse.tileY][game.mouse.tileX] === null
             && game.tiles[game.mouse.tileY][game.mouse.tileX] == 1 &&
-            game.mouse.isDown && game.player.money >= game.mouse.tower.cost) {
+            game.mouse.isDown && game.player.money >= selectedShopItem.cost) {
 
             // place tower
             game.towers[game.mouse.tileY][game.mouse.tileX] =
-                {type: game.mouse.tower.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
+                {type: selectedShopItem.type, rot: 0, targetRot: 0, targetEn: null, cooldown: 0};
             playSound(7);
             // take player money and up tower cost
-            game.player.money -= game.mouse.tower.cost;
-            game.mouse.tower.cost = Math.round(game.mouse.tower.cost * TOWER_COST_MULTIPLIER);
+            game.player.money -= selectedShopItem.cost;
+            selectedShopItem.cost = Math.round(selectedShopItem.cost * TOWER_COST_MULTIPLIER);
             // on pressing shift don't remove tower from cursor to allow placing multiple towers
             if (!e.shiftKey) {
                 // deselect tower from shop and remove it from cursor
-                game.mouse.tower.button.classList.remove('tower-selected');
-                game.mouse.tower = null;
+                for (let it of shopButtons) {
+                    it.classList.remove('tower-selected');
+                }
+                game.selectedShopItemIdx = -1;
             }
         }
     }
@@ -205,53 +209,48 @@ pausePlayButton.addEventListener('mouseup', e => {
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         // remove tower from cursor and shop selection
-        game.mouse.tower = null;
-        for (let sh2 of game.shop) {
-            sh2.button.classList.remove('tower-selected');
+        game.selectedShopItemIdx = -1;
+        for (let it of shopButtons) {
+            it.classList.remove('tower-selected');
         }
     }
 });
 
-for (let i = 0; i < game.shop.length; i++) {
-    let sh = game.shop[i];
-    sh.button.addEventListener('click', e => {
-        if (game.player.money >= sh.cost) {
+for (let i = 0; i < game.shopItems.length; i++) {
+    shopButtons[i].addEventListener('click', e => {
+        if (game.player.money >= game.shopItems[i].cost) {
             // deselect all other towers
-            for (let sh2 of game.shop) {
-                sh2.button.classList.remove('tower-selected');
+            for (let it of shopButtons) {
+                it.classList.remove('tower-selected');
             }
             // select the clicked tower
-            if (game.mouse.tower === sh) {
-                game.mouse.tower = null;
+            if (game.selectedShopItemIdx == i) {
+                game.selectedShopItemIdx = -1;
             }
             else {
-                sh.button.classList.add('tower-selected');
-                game.mouse.tower = sh;
+                shopButtons[i].classList.add('tower-selected');
+                game.selectedShopItemIdx = i;
             }
         }
     });
 }
 
-popoutPlayAgain.addEventListener('click', e => {
-    popout.classList.add('unclickable');
-    popout.classList.remove('fade');
-    resetGame();
-})
+popoutPlayAgain.addEventListener('click', resetGame);
 
 export function createCombatLogEntry(s) {
     game.ui.combatLog += s + '<br />';
 }
 
 function updateShop() {
-    for (let sh of game.shop) {
+    for (let i = 0; i < game.shopItems.length; i++) {
         // update tower cost text
-        sh.button.querySelector('.tower-cost').innerHTML = sh.cost;
+        shopButtons[i].querySelector('.tower-cost').innerHTML = game.shopItems[i].cost;
         // update icons if player can or cannot afford tower
-        if (game.player.money >= sh.cost) {
-            sh.button.classList.remove('tower-disabled');
+        if (game.player.money >= game.shopItems[i].cost) {
+            shopButtons[i].classList.remove('tower-disabled');
         }
         else {
-            sh.button.classList.add('tower-disabled');
+            shopButtons[i].classList.add('tower-disabled');
         }
     }
 }
@@ -270,7 +269,7 @@ function spawnWave() {
     }
 
     game.wave.isActive = true;
-    createCombatLogEntry("Wave " + game.wave.number + " has started...");
+    createCombatLogEntry('Wave ' + game.wave.number + ' has started...');
 }
 
 export function pauseGame() {
@@ -286,33 +285,14 @@ function unpauseGame() {
     if (!game.wave.isActive) spawnWave();
 }
 
-// TODO: reset from original game
+
 function resetGame() {
-    stopLoopingSounds();
-    game.player.health = 100;
-    game.towers = game.tiles.map(row => row.map(_ => null));
-	game.time = 0,
-    game.enemies = [],
-    game.particles = [],
-    game.bullets = [],
-    game.player.health = 100;
-    game.player.money = 250;
-    game.wave.number = 1;
-    game.wave.isActive = false;
-    game.ui.combatLog ='Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />';
-    game.mouse.tower = null;
-    game.isPaused = true;
-    game.shop[0].cost = 100;
-    game.shop[1].cost = 250;
-    game.shop[2].cost = 400;
-    game.shop[3].cost = 700;
-    game.shop[4].cost = 1000;
+    popout.classList.add('unclickable');
+    popout.classList.remove('fade');
     pausePlayButton.classList.remove('unclickable');
-    setWaveReward(50);
-    console.log(waveReward);
-    pauseGame();
+    stopLoopingSounds();
+    game = JSON.parse(initialGameStateJSON);
 }
-window.resetGame = resetGame;
 
 export function showEndPopout(isVictory) {
     popout.classList.remove('unclickable');
@@ -322,14 +302,14 @@ export function showEndPopout(isVictory) {
     if (isVictory) {
         popoutTitle.classList.remove('popout-defeat');
         popoutTitle.classList.add('popout-victory');
-        popoutTitle.innerHTML = "Victory";
-        popoutMain.innerHTML  = "You have defeated the evil forces and stopped them from overcoming the human world! (for now...)"
+        popoutTitle.innerHTML = 'Victory';
+        popoutMain.innerHTML  = 'You have defeated the evil forces and stopped them from overcoming the human world! (for now...)'
     }
     else {
         popoutTitle.classList.remove('popout-victory');
         popoutTitle.classList.add('popout-defeat');
-        popoutTitle.innerHTML = "Defeat";
-        popoutMain.innerHTML  = "The evil forces have managed to invade the human world. The earth is doomed."
+        popoutTitle.innerHTML = 'Defeat';
+        popoutMain.innerHTML  = 'The evil forces have managed to invade the human world. The earth is doomed.'
     }
 }
 
@@ -345,7 +325,7 @@ function stopLoopingSounds() {
     }
 }
 
-document.addEventListener("visibilitychange", function() {
+document.addEventListener('visibilitychange', function() {
     if (document.hidden) stopLoopingSounds();
 });
 
@@ -382,3 +362,7 @@ let fps = 65;  // TODO
 let frameDuration = 1000 / fps;
 let timeBefore = Date.now();
 ticker();
+
+// for debug purposes
+window.game = game;
+window.resetGame = resetGame;

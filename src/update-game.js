@@ -13,14 +13,13 @@ export function updateGame(game) {
 
     if (game.time === 1) {
         let STAR_AMOUNT = 400;
-
         for (let i = 0; i < STAR_AMOUNT; i++) {
-            createStar();
+            spawnStar(game);
         }
     }
 
     let snowFrequency = Math.max(0, Math.sin(2 * Math.PI * (0.5 + game.time / (120 * 60)))) * 1/3;
-    if (game.time % ~~(1/snowFrequency) == 1) createSnow();
+    if (game.time % ~~(1/snowFrequency) == 1) spawnSnow(game);
 
     // end of wave
     if (game.enemies.length === 0 && game.wave.isActive && game.player.health > 0) {
@@ -723,7 +722,7 @@ export function updateGame(game) {
         if (pt.a <= 0) {
             // make new star when old one dies
             if (pt.type == 'star') {
-                createStar();
+                spawnStar(game);
             }
 
             game.particles.splice(i, 1);
@@ -895,7 +894,7 @@ function novaParticles(x, y, z, r, g, b, a, d, v, s) {
     return particles;
 }
 
-function createSnow() {
+function spawnSnow(game) {
     let SNOW_SIZE_MIN = 0.03;
     let SNOW_SIZE_MAX = 0.1;
     let ROTATION_SCALE = 0.3;
@@ -920,7 +919,7 @@ function createSnow() {
     });
 }
 
-function createStar() {
+function spawnStar(game) {
     let STAR_SIZE_MIN = 0.01;
     let STAR_SIZE_MAX = 0.1;
     let STAR_ALIVE_MIN = 1;
