@@ -65,7 +65,7 @@
     "b": 116
   },
   {
-    "name": "tile",
+    "name": "covered",
     "mirror": false,
     "x": 0,
     "y": 0,
@@ -78,7 +78,7 @@
     "b": 56
   },
   {
-    "name": "tile",
+    "name": "covered",
     "mirror": false,
     "x": 0,
     "y": 0,
@@ -91,7 +91,7 @@
     "b": 38
   },
   {
-    "name": "tile",
+    "name": "covered",
     "mirror": false,
     "x": 0,
     "y": 0,

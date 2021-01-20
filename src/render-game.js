@@ -46,6 +46,9 @@ export function renderGame(game) {
             if (tile == 3) tileCuboids = cuboidsFromJson(iceTileJson);
             if (tile == 4) tileCuboids = cuboidsFromJson(mountainTileJson);
 
+            // we don't need to render covered parts of tiles if they aren't in front
+            if (x != 11 && y != 0) tileCuboids = tileCuboids.filter(it => it.name != 'covered');
+
             for (let it of tileCuboids) {
                 it.x = x;
                 it.y = y;
