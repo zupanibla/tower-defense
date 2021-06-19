@@ -29,9 +29,23 @@ import gooBossJson			from './models/goo-boss.json';
 import yellowScarabJson		from './models/scarab-yellow.json';
 import blueScarabJson		from './models/scarab-blue.json';
 
+let canvas = document.querySelector('.game-canvas');
 
 export function renderGame(game) {
     adjustCanvasSize();
+
+    // set camera, isometric view
+    // NOTE transformations are applied bottom up
+    let v = mat4.create();
+    mat4.scale(v, v, [120 / game.width, 120 / game.height, -0.001]);  // tile size 120px
+    mat4.rotateX(v, v, Math.PI * (-1/4));   // tilt world
+    mat4.rotateZ(v, v, Math.PI * (-1/4));   // rotate 45deg
+    mat4.translate(v, v, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
+    setViewMatrix(v);
+
+    // TODO move projection component here TODO why?
+    let p = mat4.create();
+    setProjectionMatrix(p);
 
     let cuboids = [];
 
@@ -336,21 +350,6 @@ export function renderGame(game) {
 
 export function initGameRenderer() {
     initCuboidRenderer();
-
-    // set camera, isometric view
-    // NOTE transformations are applied bottom up
-    let canvas = document.querySelector('.game-canvas');
-
-    let v = mat4.create();
-    mat4.scale(v, v, [120 / canvas.clientWidth, 120 / canvas.clientHeight, -0.001]);  // tile size 120px
-    mat4.rotateX(v, v, Math.PI * (-1/4));   // tilt world
-    mat4.rotateZ(v, v, Math.PI * (-1/4));   // rotate 45deg
-    mat4.translate(v, v, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
-    setViewMatrix(v);
-
-    // TODO move projection component here
-    let p = mat4.create();
-    setProjectionMatrix(p);
 }
 
 function cuboidsFromJson(modelJson) {

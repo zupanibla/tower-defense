@@ -7,3 +7,4 @@
 - game speed control
 - behavior on slowdown (reduce number of particles/skip frames)
 - placing towers during pause
+- game becomes slow on unzoom and blurry on zoom

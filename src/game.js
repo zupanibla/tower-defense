@@ -15,12 +15,11 @@ let popout          = document.querySelector('.game-popout');
 let popoutTitle     = document.querySelector('.popout-title');
 let popoutMain      = document.querySelector('.popout-main');
 let popoutPlayAgain = document.querySelector('.popout-play-again');
-let scaleBodyFactor = 1;
+
 export let enemyTypes      = [
     {type: 'duck',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  15, friedness: 0, oilyness: 0, burning: false},
     {type: 'snezak',        x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 200, maxHealth: 200, reward: 50,  damage:  25, friedness: 0, oilyness: 0, burning: false},
     {type: 'butcher',       x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 500, maxHealth: 500, reward: 100, damage:  30, friedness: 0, oilyness: 0, burning: false},
-
     {type: 'vek',           x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 150, maxHealth: 150, reward: 30,  damage:  10, friedness: 0, oilyness: 0, burning: false, hasArmor: true},
     {type: 'vek2',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 100, maxHealth: 100, reward: 15,  damage:   5, friedness: 0, oilyness: 0, burning: false},
     {type: 'goo-small',     x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health:  60, maxHealth:  60, reward:  5,  damage:   2, friedness: 0, oilyness: 0, burning: false, jumpCooldown: 0},
@@ -120,30 +119,10 @@ game.towers = game.tiles.map(row => row.map(_ => null));
 
 let initialGameStateJSON = JSON.stringify(game);
 
-// centers the game and downscales it if the browser window is too small
-// TODO: this can probably be done less hacky...
-function scaleBody() {
-    let h = window.innerHeight;
-    let w = window.innerWidth;
-    scaleBodyFactor  = 1;
-
-    // determine and set scaling factor
-    if (h < game.height) scaleBodyFactor = h / game.height;
-    if (w < game.width && scaleBodyFactor > w / game.width) scaleBodyFactor = w / game.width;
-    document.body.style.transform = 'scale(' + scaleBodyFactor + ')';
-
-    // set game in center
-    gameHtml.style.top  = (h - game.height * scaleBodyFactor) / 2 / scaleBodyFactor + 'px';
-    gameHtml.style.left = (w - game.width * scaleBodyFactor)  / 2 / scaleBodyFactor + 'px';
-}
-
-scaleBody();
-window.addEventListener('resize', scaleBody);
-
 ui.addEventListener('mousemove', e => {
     var rect = ui.getBoundingClientRect();
-    game.mouse.x = Math.round(e.clientX - rect.left) / scaleBodyFactor;
-    game.mouse.y = Math.round(e.clientY - rect.top)  / scaleBodyFactor;
+    game.mouse.x = e.clientX * game.width / canvas.clientWidth;
+    game.mouse.y = e.clientY * game.height / canvas.clientHeight;
 });
 
 ui.addEventListener('mousedown', e => {
@@ -338,6 +317,22 @@ function ticker() {
 
     if (timeBetween > frameDuration) {
         timeBefore = timeNow - (timeBetween % frameDuration);
+
+        // compute game width and height
+        let w = canvas.clientWidth;
+        let h = canvas.clientHeight;
+        let k = 1;
+        const W = 1100;
+        const H = 900;
+
+        // determine scaling factor k
+        if (H > h) k = H / h;
+        if (W > w && k < W / w) k = W / w;
+
+        if (game.time % 60 == 1) console.log(k, w, h)
+
+        game.width  = w * k;
+        game.height = h * k;
 
         // TODO: call updateShop() somewhere else
         updateShop();
