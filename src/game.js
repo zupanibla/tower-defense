@@ -1,20 +1,8 @@
 import {updateGame, setWaveReward}    from './update-game.js';
 import {initGameRenderer, renderGame} from './render-game.js';
 import {initAudio, playSound}         from './audio.js';
+import * as html from './html-references.js';
 
-let canvas          = document.querySelector('.game-canvas');
-let ui              = document.querySelector('.game-ui');
-let gameHtml        = document.querySelector('.game');
-let pausePlayButton = document.querySelector('.pause-play-button');
-let shopButtons     = [
-                      document.querySelector('.tower-0-0'), document.querySelector('.tower-0-1'), document.querySelector('.tower-0-2'),
-                      document.querySelector('.tower-1-0'), document.querySelector('.tower-1-1'), document.querySelector('.tower-1-2'),
-                      document.querySelector('.tower-2-0'), document.querySelector('.tower-2-1'), document.querySelector('.tower-2-2')
-                    ];
-let popout          = document.querySelector('.game-popout');
-let popoutTitle     = document.querySelector('.popout-title');
-let popoutMain      = document.querySelector('.popout-main');
-let popoutPlayAgain = document.querySelector('.popout-play-again');
 
 export let enemyTypes      = [
     {type: 'duck',          x: 1, y: 12.5, z: 0, rot: 0, pathPos: 0, vz: 0, health: 120, maxHealth: 120, reward: 20,  damage:  15, friedness: 0, oilyness: 0, burning: false},
@@ -54,8 +42,8 @@ export let waves = [
 let TOWER_COST_MULTIPLIER = 1.25;
 
 let game = {
-    width: ui.clientWidth,
-    height: ui.clientHeight,
+    width: html.uiDiv.clientWidth,
+    height: html.uiDiv.clientHeight,
     tiles: [
         [1, 2, 1, 1, 1, 1, 1, 1, 4, 1, 4, 4],
         [1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1],
@@ -119,16 +107,16 @@ game.towers = game.tiles.map(row => row.map(_ => null));
 
 let initialGameStateJSON = JSON.stringify(game);
 
-ui.addEventListener('mousemove', e => {
-    var rect = ui.getBoundingClientRect();
-    game.mouse.x = e.clientX * game.width / canvas.clientWidth;
-    game.mouse.y = e.clientY * game.height / canvas.clientHeight;
+html.uiDiv.addEventListener('mousemove', e => {
+    var rect = html.uiDiv.getBoundingClientRect();
+    game.mouse.x = e.clientX * game.width / html.canvas.clientWidth;
+    game.mouse.y = e.clientY * game.height / html.canvas.clientHeight;
 });
 
-ui.addEventListener('mousedown', e => {
+html.uiDiv.addEventListener('mousedown', e => {
     // left click
     if (e.button === 0) {
-        var rect             = ui.getBoundingClientRect();
+        var rect             = html.uiDiv.getBoundingClientRect();
         game.mouse.x         = Math.round(e.clientX - rect.left);
         game.mouse.y         = Math.round(e.clientY - rect.top);
         game.mouse.isDown    = true;
@@ -155,7 +143,7 @@ ui.addEventListener('mousedown', e => {
             // on pressing shift don't remove tower from cursor to allow placing multiple towers
             if (!e.shiftKey) {
                 // deselect tower from shop and remove it from cursor
-                for (let it of shopButtons) {
+                for (let it of html.shopButtons) {
                     it.classList.remove('tower-selected');
                 }
                 game.selectedShopItemIdx = -1;
@@ -164,17 +152,17 @@ ui.addEventListener('mousedown', e => {
     }
 });
 
-ui.addEventListener('mouseup', e => {
+html.uiDiv.addEventListener('mouseup', e => {
     // left click
     if (e.button === 0) {
-        var rect = ui.getBoundingClientRect();
+        var rect = html.uiDiv.getBoundingClientRect();
         game.mouse.x = Math.round(e.clientX - rect.left);
         game.mouse.y = Math.round(e.clientY - rect.top);
         game.mouse.isDown = false;
     }
 });
 
-pausePlayButton.addEventListener('mouseup', e => {
+html.pausePlayButton.addEventListener('mouseup', e => {
     // unpauase
     if (game.isPaused) {
         unpauseGame();
@@ -189,17 +177,17 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         // remove tower from cursor and shop selection
         game.selectedShopItemIdx = -1;
-        for (let it of shopButtons) {
+        for (let it of html.shopButtons) {
             it.classList.remove('tower-selected');
         }
     }
 });
 
 for (let i = 0; i < game.shopItems.length; i++) {
-    shopButtons[i].addEventListener('click', e => {
+    html.shopButtons[i].addEventListener('click', e => {
         if (game.player.money >= game.shopItems[i].cost) {
             // deselect all other towers
-            for (let it of shopButtons) {
+            for (let it of html.shopButtons) {
                 it.classList.remove('tower-selected');
             }
             // select the clicked tower
@@ -207,14 +195,14 @@ for (let i = 0; i < game.shopItems.length; i++) {
                 game.selectedShopItemIdx = -1;
             }
             else {
-                shopButtons[i].classList.add('tower-selected');
+                html.shopButtons[i].classList.add('tower-selected');
                 game.selectedShopItemIdx = i;
             }
         }
     });
 }
 
-popoutPlayAgain.addEventListener('click', resetGame);
+html.popupPlayAgain.addEventListener('click', resetGame);
 
 export function createCombatLogEntry(s) {
     game.ui.combatLog += s + '<br />';
@@ -223,13 +211,13 @@ export function createCombatLogEntry(s) {
 function updateShop() {
     for (let i = 0; i < game.shopItems.length; i++) {
         // update tower cost text
-        shopButtons[i].querySelector('.tower-cost').innerHTML = game.shopItems[i].cost;
+        html.shopButtons[i].querySelector('.tower-cost').innerHTML = game.shopItems[i].cost;
         // update icons if player can or cannot afford tower
         if (game.player.money >= game.shopItems[i].cost) {
-            shopButtons[i].classList.remove('tower-disabled');
+            html.shopButtons[i].classList.remove('tower-disabled');
         }
         else {
-            shopButtons[i].classList.add('tower-disabled');
+            html.shopButtons[i].classList.add('tower-disabled');
         }
     }
 }
@@ -252,43 +240,43 @@ function spawnWave() {
 }
 
 export function pauseGame() {
-    pausePlayButton.classList.remove('pause-button');
-    pausePlayButton.classList.add('play-button');
+    html.pausePlayButton.classList.remove('pause-button');
+    html.pausePlayButton.classList.add('play-button');
     game.isPaused = true;
 }
 
 function unpauseGame() {
-    pausePlayButton.classList.remove('play-button');
-    pausePlayButton.classList.add('pause-button');
+    html.pausePlayButton.classList.remove('play-button');
+    html.pausePlayButton.classList.add('pause-button');
     game.isPaused = false;
     if (!game.wave.isActive) spawnWave();
 }
 
 
 function resetGame() {
-    popout.classList.add('unclickable');
-    popout.classList.remove('fade');
-    pausePlayButton.classList.remove('unclickable');
+    html.popup.classList.add('unclickable');
+    html.popup.classList.remove('fade');
+    html.pausePlayButton.classList.remove('unclickable');
     stopLoopingSounds();
     game = JSON.parse(initialGameStateJSON);
 }
 
 export function showEndPopout(isVictory) {
-    popout.classList.remove('unclickable');
-    popout.classList.add('fade');
-    pausePlayButton.classList.add('unclickable');
+    html.popup.classList.remove('unclickable');
+    html.popup.classList.add('fade');
+    html.pausePlayButton.classList.add('unclickable');
 
     if (isVictory) {
-        popoutTitle.classList.remove('popout-defeat');
-        popoutTitle.classList.add('popout-victory');
-        popoutTitle.innerHTML = 'Victory';
-        popoutMain.innerHTML  = 'You have defeated the evil forces and stopped them from overcoming the human world! (for now...)'
+        html.popupTitle.classList.remove('popup-window-defeat');
+        html.popupTitle.classList.add('popup-window-victory');
+        html.popupTitle.innerHTML = 'Victory';
+        html.popupMain.innerHTML  = 'You have defeated the evil forces and stopped them from overcoming the human world! (for now...)'
     }
     else {
-        popoutTitle.classList.remove('popout-victory');
-        popoutTitle.classList.add('popout-defeat');
-        popoutTitle.innerHTML = 'Defeat';
-        popoutMain.innerHTML  = 'The evil forces have managed to invade the human world. The earth is doomed.'
+        html.popupTitle.classList.remove('popup-window-victory');
+        html.popupTitle.classList.add('popup-window-defeat');
+        html.popupTitle.innerHTML = 'Defeat';
+        html.popupMain.innerHTML  = 'The evil forces have managed to invade the human world. The earth is doomed.'
     }
 }
 
@@ -319,8 +307,8 @@ function ticker() {
         timeBefore = timeNow - (timeBetween % frameDuration);
 
         // compute game width and height
-        let w = canvas.clientWidth;
-        let h = canvas.clientHeight;
+        let w = html.canvas.clientWidth;
+        let h = html.canvas.clientHeight;
         let k = 1;
         const W = 1100;
         const H = 900;
@@ -328,8 +316,6 @@ function ticker() {
         // determine scaling factor k
         if (H > h) k = H / h;
         if (W > w && k < W / w) k = W / w;
-
-        if (game.time % 60 == 1) console.log(k, w, h)
 
         game.width  = w * k;
         game.height = h * k;

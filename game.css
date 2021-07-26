@@ -105,24 +105,24 @@ body {
     scrollbar-color: rgb(32, 32, 32) rgb(15, 16, 22);   /* firefox */
 }
 
-/* victory/defeat popout */
-.game-popout {
+/* victory/defeat popup */
+.game-popup {
     width: 500px;
     height: 350px;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background: url('assets/ui/background/popout-background.png');
+    background: url('assets/ui/background/popup-background.png');
     opacity: 0;
     -webkit-transition: opacity 3s;
     -moz-transition: opacity 3s;     
     transition: opacity 3s;
 }
-.game-popout.fade {
+.game-popup.fade {
     opacity: 1;
 }
-.popout-title {
+.popup-title {
     position: absolute;
     text-align: center;
     color: #54fd20;
@@ -131,13 +131,13 @@ body {
     top: 30px;
     font-size: 40px;
 }
-.popout-victory {
+.popup-victory {
     color: #54fd20;
 }
-.popout-defeat {
+.popup-defeat {
     color: red;
 }
-.popout-main {
+.popup-main {
     width: 460px;
     position: absolute;
     left: 50%;
@@ -145,7 +145,7 @@ body {
     transform: translate(-50%, -50%);
     font-size: 24px;
 }
-.popout-play-again {
+.popup-play-again {
     color: #afb917;
     position: absolute;
     text-align: center;
@@ -153,7 +153,7 @@ body {
     bottom: 30px;
     transform: translate(-50%, 0);
 }
-.popout-play-again:hover {
+.popup-play-again:hover {
     color: yellow;
     cursor: url('./assets/ui/cursor.png'), pointer;
 }
