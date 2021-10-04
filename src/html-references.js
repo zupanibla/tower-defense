@@ -1,3 +1,4 @@
+export let gameDiv         = document.querySelector('.game'); 
 export let canvas          = document.querySelector('.game-canvas');
 export let uiDiv           = document.querySelector('.game-ui');
 export let pausePlayButton = document.querySelector('.pause-play-button');
@@ -10,3 +11,4 @@ export let popup          = document.querySelector('.popup');
 export let popupTitle     = document.querySelector('.popup-title');
 export let popupMain      = document.querySelector('.popup-main');
 export let popupPlayAgain = document.querySelector('.popup-play-again');
+export let loadingCover   = document.querySelector('.loading-cover');

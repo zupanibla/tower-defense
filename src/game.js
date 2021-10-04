@@ -333,10 +333,84 @@ function ticker() {
 }
 
 // init audio after user interaction
-window.addEventListener('mousedown', function handler(e) {
+html.uiDiv.addEventListener('mousedown', function handler(e) {
     e.currentTarget.removeEventListener(e.type, handler);
     initAudio();
 })
+
+// show ui after assets are loaded
+let imageUrls = [
+    'assets/ui/cursor.png',
+    'assets/ui/buttons/button-pause.png',
+    'assets/ui/buttons/button-pause-hover.png',
+    'assets/ui/buttons/button-pause-active.png',
+    'assets/ui/buttons/button-play.png',
+    'assets/ui/buttons/button-play-hover.png',
+    'assets/ui/buttons/button-play-active.png',
+    'assets/ui/buttons/button-ballistic-turret.png',
+    'assets/ui/buttons/button-ballistic-turret-hover.png', 
+    'assets/ui/buttons/button-ballistic-turret-active.png',
+    'assets/ui/buttons/button-ballistic-turret-disabled.png',
+    'assets/ui/buttons/button-flame-turret.png',
+    'assets/ui/buttons/button-flame-turret-hover.png',
+    'assets/ui/buttons/button-flame-turret-active.png',
+    'assets/ui/buttons/button-flame-turret-disabled.png',
+    'assets/ui/buttons/button-oil-turret.png',
+    'assets/ui/buttons/button-oil-turret-hover.png',
+    'assets/ui/buttons/button-oil-turret-active.png',
+    'assets/ui/buttons/button-oil-turret-disabled.png',
+    'assets/ui/buttons/button-nova-turret.png',
+    'assets/ui/buttons/button-nova-turret-hover.png',
+    'assets/ui/buttons/button-nova-turret-active.png',
+    'assets/ui/buttons/button-nova-turret-disabled.png',
+    'assets/ui/buttons/button-laser-turret.png',
+    'assets/ui/buttons/button-laser-turret-hover.png',
+    'assets/ui/buttons/button-laser-turret-active.png',
+    'assets/ui/buttons/button-laser-turret-disabled.png',
+    'assets/ui/background/tower-select-background.png',
+    'assets/ui/background/popup-background.png',
+];
+
+let audioUrls = [
+    'assets/sounds/zap.mp3',
+    'assets/sounds/pow.mp3',
+    'assets/sounds/lose-health.mp3',
+    'assets/sounds/flamethrower.mp3',
+    'assets/sounds/goo-split.mp3',
+    'assets/sounds/oil.mp3',
+    'assets/sounds/place-turret.mp3',
+    'assets/sounds/vek-death.mp3',
+    'assets/sounds/vek2-death.mp3',
+    'assets/sounds/armor-break.mp3',
+    'assets/sounds/clank.mp3',
+    'assets/sounds/scarab-death.mp3',
+    'assets/sounds/laser.mp3',
+];
+
+
+let loadedAssetCount = 0;
+
+let assetLoadEventHandler = () => {
+    loadedAssetCount++;
+    if (loadedAssetCount == imageUrls.length + audioUrls.length) {
+        html.loadingCover.style.display = 'none';
+    }
+};
+
+for (let it of imageUrls) {
+    let image = new Image();
+    image.onload = assetLoadEventHandler;
+    image.onerror = assetLoadEventHandler;  // TODO handle failure
+    image.src = it;
+}
+
+for (let it of audioUrls) {
+    let audio = new Audio();
+    audio.oncanplaythrough = assetLoadEventHandler;
+    audio.onerror = assetLoadEventHandler;  // TODO handle failure
+    audio.src = it;
+    audio.load();
+}
 
 initGameRenderer();
 let fps = 65;  // TODO

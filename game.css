@@ -1,8 +1,8 @@
 /* https://www.dafont.com/04b-03.font */
 @font-face {
     font-family: '04b03';
-    src: url('./assets/fonts/04b03.woff2') format('woff2'),
-            url('./assets/fonts/04b03.woff') format('woff');
+    src: url('assets/fonts/04b03.woff2') format('woff2'),
+            url('assets/fonts/04b03.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -36,6 +36,23 @@
     height: 100%;
     z-index: 1;
 }
+.loading-cover {
+    background-color: rgb(15, 16, 22);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    display: table;
+    text-align: center;
+}
+.loading-text {
+    color: white;
+    font-size: 60px;
+    display: table-cell;
+    vertical-align: middle;
+}
 .game-ui {
     position: absolute;
     left: 0;
@@ -54,9 +71,6 @@ body {
     transform-origin: 0 0;
     overflow-y: hidden;
     overflow-x: hidden;
-
-    cursor: url('./assets/ui/cursor.png'), auto;   
-
 }
 .health {
     color: #54fd20;
@@ -155,7 +169,7 @@ body {
 }
 .popup-play-again:hover {
     color: yellow;
-    cursor: url('./assets/ui/cursor.png'), pointer;
+    cursor: url('assets/ui/cursor.png'), pointer;
 }
 
 
@@ -171,13 +185,13 @@ body {
     width: 100;
     height: 40;
     background: url('assets/ui/buttons/button-play-hover.png');
-    cursor: url('./assets/ui/cursor.png'), pointer;
+    cursor: url('assets/ui/cursor.png'), pointer;
 }
 .play-button:active {
     width: 100;
     height: 40;
     background: url('assets/ui/buttons/button-play-active.png');
-    cursor: url('./assets/ui/cursor.png'), pointer;
+    cursor: url('assets/ui/cursor.png'), pointer;
 }
 .pause-button {
     width: 100;
@@ -188,13 +202,13 @@ body {
     width: 100;
     height: 40;
     background: url('assets/ui/buttons/button-pause-hover.png');
-    cursor: url('./assets/ui/cursor.png'), pointer;
+    cursor: url('assets/ui/cursor.png'), pointer;
 }
 .pause-button:active {
     width: 100;
     height: 40;
     background: url('assets/ui/buttons/button-pause-active.png');
-    cursor: url('./assets/ui/cursor.png'), pointer;
+    cursor: url('assets/ui/cursor.png'), pointer;
 }
 .pause-play-button {
     margin-bottom: 5px;
@@ -210,11 +224,11 @@ body {
 .tower-icon {
     width: 60;
     height: 60;
-    cursor: url('./assets/ui/wrench.png'), pointer;
+    cursor: url('assets/ui/wrench.png'), pointer;
     position: absolute;
 }
 .tower-disabled {
-    cursor: url('./assets/ui/cursor.png'), default;
+    cursor: url('assets/ui/cursor.png'), default;
 }
 .tower-cost {
     font-size: 16px;
