@@ -296,31 +296,22 @@ document.addEventListener('visibilitychange', function() {
     if (document.hidden) stopLoopingSounds();
 });
 
-function ticker() {
-    requestAnimationFrame(ticker);
-    
-    let timeNow = Date.now();
-    let timeBetween = timeNow - timeBefore;
+const startTime = performance.now();
+let timer = 0;
 
+function onAnimationFrame() {
+    const timerTarget = (performance.now() - startTime) / 1000 * 60;
 
-    if (timeBetween > frameDuration) {
-        timeBefore = timeNow - (timeBetween % frameDuration);
+    // reset timer if we are more than 1 second behind (should happen when game is minimized)
+    if (timerTarget - timer > 60) {
+        console.log(`WE ARE RUNNING ${timerTarget - timer} BEHIND. RESETING TIMER`);
+        timer = ~~timerTarget;
+    }
 
-        // compute game width and height
-        let w = html.canvas.clientWidth;
-        let h = html.canvas.clientHeight;
-        let k = 1;
-        const W = 1100;
-        const H = 900;
+    // MAIN LOOP 60fps
+    while (timerTarget > timer) {
+        timer++;
 
-        // determine scaling factor k
-        if (H > h) k = H / h;
-        if (W > w && k < W / w) k = W / w;
-
-        game.width  = w * k;
-        game.height = h * k;
-
-        // TODO: call updateShop() somewhere else
         updateShop();
         if (!game.wave.isActive || !game.isPaused) {
             updateGame(game);
@@ -330,6 +321,23 @@ function ticker() {
         }
         renderGame(game);
     }
+
+    // compute game width and height
+    let w = html.canvas.clientWidth;
+    let h = html.canvas.clientHeight;
+    let k = 1;
+    const W = 1100;
+    const H = 900;
+
+    // determine scaling factor k
+    if (H > h) k = H / h;
+    if (W > w && k < W / w) k = W / w;
+
+    game.width  = w * k;
+    game.height = h * k;
+
+    renderGame(game);
+    requestAnimationFrame(onAnimationFrame);
 }
 
 // init audio after user interaction
@@ -413,10 +421,7 @@ for (let it of audioUrls) {
 }
 
 initGameRenderer();
-let fps = 65;  // TODO
-let frameDuration = 1000 / fps;
-let timeBefore = Date.now();
-ticker();
+onAnimationFrame();
 
 // for debug purposes
 window.game = game;
