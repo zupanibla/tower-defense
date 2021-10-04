@@ -37,7 +37,7 @@ export function renderGame(game) {
     // set camera, isometric view
     // NOTE transformations are applied bottom up
     let v = mat4.create();
-    mat4.scale(v, v, [120 / game.width, 120 / game.height, -0.001]);  // tile size 120px
+    mat4.scale(v, v, [120 / canvas.width, 120 / canvas.height, -0.001]);  // tile size 120px
     mat4.rotateX(v, v, Math.PI * (-1/4));   // tilt world
     mat4.rotateZ(v, v, Math.PI * (-1/4));   // rotate 45deg
     mat4.translate(v, v, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos

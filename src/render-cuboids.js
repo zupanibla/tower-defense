@@ -160,11 +160,12 @@ export function renderCuboids(cuboids) {
 
 // Resize canvas and set viewport if client size changed
 export function adjustCanvasSize() {
-	if (canvas.width !== canvas.clientWidth ||
-		canvas.height !== canvas.clientHeight)
+    let width = Math.round(canvas.clientWidth  * window.devicePixelRatio);
+    let height = Math.round(canvas.clientHeight * window.devicePixelRatio);
+	if (canvas.width !== width || canvas.height !== height)
 	{
-		canvas.width = canvas.clientWidth;
-		canvas.height = canvas.clientHeight;
+		canvas.width  = width;
+		canvas.height = height;
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 	}
 }
