@@ -400,30 +400,38 @@ let audioUrls = [
 
 
 let loadedAssetCount = 0;
+let loadedSoundCount = 0;
+let loadedImageCount = 0;
 
 let assetLoadEventHandler = () => {
     loadedAssetCount++;
-    if (loadedAssetCount == imageUrls.length + audioUrls.length - 2 /* TODO temporary fix because sometimes the load event doesn't fire*/) {
+    if (loadedAssetCount == imageUrls.length + audioUrls.length) {
         html.loadingCover.style.display = 'none';
     }
 
-    console.log(`loaded ${loadedAssetCount}/${imageUrls.length + audioUrls.length} assets`)
+    console.log(`loaded ${loadedSoundCount}/${audioUrls.length} sounds and ${loadedImageCount}/${imageUrls.length} images`);
 };
 
 for (let it of imageUrls) {
     let image = new Image();
-    image.onload = assetLoadEventHandler;
-    image.onerror = assetLoadEventHandler;  // TODO handle failure
+    image.onload = () => { loadedImageCount++; assetLoadEventHandler(); };
+    image.onerror = () => { loadedImageCount++; assetLoadEventHandler(); };  // TODO handle failure
     image.src = it;
 }
 
+// TODO rare bug that seems like a race condition caused by oncanplay event not firing
+let audios = [];
 for (let it of audioUrls) {
-    let audio = new Audio();
-    audio.oncanplaythrough = assetLoadEventHandler;
-    audio.onerror = assetLoadEventHandler;  // TODO handle failure
-    audio.src = it;
-    audio.load();
+    const a = new Audio();
+    audios.push(a);
+    a.src = it;
 }
+for (let it of audios) {
+    it.oncanplay = () => { loadedSoundCount++; assetLoadEventHandler(); };
+    it.onerror = () => { loadedSoundCount++; assetLoadEventHandler(); };  // TODO handle failure
+    it.load();
+}
+window.audios = audios;
 
 initGameRenderer();
 onAnimationFrame();
