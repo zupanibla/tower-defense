@@ -400,9 +400,11 @@ let loadedAssetCount = 0;
 
 let assetLoadEventHandler = () => {
     loadedAssetCount++;
-    if (loadedAssetCount == imageUrls.length + audioUrls.length) {
+    if (loadedAssetCount == imageUrls.length + audioUrls.length - 2 /* TODO hack because sometimes the load event doesn't fire*/) {
         html.loadingCover.style.display = 'none';
     }
+
+    console.log(`loaded ${loadedAssetCount}/${imageUrls.length + audioUrls.length} assets`)
 };
 
 for (let it of imageUrls) {
