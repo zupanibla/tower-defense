@@ -1,4 +1,5 @@
-import {updateGame, setWaveReward}    from './update-game.js';
+import {updateGame}    from './update-game.js';
+import {updateMouse} from './update-mouse.js';
 import {initGameRenderer, renderGame} from './render-game.js';
 import {initAudio, playSound}         from './audio.js';
 import * as html from './html-references.js';
@@ -315,10 +316,12 @@ function onAnimationFrame() {
         updateShop();
         if (!game.wave.isActive || !game.isPaused) {
             updateGame(game);
+
         }
         else {
             stopLoopingSounds();
         }
+        updateMouse(game);
         renderGame(game);
     }
 
@@ -400,7 +403,7 @@ let loadedAssetCount = 0;
 
 let assetLoadEventHandler = () => {
     loadedAssetCount++;
-    if (loadedAssetCount == imageUrls.length + audioUrls.length - 2 /* TODO hack because sometimes the load event doesn't fire*/) {
+    if (loadedAssetCount == imageUrls.length + audioUrls.length - 2 /* TODO temporary fix because sometimes the load event doesn't fire*/) {
         html.loadingCover.style.display = 'none';
     }
 
