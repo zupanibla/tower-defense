@@ -7,7 +7,6 @@ body {
     height: 100%;
 }
 /* https://www.dafont.com/04b-03.font */
-/* crisp font sizes 6px, 13px, 19px, 25.5px, 32px, 38px, 57px */
 @font-face {
     font-family: '04b03';
     src: url('assets/fonts/04b03.woff2') format('woff2'),
@@ -58,7 +57,7 @@ body {
 }
 .loading-text {
     color: white;
-    font-size: 57px;
+    font-size: 64px;
     display: table-cell;
     vertical-align: middle;
 }
@@ -70,7 +69,7 @@ body {
     height: 100%;
     z-index: 2;
     color: white;
-    font-size: 38px;
+    font-size: 40px;
 }
 body {
     background-color: rgb(15, 16, 22);
@@ -97,7 +96,7 @@ body {
     position: absolute;
     top: 0;
     right: 0;
-    margin: 30px;
+    margin: 32px;
     text-align: right;
     text-shadow: 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22);
 }
@@ -107,7 +106,7 @@ body {
     left: 0;
     margin-left: 20px;
     margin-bottom: 10px;
-    font-size: 19px;
+    font-size: 24px;
     text-shadow: 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22), 0 0 5px rgb(15, 16, 22);
 }
 .game-ui-bottomright {
@@ -119,7 +118,7 @@ body {
     right: 0;
 }
 .combat-log {
-    font-size: 19px;
+    font-size: 16px;
     overflow-y: scroll;
     display: flex;
     flex-direction: column-reverse;
@@ -152,7 +151,7 @@ body {
     left: 50%;
     transform: translate(-50%, 0);
     top: 30px;
-    font-size: 38px;
+    font-size: 40px;
 }
 .popup-victory {
     color: #54fd20;
@@ -166,7 +165,7 @@ body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    font-size: 25.5px;
+    font-size: 24px;
 }
 .popup-play-again {
     color: #afb917;
@@ -186,23 +185,27 @@ body {
 
 /* pause-play button */
 .play-button {
+    display: inline-block;
     width: 100px;
     height: 40px;
     background: url('assets/ui/buttons/button-play.png');
 }
 .play-button:hover {
+    display: inline-block;
     width: 100px;
     height: 40px;
     background: url('assets/ui/buttons/button-play-hover.png');
     cursor: url('assets/ui/cursor.png'), pointer;
 }
 .play-button:active {
+    display: inline-block;
     width: 100px;
     height: 40px;
     background: url('assets/ui/buttons/button-play-active.png');
     cursor: url('assets/ui/cursor.png'), pointer;
 }
 .pause-button {
+    display: inline-block;
     width: 100px;
     height: 40px;
     background: url('assets/ui/buttons/button-pause.png');
@@ -240,7 +243,7 @@ body {
     cursor: url('assets/ui/cursor.png'), default;
 }
 .tower-cost {
-    font-size: 19px;
+    font-size: 16px;
     color: #54fd20;
     text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;
     text-align: center;
