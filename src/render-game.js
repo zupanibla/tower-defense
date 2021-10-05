@@ -343,7 +343,7 @@ export function renderGame(game) {
 		cuboids.push(...blCuboids);
 	}
 
-    if (game.time % 60 == 0) console.log(`${cuboids.length} cuboids/frame`);
+    // if (game.time % 60 == 0) console.log(`${cuboids.length} cuboids/frame`);
 	renderCuboids(cuboids);
 }
 

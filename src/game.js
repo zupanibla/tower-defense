@@ -43,6 +43,7 @@ export let waves = [
 let TOWER_COST_MULTIPLIER = 1.25;
 
 let game = {
+    speed: 1,
     width: html.uiDiv.clientWidth,
     height: html.uiDiv.clientHeight,
     tiles: [
@@ -109,7 +110,6 @@ game.towers = game.tiles.map(row => row.map(_ => null));
 let initialGameStateJSON = JSON.stringify(game);
 
 html.uiDiv.addEventListener('mousemove', e => {
-    var rect = html.uiDiv.getBoundingClientRect();
     game.mouse.x = e.clientX * game.width / html.canvas.clientWidth;
     game.mouse.y = e.clientY * game.height / html.canvas.clientHeight;
 });
@@ -172,6 +172,12 @@ html.pausePlayButton.addEventListener('mouseup', e => {
     else {
         pauseGame();
     }
+});
+
+html.speedupButton.addEventListener('click', e => {
+    game.speed = (game.speed % 3) + 1;
+    html.gameSpeed.style.visibility = 'visible';
+    html.gameSpeed.innerHTML = game.speed + 'x';
 });
 
 document.addEventListener('keydown', e => {
@@ -315,7 +321,9 @@ function onAnimationFrame() {
 
         updateShop();
         if (!game.wave.isActive || !game.isPaused) {
-            updateGame(game);
+            for (let i = 0; i < game.speed; i++) {
+                updateGame(game);
+            }
 
         }
         else {
@@ -358,6 +366,9 @@ let imageUrls = [
     'assets/ui/buttons/button-play.png',
     'assets/ui/buttons/button-play-hover.png',
     'assets/ui/buttons/button-play-active.png',
+    'assets/ui/buttons/button-speedup.png',
+    'assets/ui/buttons/button-speedup-hover.png',
+    'assets/ui/buttons/button-speedup-active.png',
     'assets/ui/buttons/button-ballistic-turret.png',
     'assets/ui/buttons/button-ballistic-turret-hover.png', 
     'assets/ui/buttons/button-ballistic-turret-active.png',
@@ -409,7 +420,7 @@ let assetLoadEventHandler = () => {
         html.loadingCover.style.display = 'none';
     }
 
-    console.log(`loaded ${loadedSoundCount}/${audioUrls.length} sounds and ${loadedImageCount}/${imageUrls.length} images`);
+    // console.log(`loaded ${loadedSoundCount}/${audioUrls.length} sounds and ${loadedImageCount}/${imageUrls.length} images`);
 };
 
 for (let it of imageUrls) {

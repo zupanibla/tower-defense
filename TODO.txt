@@ -1,8 +1,4 @@
 - rework fire mechanics/somehow communicate to the player that flame turret is single target and ignites oil
-- favicon
 - fullscreen
 - inspect behavior on mobile
-- game speed control
-- game becomes slow on unzoom and blurry on zoom
-- add doctype
 - make model files 1:1

@@ -189,41 +189,54 @@ body {
     width: 100px;
     height: 40px;
     background: url('assets/ui/buttons/button-play.png');
+    cursor: url('assets/ui/cursor.png'), pointer;
 }
 .play-button:hover {
-    display: inline-block;
-    width: 100px;
-    height: 40px;
     background: url('assets/ui/buttons/button-play-hover.png');
-    cursor: url('assets/ui/cursor.png'), pointer;
 }
 .play-button:active {
-    display: inline-block;
-    width: 100px;
-    height: 40px;
     background: url('assets/ui/buttons/button-play-active.png');
-    cursor: url('assets/ui/cursor.png'), pointer;
 }
 .pause-button {
     display: inline-block;
     width: 100px;
     height: 40px;
     background: url('assets/ui/buttons/button-pause.png');
-}
-.pause-button:hover {
-    width: 100px;
-    height: 40px;
-    background: url('assets/ui/buttons/button-pause-hover.png');
-    cursor: url('assets/ui/cursor.png'), pointer;
-}
-.pause-button:active {
-    width: 100px;
-    height: 40px;
-    background: url('assets/ui/buttons/button-pause-active.png');
     cursor: url('assets/ui/cursor.png'), pointer;
 }
 .pause-play-button {
     margin-bottom: 5px;
+}
+.pause-button:hover {
+    background: url('assets/ui/buttons/button-pause-hover.png');
+}
+.pause-button:active {
+    background: url('assets/ui/buttons/button-pause-active.png');
+}
+
+/* speedup-button */
+.speedup-button {
+    margin-bottom: 5px;
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    background: url('assets/ui/buttons/button-speedup.png');
+    cursor: url('assets/ui/cursor.png'), pointer;
+}
+.speedup-button:hover {
+    background: url('assets/ui/buttons/button-speedup-hover.png');
+}
+.speedup-button:active {
+    background: url('assets/ui/buttons/button-speedup-active.png');
+}
+
+.game-speed {
+    margin-bottom: 5px;
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    vertical-align: middle;
+    font-size: 24px;
 }
 
 /* tower selection */
