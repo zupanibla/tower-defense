@@ -268,14 +268,14 @@ export function showEndPopout(isVictory) {
     html.pausePlayButton.classList.add('unclickable');
 
     if (isVictory) {
-        html.popupTitle.classList.remove('popup-window-defeat');
-        html.popupTitle.classList.add('popup-window-victory');
+        html.popupTitle.classList.remove('popup-defeat');
+        html.popupTitle.classList.add('popup-victory');
         html.popupTitle.innerHTML = 'Victory';
         html.popupMain.innerHTML  = 'You have defeated the evil forces and stopped them from overcoming the human world! (for now...)'
     }
     else {
-        html.popupTitle.classList.remove('popup-window-victory');
-        html.popupTitle.classList.add('popup-window-defeat');
+        html.popupTitle.classList.remove('popup-victory');
+        html.popupTitle.classList.add('popup-defeat');
         html.popupTitle.innerHTML = 'Defeat';
         html.popupMain.innerHTML  = 'The evil forces have managed to invade the human world. The earth is doomed.'
     }
