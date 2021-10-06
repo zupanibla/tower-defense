@@ -1,10 +1,7 @@
 import {mat4} from 'gl-matrix';
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix} from './render-cuboids.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid, pushCuboid2} from './render-cuboids.js';
 
 import duckJson           	from './models/duck.json';
-import floorJson          	from './models/floor.json';
-import tileJson           	from './models/tile.json';
-import greenTileJson      	from './models/green-tile.json';
 import iceTileJson          from './models/ice-tile.json';
 import mountainTileJson     from './models/mountain-tile.json';
 import snowTileJson         from './models/snow-tile.json';
@@ -19,7 +16,6 @@ import butcherJson        	from './models/butcher.json';
 import missileJson        	from './models/missile.json';
 import bluePortalJson     	from './models/blue-portal.json';
 import redPortalJson      	from './models/red-portal.json';
-import greenHighlightJson 	from './models/green-highlight.json';
 import vekJson            	from './models/vek.json';
 import vek2Json           	from './models/vek2.json';
 import gooJson				from './models/goo.json';
@@ -66,9 +62,8 @@ export function renderGame(game) {
             for (let it of tileCuboids) {
                 it.x = x;
                 it.y = y;
+                pushCuboid2(it);
             }
-
-            cuboids.push(...tileCuboids);
         }
     }
 
@@ -92,10 +87,10 @@ export function renderGame(game) {
                 if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
                     it.a   = 0.6;
                 }
-            }   
-        }
+            }
 
-        cuboids.push(...enCuboids);
+            pushCuboid2(it);
+        }
     }
 
     // handle tower on mouse
@@ -117,9 +112,8 @@ export function renderGame(game) {
             it.x = game.mouse.tileX;
             it.y = game.mouse.tileY;
             it.a = 0.6;
+            pushCuboid2(it);
         }
-
-        cuboids.push(...towerCuboids);
     }
 
     // towers
@@ -158,9 +152,8 @@ export function renderGame(game) {
 				if (it.name != 'stand' && it.name != 'base' && it.name != 'fixed') {
 					it.rot = tw.rot;
 				}
+                pushCuboid2(it);
 			}
-
-			cuboids.push(...towerCuboids);
 		}
 	}
 
@@ -173,7 +166,7 @@ export function renderGame(game) {
 			px: 0, py: 0, pz: -pt.sz/2,
 			r: pt.r, g: pt.g, b: pt.b, a: pt.a,
 		}
-		cuboids.push(cub);
+		pushCuboid2(cub);
 	}
 
 	// enemies
@@ -205,7 +198,8 @@ export function renderGame(game) {
 			rot: Math.PI / 4,
 		};
 
-		cuboids.push(green, red);
+		pushCuboid2(green);
+        pushCuboid2(red);
 
 		// duck, snezak
 		let enCuboids = [];
@@ -322,8 +316,9 @@ export function renderGame(game) {
 		}
 
 		
-
-		cuboids.push(...enCuboids);
+        for (const it of enCuboids) {
+		  pushCuboid2(it);
+        }
 	}
 
 	// bullets
@@ -340,11 +335,12 @@ export function renderGame(game) {
 			it.rot = bl.rot;
 		}
 
-		cuboids.push(...blCuboids);
+        for (const it of blCuboids) {
+            pushCuboid2(it);
+        }
 	}
 
-    // if (game.time % 60 == 0) console.log(`${cuboids.length} cuboids/frame`);
-	renderCuboids(cuboids);
+	renderCuboids();
 }
 
 

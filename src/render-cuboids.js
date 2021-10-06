@@ -1,10 +1,88 @@
 import {compileShaders} from './compile-shaders.js';
+import {canvas} from './html-references.js';
 import shaders from './shaders.js';
 import {mat4} from 'gl-matrix';
 
+// cuboid
+const vertexBuffer = new Float32Array([
+     // aPosition                 // aNormal
+     // Front face
+    -1.0, -1.0,  1.0, /**/  0.0,  0.0,  1.0,
+     1.0, -1.0,  1.0, /**/  0.0,  0.0,  1.0,
+     1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
+    -1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
 
-let canvas, gl, programs, vao, viewMatrix, projectionMatrix;
+     // Back face
+    -1.0, -1.0, -1.0, /**/  0.0,  0.0, -1.0,
+    -1.0,  1.0, -1.0, /**/  0.0,  0.0, -1.0,
+     1.0,  1.0, -1.0, /**/  0.0,  0.0, -1.0,
+     1.0, -1.0, -1.0, /**/  0.0,  0.0, -1.0,
 
+     // Top face
+    -1.0,  1.0, -1.0, /**/  0.0,  1.0,  0.0,
+    -1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
+     1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
+     1.0,  1.0, -1.0, /**/  0.0,  1.0,  0.0,
+
+     // Bottom face
+    -1.0, -1.0, -1.0, /**/  0.0, -1.0,  0.0,
+     1.0, -1.0, -1.0, /**/  0.0, -1.0,  0.0,
+     1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
+    -1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
+
+     // Right face
+     1.0, -1.0, -1.0, /**/  1.0,  0.0,  0.0,
+     1.0,  1.0, -1.0, /**/  1.0,  0.0,  0.0,
+     1.0,  1.0,  1.0, /**/  1.0,  0.0,  0.0,
+     1.0, -1.0,  1.0, /**/  1.0,  0.0,  0.0,
+
+     // Left face
+    -1.0, -1.0, -1.0, /**/ -1.0,  0.0,  0.0,
+    -1.0, -1.0,  1.0, /**/ -1.0,  0.0,  0.0,
+    -1.0,  1.0,  1.0, /**/ -1.0,  0.0,  0.0,
+    -1.0,  1.0, -1.0, /**/ -1.0,  0.0,  0.0,
+]);
+
+const indexBuffer = new Uint16Array([
+    0,  1,  2,      0,  2,  3,    // front
+    4,  5,  6,      4,  6,  7,    // back
+    8,  9,  10,     8,  10, 11,   // top
+    12, 13, 14,     12, 14, 15,   // bottom
+    16, 17, 18,     16, 18, 19,   // right
+    20, 21, 22,     20, 22, 23,   // left
+]);
+
+let gl, cuboidShaders, viewMatrix, projectionMatrix;
+
+const MAX_CUBOID_COUNT = 3000;  // 5.6MB
+const CUBOID_DATA_LENGTH = 14;
+
+const cuboidBuffer = new Float32Array(MAX_CUBOID_COUNT * CUBOID_DATA_LENGTH);
+let cuboidCount = 0;
+
+export function pushCuboid2(cub) {
+    pushCuboid(cub.x, cub.y, cub.z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.pz, cub.rot, cub.r, cub.g, cub.b, cub.a);
+}
+
+export function pushCuboid(x, y, z, sx, sy, sz, px, py, pz, rot, r, g, b, a) {
+    if (cuboidCount == MAX_CUBOID_COUNT) return;
+
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 0]  = x;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 1]  = y;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 2]  = z;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 3]  = sx;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 4]  = sy;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 5]  = sz;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 6]  = px;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 7]  = py;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 8]  = pz;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 9]  = rot;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 10] = r;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 11] = g;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 12] = b;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 13] = a;
+    cuboidCount++;
+}
 
 export function setViewMatrix(m) {
 	viewMatrix = m;
@@ -15,147 +93,125 @@ export function setProjectionMatrix(m) {
 
 
 export function initCuboidRenderer() {
-
-	canvas = document.querySelector('.game-canvas');
-
 	gl = canvas.getContext('webgl2', {
-		preserveDrawingBuffer: true,
+		preserveDrawingBuffer: true,  // TODO TODO inspect
 	});
 
-	// programs <- {cuboid: (cuboid shader) }
-	programs = compileShaders(gl, shaders);
-
-	// cuboid
-	let vertices = [
-		 // aPosition                 // aNormal
-		 // Front face
-		-1.0, -1.0,  1.0, /**/  0.0,  0.0,  1.0,
-		 1.0, -1.0,  1.0, /**/  0.0,  0.0,  1.0,
-		 1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
-		-1.0,  1.0,  1.0, /**/  0.0,  0.0,  1.0,
-
-		 // Back face
-		-1.0, -1.0, -1.0, /**/  0.0,  0.0, -1.0,
-		-1.0,  1.0, -1.0, /**/  0.0,  0.0, -1.0,
-		 1.0,  1.0, -1.0, /**/  0.0,  0.0, -1.0,
-		 1.0, -1.0, -1.0, /**/  0.0,  0.0, -1.0,
-
-		 // Top face
-		-1.0,  1.0, -1.0, /**/  0.0,  1.0,  0.0,
-		-1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
-		 1.0,  1.0,  1.0, /**/  0.0,  1.0,  0.0,
-		 1.0,  1.0, -1.0, /**/  0.0,  1.0,  0.0,
-
-		 // Bottom face
-		-1.0, -1.0, -1.0, /**/  0.0, -1.0,  0.0,
-		 1.0, -1.0, -1.0, /**/  0.0, -1.0,  0.0,
-		 1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
-		-1.0, -1.0,  1.0, /**/  0.0, -1.0,  0.0,
-
-		 // Right face
-		 1.0, -1.0, -1.0, /**/  1.0,  0.0,  0.0,
-		 1.0,  1.0, -1.0, /**/  1.0,  0.0,  0.0,
-		 1.0,  1.0,  1.0, /**/  1.0,  0.0,  0.0,
-		 1.0, -1.0,  1.0, /**/  1.0,  0.0,  0.0,
-
-		 // Left face
-		-1.0, -1.0, -1.0, /**/ -1.0,  0.0,  0.0,
-		-1.0, -1.0,  1.0, /**/ -1.0,  0.0,  0.0,
-		-1.0,  1.0,  1.0, /**/ -1.0,  0.0,  0.0,
-		-1.0,  1.0, -1.0, /**/ -1.0,  0.0,  0.0,
-	];
-	let indices = [
-		0,  1,  2,      0,  2,  3,    // front
-		4,  5,  6,      4,  6,  7,    // back
-		8,  9,  10,     8,  10, 11,   // top
-		12, 13, 14,     12, 14, 15,   // bottom
-		16, 17, 18,     16, 18, 19,   // right
-		20, 21, 22,     20, 22, 23,   // left
-	];
+	// cuboidShaders <- { program, attributes, uniforms }
+	cuboidShaders = compileShaders(gl, shaders).cuboid;
 
 	gl.clearColor(15/255, 16/255, 22/255, 1.0);  // Clear to dark gray  // background
 	gl.clearDepth(1.0);                          // Clear everything
 	gl.enable(gl.DEPTH_TEST);                    // Enable depth testing
 	gl.depthFunc(gl.LEQUAL);                     // Near things obscure far things
 	gl.enable(gl.CULL_FACE);                     // Don't draw back faces (effeciency)
-
     gl.enable(gl.BLEND);                         // enable alpha
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-	// TODO no idea what this does
-	vao = gl.createVertexArray();
-	gl.bindVertexArray(vao);
+	gl.bindVertexArray(gl.createVertexArray());
 
 	// push vertices to GPU
-	let vertexBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+	gl.bufferData(gl.ARRAY_BUFFER, vertexBuffer, gl.STATIC_DRAW);
 
 	// push indices to GPU
-	let indexBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexBuffer, gl.STATIC_DRAW);
 
-	// aPosition: enable and layout
-	gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);              // aPosition
+    gl.vertexAttribPointer(
+        cuboidShaders.attributes['aPosition'],  // vertex attribute index
+        3,                                      // number of components in vertex attribute
+        gl.FLOAT,                               // (4 bytes per value)
+        false,                                  // normalize
+        24,                                     // offset in bytes between the beginning of consecutive vertex attributes
+        0,                                      // offset in bytes of the first component in the vertex attribute array
+    );
 
-	// aNormal: enable and layout
-	gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);             // aNormal
+    gl.vertexAttribPointer(
+        cuboidShaders.attributes['aNormal'],    // vertex attribute index
+        3,                                      // number of components in vertex attribute
+        gl.FLOAT,                               // (4 bytes per value)
+        false,                                  // normalize
+        24,                                     // offset in bytes between the beginning of consecutive vertex attributes
+        12,                                     // offset in bytes of the first component in the vertex attribute array
+    );
 
-    // aCubPos, aCubSize, aCubPivot, aCubRot, aColor: enable and make instanced
-	for (var i = 2; i <= 6; i++) {
-		gl.enableVertexAttribArray(i);
-		gl.vertexAttribDivisor(i, 1);
-	}
+	gl.enableVertexAttribArray(cuboidShaders.attributes['aNormal']);
+	gl.enableVertexAttribArray(cuboidShaders.attributes['aPosition']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubPos']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubSize']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubPivot']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubRot']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aColor']);
+
+    // make attributes instanced
+    // 1 <- divisor: number of instances that will pass between updates of the generic attribute
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubPos'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubSize'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubPivot'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubRot'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aColor'], 1);
 }
 
-// cuboids: {
-//     x, y, z,    // position
-//     sx, sy, sz, // size
-//     r, g, b, a, // color
-//     rot,        // rotation around z axis
-//     px, py, pz  // pivot
-// }[]
-export function renderCuboids(cuboids) {
+export function renderCuboids() {
 
     let vpMatrix = mat4.create();
     mat4.mul(vpMatrix, projectionMatrix, viewMatrix);
     
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// TODO no idea what this does
-	gl.bindVertexArray(vao);
-
-	gl.useProgram(programs.cuboid.program);
+	gl.useProgram(cuboidShaders.program);
 
     // set viewProjection matrix
-    gl.uniformMatrix4fv(programs.cuboid.uniforms.uVpMatrix, false, vpMatrix);
+    gl.uniformMatrix4fv(cuboidShaders.uniforms.uVpMatrix, false, vpMatrix);
 
-    // generate cuboids data buffer and push it
-	let cuboidsData = [];
- 
-	for (let cub of cuboids) {
-        cuboidsData.push(cub.x, cub.y, cub.z,
-                         cub.sx, cub.sy, cub.sz,
-                         cub.px, cub.py, cub.pz,
-                         cub.rot,
-                         cub.r, cub.g, cub.b, cub.a);
-	}
+	gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+	gl.bufferData(gl.ARRAY_BUFFER, cuboidBuffer, gl.DYNAMIC_DRAW);
 
-	let cuboidsDataBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, cuboidsDataBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cuboidsData), gl.DYNAMIC_DRAW);
+    gl.vertexAttribPointer(
+        cuboidShaders.attributes['aCubPos'],
+        3,                       // number of components per vertex attribute
+        gl.FLOAT,                // (4 bytes per value)
+        false,                   // normalize
+        CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
+        0,                       // offset in bytes of the first component in the vertex attribute array
+    );
+    gl.vertexAttribPointer(
+        cuboidShaders.attributes['aCubSize'],
+        3,                       // number of components per vertex attribute
+        gl.FLOAT,                // (4 bytes per value)
+        false,                   // normalize
+        CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
+        3 * 4,                   // offset in bytes of the first component in the vertex attribute array
+    );
+    gl.vertexAttribPointer(
+        cuboidShaders.attributes['aCubPivot'],
+        3,                       // number of components per vertex attribute
+        gl.FLOAT,                // (4 bytes per value)
+        false,                   // normalize
+        CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
+        (3+3) * 4,               // offset in bytes of the first component in the vertex attribute array
+    );
+    gl.vertexAttribPointer(
+        cuboidShaders.attributes['aCubRot'],
+        1,                       // number of components per vertex attribute
+        gl.FLOAT,                // (4 bytes per value)
+        false,                   // normalize
+        CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
+        (3+3+3) * 4,             // offset in bytes of the first component in the vertex attribute array
+    );
+	gl.vertexAttribPointer(
+        cuboidShaders.attributes['aColor'],
+        4,                       // number of components per vertex attribute
+        gl.FLOAT,                // (4 bytes per value)
+        false,                   // normalize
+        CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
+        (3+3+3+1) * 4,           // offset in bytes of the first component in the vertex attribute array
+    );
 
-    // aCubPos, aCubSize, aCubPivot, aCubRot, aColor: layout
-    gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 56, 0);              // aCubPos
-    gl.vertexAttribPointer(3, 3, gl.FLOAT, false, 56, 4 * 3);          // aCubSize
-    gl.vertexAttribPointer(4, 3, gl.FLOAT, false, 56, 4 * (3+3));      // aCubPivot
-    gl.vertexAttribPointer(5, 1, gl.FLOAT, false, 56, 4 * (3+3+3));    // aCubRot
-	gl.vertexAttribPointer(6, 4, gl.FLOAT, false, 56, 4 * (3+3+3+1));  // aColor
+	gl.drawElementsInstanced(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0, cuboidCount);
 
-	gl.drawElementsInstanced(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0, cuboids.length);
+    cuboidCount = 0;
 }
 
 // Resize canvas and set viewport if client size changed
