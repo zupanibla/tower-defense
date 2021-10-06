@@ -93,8 +93,10 @@ export function setProjectionMatrix(m) {
 
 
 export function initCuboidRenderer() {
-	gl = canvas.getContext('webgl2', {
-		preserveDrawingBuffer: true,  // TODO TODO inspect
+	gl = canvas.getContext('webgl2', {  // TODO research
+		preserveDrawingBuffer: false,
+        desynchronized: true,
+        // antialias: false,
 	});
 
 	// cuboidShaders <- { program, attributes, uniforms }
@@ -216,7 +218,7 @@ export function renderCuboids() {
 
 // Resize canvas and set viewport if client size changed
 export function adjustCanvasSize() {
-    let width = Math.round(canvas.clientWidth  * window.devicePixelRatio);
+    let width  = Math.round(canvas.clientWidth  * window.devicePixelRatio);
     let height = Math.round(canvas.clientHeight * window.devicePixelRatio);
 	if (canvas.width !== width || canvas.height !== height)
 	{
