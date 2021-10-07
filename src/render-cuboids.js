@@ -54,7 +54,7 @@ const indexBuffer = new Uint16Array([
 
 let gl, cuboidShaders, viewMatrix, projectionMatrix;
 
-const MAX_CUBOID_COUNT = 3000;
+const MAX_CUBOID_COUNT = 6000;
 const CUBOID_DATA_LENGTH = 14;
 
 const cuboidBuffer = new Float32Array(MAX_CUBOID_COUNT * CUBOID_DATA_LENGTH);

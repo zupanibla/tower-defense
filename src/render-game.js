@@ -43,8 +43,6 @@ export function renderGame(game) {
     let p = mat4.create();
     setProjectionMatrix(p);
 
-    let cuboids = [];
-
     // tiles
     for (let y = game.tiles.length-1; y >= 0; y--) {
         for (let x = 0; x < game.tiles[y].length; x++) {
