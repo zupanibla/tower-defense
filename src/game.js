@@ -325,7 +325,42 @@ document.addEventListener('visibilitychange', function() {
 const startTime = performance.now();
 let timer = 0;
 
+// FPS METER
+const frameTimestamps = new Array(100).fill(-1);
+let lastLogTimestamp = -1;
+
+document.addEventListener('keyup', e => {
+    if (e.key == '~') {
+        html.fpsMeter.style.visibility = 'visible';
+    }
+});
+
+function updateFpsMeter() {
+    const now = performance.now();
+
+    // FPS METER
+    // replace the oldest timestamp with a new one
+    let minIdx = 0;
+    for (let i = 0; i < frameTimestamps.length; i++) {
+        if (frameTimestamps[i] < frameTimestamps[minIdx]) {
+            minIdx = i;
+        }
+    }
+
+    const fps = 1000 * frameTimestamps.length / (now - frameTimestamps[minIdx]);
+
+    frameTimestamps[minIdx] = now;
+
+    // update html every 0.5 seconds
+    if (lastLogTimestamp + 500 < now) {
+        lastLogTimestamp = now;
+        html.fps.innerText = Math.round(fps);
+    }
+}
+
 function onAnimationFrame() {
+    updateFpsMeter();
+
     const timerTarget = (performance.now() - startTime) / 1000 * 60;
 
     // reset timer if we are more than 1 second behind (should happen when game is minimized)

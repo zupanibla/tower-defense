@@ -86,6 +86,12 @@ body {
 .money {
     color: yellow;
 }
+.fps-meter {
+    visibility: hidden;
+}
+.fps {
+    color: blue;
+}
 .game-ui-topleft {
     position: absolute;
     top: 0;

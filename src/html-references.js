@@ -17,6 +17,8 @@ export let loadingCover   = document.querySelector('.loading-cover');
 
 
 export let money     = document.querySelector('.money');
+export let fpsMeter  = document.querySelector('.fps-meter');
+export let fps       = document.querySelector('.fps');
 export let health    = document.querySelector('.health');
 export let combatLog = document.querySelector('.combat-log');
 export let wave      = document.querySelector('.wave');
