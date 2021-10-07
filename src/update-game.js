@@ -486,14 +486,12 @@ export function updateGame(game) {
                 color = [55/255, 225/255, 197/255];
                 density = 3;
                 size = 0.07;
-                let alpha = 0.7;
                 playSound(12);
             }
             if (en.type == 'scarab-yellow') {
                 color = [228/255, 232/255, 33/255];
                 density = 3;
                 size = 0.07;
-                let alpha = 0.7;
                 playSound(12);
             }
 
@@ -701,13 +699,6 @@ export function updateGame(game) {
             i--;
         }
     }
-
-	// ui
-	// TODO: maybe don't update these values every frame?
-	document.querySelector('.money').innerHTML      = game.player.money;
-	document.querySelector('.health').innerHTML     = game.player.health;
-    document.querySelector('.combat-log').innerHTML = game.ui.combatLog;
-    document.querySelector('.wave').innerHTML       = game.wave.number;
 }
 
 

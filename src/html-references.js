@@ -14,3 +14,9 @@ export let popupTitle     = document.querySelector('.popup-title');
 export let popupMain      = document.querySelector('.popup-main');
 export let popupPlayAgain = document.querySelector('.popup-play-again');
 export let loadingCover   = document.querySelector('.loading-cover');
+
+
+export let money     = document.querySelector('.money');
+export let health    = document.querySelector('.health');
+export let combatLog = document.querySelector('.combat-log');
+export let wave      = document.querySelector('.wave');

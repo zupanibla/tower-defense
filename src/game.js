@@ -80,7 +80,7 @@ let game = {
         isActive: false
     },
     ui: {
-        combatLog: 'Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />'
+        combatLog: '',
     },
     mouse: {
         x: -1,
@@ -106,6 +106,8 @@ let game = {
     selectedShopItemIdx: -1,
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
+
+createCombatLogEntry('Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />');
 
 let initialGameStateJSON = JSON.stringify(game);
 
@@ -213,19 +215,36 @@ html.popupPlayAgain.addEventListener('click', resetGame);
 
 export function createCombatLogEntry(s) {
     game.ui.combatLog += s + '<br />';
+    html.combatLog.innerHTML  = game.ui.combatLog;
 }
 
-function updateShop() {
+function updateUi() {
     for (let i = 0; i < game.shopItems.length; i++) {
         // update tower cost text
-        html.shopButtons[i].querySelector('.tower-cost').innerHTML = game.shopItems[i].cost;
+        if (html.shopButtons[i].querySelector('.tower-cost').innerHTML != game.shopItems[i].cost) {
+            html.shopButtons[i].querySelector('.tower-cost').innerHTML = game.shopItems[i].cost;
+        }
         // update icons if player can or cannot afford tower
         if (game.player.money >= game.shopItems[i].cost) {
-            html.shopButtons[i].classList.remove('tower-disabled');
+            if (html.shopButtons[i].classList.contains('tower-disabled')) {
+                html.shopButtons[i].classList.remove('tower-disabled');
+            }
         }
         else {
-            html.shopButtons[i].classList.add('tower-disabled');
+            if (!html.shopButtons[i].classList.contains('tower-disabled')) {
+                html.shopButtons[i].classList.add('tower-disabled');
+            }
         }
+    }
+
+    if (html.money.innerHTML != game.player.money) {
+        html.money.innerHTML  = game.player.money;
+    }
+    if (html.health.innerHTML != game.player.health) {
+        html.health.innerHTML  = game.player.health;
+    }
+    if (html.wave.innerHTML != game.wave.number) {
+        html.wave.innerHTML  = game.wave.number;
     }
 }
 
@@ -319,7 +338,6 @@ function onAnimationFrame() {
     while (timerTarget > timer) {
         timer++;
 
-        updateShop();
         if (!game.wave.isActive || !game.isPaused) {
             for (let i = 0; i < game.speed; i++) {
                 updateGame(game);
@@ -328,8 +346,10 @@ function onAnimationFrame() {
         else {
             stopLoopingSounds();
         }
-        updateMouse(game);
     }
+
+    updateMouse(game);
+    updateUi();
 
     // compute game width and height
     let w = html.canvas.clientWidth;
