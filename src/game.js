@@ -324,13 +324,11 @@ function onAnimationFrame() {
             for (let i = 0; i < game.speed; i++) {
                 updateGame(game);
             }
-
         }
         else {
             stopLoopingSounds();
         }
         updateMouse(game);
-        renderGame(game);
     }
 
     // compute game width and height
