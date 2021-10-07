@@ -142,6 +142,16 @@ export function renderGame(game) {
                 }
             }
 
+            // missile turret kickback
+            if (tw.type == 'balistic') {
+                for (let it of towerCuboids) {
+                    if (it.name != 'stand') {
+                        const p = Math.min(60 - tw.cooldown, 10) / 10;
+                        it.py -= Math.sin(Math.PI * p) * 0.2;
+                    }
+                }
+            }
+
 			
 			for (let it of towerCuboids) {
 				it.x   = x;
