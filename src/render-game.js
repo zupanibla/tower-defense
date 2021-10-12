@@ -1,5 +1,5 @@
 import {mat4} from 'gl-matrix';
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid, pushCuboid2} from './render-cuboids.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid, pushCuboid2, getCuboidCount, setCuboidCount} from './render-cuboids.js';
 
 import duckJson           	from './models/duck.json';
 import iceTileJson          from './models/ice-tile.json';
@@ -26,6 +26,7 @@ import yellowScarabJson		from './models/scarab-yellow.json';
 import blueScarabJson		from './models/scarab-blue.json';
 
 let canvas = document.querySelector('.game-canvas');
+let staticCuboidCount = 0;
 
 export function renderGame(game) {
     adjustCanvasSize();
@@ -43,53 +44,60 @@ export function renderGame(game) {
     let p = mat4.create();
     setProjectionMatrix(p);
 
-    // tiles
-    for (let y = game.tiles.length-1; y >= 0; y--) {
-        for (let x = 0; x < game.tiles[y].length; x++) {
-            let tile = game.tiles[y][x];
-            let tileCuboids = null;
+    // load static cuboids into buffer only once
+    if (staticCuboidCount == 0) {
+        // tiles
+        for (let y = game.tiles.length-1; y >= 0; y--) {
+            for (let x = 0; x < game.tiles[y].length; x++) {
+                let tile = game.tiles[y][x];
+                let tileCuboids = null;
 
-            if (tile == 1) tileCuboids = cuboidsFromJson(snowTileJson);
-            if (tile == 2) tileCuboids = cuboidsFromJson(asphaltTileJson);
-            if (tile == 3) tileCuboids = cuboidsFromJson(iceTileJson);
-            if (tile == 4) tileCuboids = cuboidsFromJson(mountainTileJson);
+                if (tile == 1) tileCuboids = cuboidsFromJson(snowTileJson);
+                if (tile == 2) tileCuboids = cuboidsFromJson(asphaltTileJson);
+                if (tile == 3) tileCuboids = cuboidsFromJson(iceTileJson);
+                if (tile == 4) tileCuboids = cuboidsFromJson(mountainTileJson);
 
-            // we don't need to render covered parts of tiles if they aren't in front
-            if (x != 11 && y != 0) tileCuboids = tileCuboids.filter(it => it.name != 'covered');
+                // we don't need to render covered parts of tiles if they aren't in front
+                if (x != 11 && y != 0) tileCuboids = tileCuboids.filter(it => it.name != 'covered');
 
-            for (let it of tileCuboids) {
-                it.x = x;
-                it.y = y;
+                for (let it of tileCuboids) {
+                    it.x = x;
+                    it.y = y;
+                    pushCuboid2(it);
+                }
+            }
+        }
+
+        // environment
+        for (let en of game.environment) {
+
+            // bluePortal, redPortal
+            let enCuboids = [];
+
+            if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
+            if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
+
+            for (let it of enCuboids) {
+                it.x   = en.x;
+                it.y   = en.y;
+                it.z   += en.z;
+                it.rot = en.rot;
+
+                // make the opening part of the portal transparent
+                if (en.type == 'bluePortal' || en.type == 'redPortal') {
+                    if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
+                        it.a   = 0.6;
+                    }
+                }
+
                 pushCuboid2(it);
             }
         }
+
+        staticCuboidCount = getCuboidCount();
     }
 
-    // environment
-    for (let en of game.environment) {
-
-        // bluePortal, redPortal
-        let enCuboids = [];
-
-        if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
-        if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
-
-        for (let it of enCuboids) {
-            it.x   = en.x;
-            it.y   = en.y;
-            it.z   += en.z;
-            it.rot = en.rot;
-
-            // make the opening part of the portal transparent
-            if (en.type == 'bluePortal' || en.type == 'redPortal') {
-                if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
-                    it.a   = 0.6;
-                }
-            }
-
-            pushCuboid2(it);
-        }
-    }
+    setCuboidCount(staticCuboidCount);
 
     // handle tower on mouse
     if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&

@@ -60,6 +60,13 @@ const CUBOID_DATA_LENGTH = 13;
 const cuboidBuffer = new Float32Array(MAX_CUBOID_COUNT * CUBOID_DATA_LENGTH);
 let cuboidCount = 0;
 
+export function getCuboidCount() {
+    return cuboidCount;
+}
+export function setCuboidCount(newCuboidCount) {
+    cuboidCount = newCuboidCount;
+}
+
 export function pushCuboid2(cub) {
     pushCuboid(cub.x, cub.y, cub.z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.rot, cub.r, cub.g, cub.b, cub.a);
 }
