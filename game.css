@@ -255,7 +255,7 @@ body {
 .tower-icon {
     width: 60px;
     height: 60px;
-    cursor: url('assets/ui/wrench.png'), pointer;
+    cursor: url('assets/ui/cursor.png'), pointer;
     position: absolute;
 }
 .tower-disabled {
