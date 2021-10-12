@@ -55,16 +55,16 @@ const indexBuffer = new Uint16Array([
 let gl, cuboidShaders, viewMatrix, projectionMatrix;
 
 const MAX_CUBOID_COUNT = 6000;
-const CUBOID_DATA_LENGTH = 14;
+const CUBOID_DATA_LENGTH = 13;
 
 const cuboidBuffer = new Float32Array(MAX_CUBOID_COUNT * CUBOID_DATA_LENGTH);
 let cuboidCount = 0;
 
 export function pushCuboid2(cub) {
-    pushCuboid(cub.x, cub.y, cub.z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.pz, cub.rot, cub.r, cub.g, cub.b, cub.a);
+    pushCuboid(cub.x, cub.y, cub.z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.rot, cub.r, cub.g, cub.b, cub.a);
 }
 
-export function pushCuboid(x, y, z, sx, sy, sz, px, py, pz, rot, r, g, b, a) {
+export function pushCuboid(x, y, z, sx, sy, sz, px, py, rot, r, g, b, a) {
     if (cuboidCount == MAX_CUBOID_COUNT) return;
 
     cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 0]  = x;
@@ -75,12 +75,11 @@ export function pushCuboid(x, y, z, sx, sy, sz, px, py, pz, rot, r, g, b, a) {
     cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 5]  = sz;
     cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 6]  = px;
     cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 7]  = py;
-    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 8]  = pz;
-    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 9]  = rot;
-    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 10] = r;
-    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 11] = g;
-    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 12] = b;
-    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 13] = a;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 8]  = rot;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 9]  = r;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 10] = g;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 11] = b;
+    cuboidBuffer[cuboidCount * CUBOID_DATA_LENGTH + 12] = a;
     cuboidCount++;
 }
 
@@ -125,7 +124,7 @@ export function initCuboidRenderer() {
         3,                                      // number of components in vertex attribute
         gl.FLOAT,                               // (4 bytes per value)
         false,                                  // normalize
-        24,                                     // offset in bytes between the beginning of consecutive vertex attributes
+        (3+3)*4,                                // offset in bytes between the beginning of consecutive vertex attributes
         0,                                      // offset in bytes of the first component in the vertex attribute array
     );
 
@@ -134,8 +133,8 @@ export function initCuboidRenderer() {
         3,                                      // number of components in vertex attribute
         gl.FLOAT,                               // (4 bytes per value)
         false,                                  // normalize
-        24,                                     // offset in bytes between the beginning of consecutive vertex attributes
-        12,                                     // offset in bytes of the first component in the vertex attribute array
+        (3+3)*4,                                // offset in bytes between the beginning of consecutive vertex attributes
+        3*4,                                    // offset in bytes of the first component in the vertex attribute array
     );
 
 	gl.enableVertexAttribArray(cuboidShaders.attributes['aNormal']);
@@ -188,7 +187,7 @@ export function renderCuboids() {
     );
     gl.vertexAttribPointer(
         cuboidShaders.attributes['aCubPivot'],
-        3,                       // number of components per vertex attribute
+        2,                       // number of components per vertex attribute
         gl.FLOAT,                // (4 bytes per value)
         false,                   // normalize
         CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
@@ -200,7 +199,7 @@ export function renderCuboids() {
         gl.FLOAT,                // (4 bytes per value)
         false,                   // normalize
         CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
-        (3+3+3) * 4,             // offset in bytes of the first component in the vertex attribute array
+        (3+3+2) * 4,             // offset in bytes of the first component in the vertex attribute array
     );
 	gl.vertexAttribPointer(
         cuboidShaders.attributes['aColor'],
@@ -208,7 +207,7 @@ export function renderCuboids() {
         gl.FLOAT,                // (4 bytes per value)
         false,                   // normalize
         CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
-        (3+3+3+1) * 4,           // offset in bytes of the first component in the vertex attribute array
+        (3+3+2+1) * 4,           // offset in bytes of the first component in the vertex attribute array
     );
 
 	gl.drawElementsInstanced(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0, cuboidCount);

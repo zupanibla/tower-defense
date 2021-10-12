@@ -77,7 +77,7 @@ export function renderGame(game) {
         for (let it of enCuboids) {
             it.x   = en.x;
             it.y   = en.y;
-            it.z   = en.z;
+            it.z   += en.z;
             it.rot = en.rot;
 
             // make the opening part of the portal transparent
@@ -169,9 +169,9 @@ export function renderGame(game) {
 	for (let pt of game.particles) {
 		let cub = {
 			name: 'particle',
-			x: pt.x, y: pt.y, z: pt.z, rot: pt.rot,
+			x: pt.x, y: pt.y, z: pt.z + pt.sz/2, rot: pt.rot,
 			sx: pt.sx, sy: pt.sy, sz: pt.sz,
-			px: 0, py: 0, pz: -pt.sz/2,
+			px: 0, py: 0,
 			r: pt.r, g: pt.g, b: pt.b, a: pt.a,
 		}
 		pushCuboid2(cub);
@@ -188,18 +188,18 @@ export function renderGame(game) {
 		if (en.type == 'goo-big') zOffset = -2;
 		
 		let green = {
-			x: en.x, y: en.y, z: 0,
+			x: en.x, y: en.y, z: -zOffset,
 			name: 'green',
-			pz: zOffset, py: 0,
+            py: 0,
 			sz: 10/256,    sy: 10/256,
 			sx: en.health * size, px: (en.maxHealth - en.health)/2 * size,
 			r: 0, g: 1, b: 0, a: 1,
 			rot: Math.PI / 4,
 		};
 		let red = {
-			x: en.x, y: en.y, z: 0,
+			x: en.x, y: en.y, z: -zOffset,
 			name: 'green',
-			pz: zOffset, py: 0,
+            py: 0,
 			sz: 10/256,  sy: 10/256,
 			sx: (en.maxHealth - en.health) * size, px: -en.health/2 * size,
 			r: 1, g: 0, b: 0, a: 1,
@@ -229,10 +229,10 @@ export function renderGame(game) {
             // vek animation
             for (let it of enCuboids) {
                 if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
-                    it.py += Math.sin(game.time / 2) * 0.03
+                    it.py +=  Math.sin(game.time / 2) * 0.03
                     			* Math.sign(it.px)
                     			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
-                    it.pz += -Math.cos(game.time / 2) * 0.022
+                    it.z  -= -Math.cos(game.time / 2) * 0.022
                     			* Math.sign(it.px)
                     			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
@@ -246,7 +246,7 @@ export function renderGame(game) {
                     it.py += Math.sin(game.time / 3) * 0.05
                              	* Math.sign(it.px)
                              	* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
-                    it.pz += -Math.cos(game.time / 3) * 0.04
+                    it.z -= -Math.cos(game.time / 3) * 0.04
                                 * Math.sign(it.px)
                                 * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
                 }
@@ -260,7 +260,7 @@ export function renderGame(game) {
                     it.py += Math.sin(game.time / 2) * 0.03
                     			* Math.sign(it.px)
                     			* (['legs3'].includes(it.name) ? -2 : 2);
-                    it.pz += -Math.cos(game.time / 2) * 0.022
+                    it.z  -= -Math.cos(game.time / 2) * 0.022
                     			* Math.sign(it.px)
                     			* (['legs3'].includes(it.name) ? -2 : 2);
                 }
@@ -298,7 +298,7 @@ export function renderGame(game) {
 		for (let it of enCuboids) {
 			it.x   = en.x;
 			it.y   = en.y;
-			it.z   = en.z;
+			it.z   += en.z;
 			it.rot = en.rot;
 			it.a   = alpha;
 
@@ -362,21 +362,21 @@ function cuboidsFromJson(modelJson) {
     for (let it of modelJson) {
         cuboids.push({
             name: it.name,
-            x: 0, y: 0, z: 0,
+            x: 0, y: 0, z: it.z * 1/256,
             sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
             r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
             rot: 0,
-            px: -it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
+            px: -it.x * 1/256, py: -it.y * 1/256,
         });
 
         if (it.mirror) {
             cuboids.push({
                 name: it.name,
-                x: 0, y: 0, z: 0,
+                x: 0, y: 0, z: it.z * 1/256,
                 sx: it.sx * 1/256, sy: it.sy * 1/256, sz: it.sz * 1/256,
                 r: it.r/255, g: it.g/255, b: it.b/255, a: 1,
                 rot: 0,
-                px: +it.x * 1/256, py: -it.y * 1/256, pz: -it.z * 1/256,
+                px: +it.x * 1/256, py: -it.y * 1/256,
             });
         }
     }

@@ -18,7 +18,7 @@ void main() {  // TODO inspect why you need /2 at aCubSize and why pivots are ne
         0.0, 0.0, aCubSize.z/2.0, 0.0,
         aCubPos.x - aCubPivot.x * cos(aCubRot) + aCubPivot.y * sin(aCubRot),
         aCubPos.y - aCubPivot.x * sin(aCubRot) - aCubPivot.y * cos(aCubRot),
-        aCubPos.z - aCubPivot.z,
+        aCubPos.z,
         1.0
     );
     
