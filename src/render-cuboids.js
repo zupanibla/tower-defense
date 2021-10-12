@@ -52,13 +52,14 @@ const indexBuffer = new Uint16Array([
     20, 21, 22,     20, 22, 23,   // left
 ]);
 
-let gl, cuboidShaders, viewMatrix, projectionMatrix;
+let gl, cuboidShaders, viewMatrix, projectionMatrix, gpuCuboidBuffer;
 
 const MAX_CUBOID_COUNT = 6000;
 const CUBOID_DATA_LENGTH = 13;
 
 const cuboidBuffer = new Float32Array(MAX_CUBOID_COUNT * CUBOID_DATA_LENGTH);
 let cuboidCount = 0;
+let skippableCuboidCount = 0;
 
 export function getCuboidCount() {
     return cuboidCount;
@@ -66,6 +67,10 @@ export function getCuboidCount() {
 export function setCuboidCount(newCuboidCount) {
     cuboidCount = newCuboidCount;
 }
+export function setSkippableCuboidCount(newSkippableCuboidCount) {
+    skippableCuboidCount = newSkippableCuboidCount;
+}
+
 
 export function pushCuboid2(cub) {
     pushCuboid(cub.x, cub.y, cub.z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.rot, cub.r, cub.g, cub.b, cub.a);
@@ -159,6 +164,11 @@ export function initCuboidRenderer() {
     gl.vertexAttribDivisor(cuboidShaders.attributes['aCubPivot'], 1);
     gl.vertexAttribDivisor(cuboidShaders.attributes['aCubRot'], 1);
     gl.vertexAttribDivisor(cuboidShaders.attributes['aColor'], 1);
+
+    // initalize cuboid buffer on GPU
+    gpuCuboidBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, gpuCuboidBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, cuboidBuffer, gl.DYNAMIC_DRAW);
 }
 
 export function renderCuboids() {
@@ -173,8 +183,15 @@ export function renderCuboids() {
     // set viewProjection matrix
     gl.uniformMatrix4fv(cuboidShaders.uniforms.uVpMatrix, false, vpMatrix);
 
-	gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-	gl.bufferData(gl.ARRAY_BUFFER, cuboidBuffer, gl.DYNAMIC_DRAW);
+	gl.bindBuffer(gl.ARRAY_BUFFER, gpuCuboidBuffer);
+    gl.bufferSubData(
+        gl.ARRAY_BUFFER,                                // target
+        skippableCuboidCount * CUBOID_DATA_LENGTH * 4,  // dst offset (in bytes)
+        cuboidBuffer,                                   // src buffer
+        skippableCuboidCount * CUBOID_DATA_LENGTH,      // src offset (in 32s)
+        // length (in 32s)
+        cuboidCount * CUBOID_DATA_LENGTH - skippableCuboidCount * 1 * CUBOID_DATA_LENGTH,
+    );
 
     gl.vertexAttribPointer(
         cuboidShaders.attributes['aCubPos'],

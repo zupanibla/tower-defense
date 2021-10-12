@@ -1,5 +1,5 @@
 import {mat4} from 'gl-matrix';
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid, pushCuboid2, getCuboidCount, setCuboidCount} from './render-cuboids.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid, pushCuboid2, getCuboidCount, setCuboidCount, setSkippableCuboidCount} from './render-cuboids.js';
 
 import duckJson           	from './models/duck.json';
 import iceTileJson          from './models/ice-tile.json';
@@ -95,9 +95,12 @@ export function renderGame(game) {
         }
 
         staticCuboidCount = getCuboidCount();
+    } else {
+        setCuboidCount(staticCuboidCount);
+        setSkippableCuboidCount(staticCuboidCount);
     }
 
-    setCuboidCount(staticCuboidCount);
+
 
     // handle tower on mouse
     if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
