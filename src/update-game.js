@@ -648,7 +648,9 @@ export function updateGame(game) {
         }
 
         if (pt.type == 'snow') {
-            if (pt.z <= 0) {
+            const isOverMountainTile = game.tiles[Math.round(pt.y)][Math.round(pt.x)] == 4;
+
+            if (pt.z <= 0 || isOverMountainTile && pt.z <= 1) {
                 pt.vz = 0;
                 pt.rotv = 0;
                 pt.z -= 0.00005;
