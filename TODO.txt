@@ -2,3 +2,16 @@
 - fullscreen
 - inspect behavior on mobile
 - make model files 1:1
+- typescript
+- move constants
+- fix laser being able to hit unspawned enemies
+- preallocate updateGame buffers
+- remove cuboidsFromJson
+- delta time
+- less updates
+- fullscreen button
+- reset button
+- music
+- wind
+- non html ui
+- proper asset loading
