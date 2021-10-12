@@ -71,7 +71,6 @@ export function setSkippableCuboidCount(newSkippableCuboidCount) {
     skippableCuboidCount = newSkippableCuboidCount;
 }
 
-
 export function pushCuboid2(cub) {
     pushCuboid(cub.x, cub.y, cub.z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.rot, cub.r, cub.g, cub.b, cub.a);
 }

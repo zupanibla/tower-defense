@@ -9,6 +9,7 @@ export let shopButtons     = [
     document.querySelector('.tower-1-0'), document.querySelector('.tower-1-1'), document.querySelector('.tower-1-2'),
     document.querySelector('.tower-2-0'), document.querySelector('.tower-2-1'), document.querySelector('.tower-2-2')
 ];
+export let towerCosts     = shopButtons.map( it => it.querySelector('.tower-cost') )
 export let popup          = document.querySelector('.game-popup');
 export let popupTitle     = document.querySelector('.popup-title');
 export let popupMain      = document.querySelector('.popup-main');

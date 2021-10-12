@@ -221,8 +221,8 @@ export function createCombatLogEntry(s) {
 function updateUi() {
     for (let i = 0; i < game.shopItems.length; i++) {
         // update tower cost text
-        if (html.shopButtons[i].querySelector('.tower-cost').innerHTML != game.shopItems[i].cost) {
-            html.shopButtons[i].querySelector('.tower-cost').innerHTML = game.shopItems[i].cost;
+        if (html.towerCosts[i].innerHTML != game.shopItems[i].cost) {
+            html.towerCosts[i].innerHTML  = game.shopItems[i].cost;
         }
         // update icons if player can or cannot afford tower
         if (game.player.money >= game.shopItems[i].cost) {
