@@ -78,7 +78,7 @@ export function updateGame(game) {
 
 			// shooting
 			if (tw.targetEn && tw.rot == tw.targetRot && tw.cooldown == 0) {
-                if (tw.type == 'balistic') {
+                if (tw.type == 'missile') {
     				game.bullets.push({
     					type: 'missile',
     					x, y, z: 0.5,
@@ -439,19 +439,6 @@ export function updateGame(game) {
             let density = 4;
             let velocity = 20;
             let size = 0.1;
-            if (en.type == 'snezak') {
-                color = [217/255, 218/255, 242/255];
-            }
-            if (en.type == 'duck') {
-                let rgb = {r: 232/255, g: 220/255, b: 59/255};
-                applyFriednessFilter(rgb, en.friedness / 100);
-                color = [rgb.r, rgb.g, rgb.b];
-                density = 3;
-            }
-            if (en.type == 'butcher') {
-                color = [153/255, 0/255, 0/255];
-                density = 6;
-            }
             if (en.type == 'vek') {
                 color = [100/255, 120/255, 100/255];
                 playSound(8);

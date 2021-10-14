@@ -66,10 +66,6 @@ let game = {
 	time: 0,
     enemies: [],
     particles: [],
-    environment: [
-        {type: 'bluePortal',    x: 8, y: -1, z: -0.35, rot: 0},
-        {type: 'redPortal',     x: 1, y: 12, z: -0.35, rot: 0},
-    ],
     bullets: [],
     player: {
         health: 100,
@@ -97,7 +93,7 @@ let game = {
     },
     isPaused: true,
     shopItems: [
-        {type: 'balistic', cost:  100},
+        {type: 'missile', cost:  100},
         {type: 'flame',    cost:  250},
         {type: 'oil',      cost:  400},
         {type: 'nova',     cost:  700},

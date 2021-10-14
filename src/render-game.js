@@ -1,18 +1,15 @@
 import {mat4} from 'gl-matrix';
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid, pushCuboid2, getCuboidCount, setCuboidCount, setSkippableCuboidCount} from './render-cuboids.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid as pushCuboidData, getCuboidCount, setCuboidCount, setSkippableCuboidCount} from './render-cuboids.js';
 
-import duckJson           	from './models/duck.json';
 import iceTileJson          from './models/ice-tile.json';
 import mountainTileJson     from './models/mountain-tile.json';
 import snowTileJson         from './models/snow-tile.json';
 import asphaltTileJson      from './models/asphalt-tile.json';
-import balisticTurretJson 	from './models/balistic-turret.json';
+import missileTurretJson 	from './models/missile-turret.json';
 import flameTurretJson    	from './models/flame-turret.json';
 import laserTurretJson    	from './models/laser-turret.json';
 import oilTurretJson      	from './models/oil-turret.json';
 import novaTurretJson		from './models/nova-turret.json';
-import snezakJson         	from './models/snezak.json';
-import butcherJson        	from './models/butcher.json';
 import missileJson        	from './models/missile.json';
 import bluePortalJson     	from './models/blue-portal.json';
 import redPortalJson      	from './models/red-portal.json';
@@ -24,6 +21,46 @@ import gooBigJson			from './models/goo-big.json';
 import gooBossJson			from './models/goo-boss.json';
 import yellowScarabJson		from './models/scarab-yellow.json';
 import blueScarabJson		from './models/scarab-blue.json';
+
+
+const cuboids = {
+    'ice-tile':        cuboidsFromJson(iceTileJson),
+    'mountain-tile':   cuboidsFromJson(mountainTileJson),
+    'snow-tile':       cuboidsFromJson(snowTileJson),
+    'asphalt-tile':    cuboidsFromJson(asphaltTileJson),
+    'missile':         cuboidsFromJson(missileTurretJson),
+    'flame':           cuboidsFromJson(flameTurretJson),
+    'laser':           cuboidsFromJson(laserTurretJson),
+    'oil':             cuboidsFromJson(oilTurretJson),
+    'nova':            cuboidsFromJson(novaTurretJson),
+    'missile-bullet':  cuboidsFromJson(missileJson),
+    'blue-portal':     cuboidsFromJson(bluePortalJson),
+    'red-portal':      cuboidsFromJson(redPortalJson),
+    'vek':             cuboidsFromJson(vekJson),
+    'vek2':            cuboidsFromJson(vek2Json),
+    'goo':             cuboidsFromJson(gooJson),
+    'goo-small':       cuboidsFromJson(gooSmallJson),
+    'goo-big':         cuboidsFromJson(gooBigJson),
+    'goo-boss':        cuboidsFromJson(gooBossJson),
+    'scarab-yellow':   cuboidsFromJson(yellowScarabJson),
+    'scarab-blue':     cuboidsFromJson(blueScarabJson),
+}
+
+// make the opening part of the portal transparent
+for (const it of [...cuboids['blue-portal'], ...cuboids['blue-portal']]) {
+    if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
+        it.a   = 0.6;
+    }
+}
+
+const tempCuboid = {
+    name: 'temp',
+    x: 0, y: 0, z: 0,
+    sx: 0, sy: 0, sz: 0,
+    r: 0, g: 0, b: 0, a: 1,
+    rot: 0,
+    px: 0, py: 0,
+};
 
 let canvas = document.querySelector('.game-canvas');
 let staticCuboidCount = 0;
@@ -50,48 +87,28 @@ export function renderGame(game) {
         for (let y = game.tiles.length-1; y >= 0; y--) {
             for (let x = 0; x < game.tiles[y].length; x++) {
                 let tile = game.tiles[y][x];
-                let tileCuboids = null;
 
-                if (tile == 1) tileCuboids = cuboidsFromJson(snowTileJson);
-                if (tile == 2) tileCuboids = cuboidsFromJson(asphaltTileJson);
-                if (tile == 3) tileCuboids = cuboidsFromJson(iceTileJson);
-                if (tile == 4) tileCuboids = cuboidsFromJson(mountainTileJson);
+                let tileCuboids = null;
+                if (tile == 1) tileCuboids = cuboids['snow-tile'];
+                if (tile == 2) tileCuboids = cuboids['asphalt-tile'];
+                if (tile == 3) tileCuboids = cuboids['ice-tile'];
+                if (tile == 4) tileCuboids = cuboids['mountain-tile'];
 
                 // we don't need to render covered parts of tiles if they aren't in front
                 if (x != 11 && y != 0) tileCuboids = tileCuboids.filter(it => it.name != 'covered');
 
                 for (let it of tileCuboids) {
-                    it.x = x;
-                    it.y = y;
-                    pushCuboid2(it);
+                    pushCuboidXYZRot(it, x, y, 0, 0);
                 }
             }
         }
 
-        // environment
-        for (let en of game.environment) {
-
-            // bluePortal, redPortal
-            let enCuboids = [];
-
-            if (en.type == 'bluePortal') enCuboids = cuboidsFromJson(bluePortalJson);
-            if (en.type == 'redPortal')  enCuboids = cuboidsFromJson(redPortalJson);
-
-            for (let it of enCuboids) {
-                it.x   = en.x;
-                it.y   = en.y;
-                it.z   += en.z;
-                it.rot = en.rot;
-
-                // make the opening part of the portal transparent
-                if (en.type == 'bluePortal' || en.type == 'redPortal') {
-                    if (it.name == 'plasma' || it.name == 'particle' || it.name == 'particle_mirror') {
-                        it.a   = 0.6;
-                    }
-                }
-
-                pushCuboid2(it);
-            }
+        // draw portals
+        for (const it of cuboids['blue-portal']) {
+            pushCuboidXYZRot(it, 8, -1, -0.35, 0);
+        }
+        for (const it of cuboids['red-portal']) {
+            pushCuboidXYZRot(it,  1, 12, -0.35, 0);
         }
 
         staticCuboidCount = getCuboidCount();
@@ -102,26 +119,16 @@ export function renderGame(game) {
 
 
 
-    // handle tower on mouse
+    // tower silhouette on hovered tile
     if (game.mouse.tileX >= 0 && game.mouse.tileX < 12 & game.mouse.tileY >= 0 && game.mouse.tileY < 12 &&
         game.selectedShopItemIdx != -1 && game.towers[game.mouse.tileY][game.mouse.tileX] === null
         && game.tiles[game.mouse.tileY][game.mouse.tileX] == 1) {
 
-        // show tower on mouse while placing
-        let towerCuboids = null;
-
-        let selectedTowerType = game.shopItems[game.selectedShopItemIdx].type;
-        if (selectedTowerType == 'balistic')    towerCuboids = cuboidsFromJson(balisticTurretJson);
-        if (selectedTowerType == 'flame')       towerCuboids = cuboidsFromJson(flameTurretJson);
-        if (selectedTowerType == 'laser')       towerCuboids = cuboidsFromJson(laserTurretJson);
-        if (selectedTowerType == 'oil')         towerCuboids = cuboidsFromJson(oilTurretJson);
-        if (selectedTowerType == 'nova')        towerCuboids = cuboidsFromJson(novaTurretJson);
+        const selectedTowerType = game.shopItems[game.selectedShopItemIdx].type;
+        const towerCuboids = cuboids[selectedTowerType]
 
         for (let it of towerCuboids) {
-            it.x = game.mouse.tileX;
-            it.y = game.mouse.tileY;
-            it.a = 0.6;
-            pushCuboid2(it);
+            pushCuboidXYZRotAlpha(it, game.mouse.tileX, game.mouse.tileY, 0, 0, 0.6);
         }
     }
 
@@ -130,19 +137,16 @@ export function renderGame(game) {
         for (let x = 0; x < game.towers[y].length; x++) {
             let tw = game.towers[y][x];
             if (tw === null) continue;
+            
 
-            let towerCuboids = null;
-            
-            if (tw.type == 'balistic')  towerCuboids = cuboidsFromJson(balisticTurretJson);
-            if (tw.type == 'flame')     towerCuboids = cuboidsFromJson(flameTurretJson);
-            if (tw.type == 'laser')     towerCuboids = cuboidsFromJson(laserTurretJson);
-            if (tw.type == 'oil')       towerCuboids = cuboidsFromJson(oilTurretJson);
-            if (tw.type == 'nova')      towerCuboids = cuboidsFromJson(novaTurretJson);
-            if (tw.type == 'blank')     towerCuboids = [];
-            
-            // nova tower regen animation
-            if (tw.type == 'nova') {
-                for (let it of towerCuboids) {
+            const towerCuboids = cuboids[tw.type];
+
+            for (let it of towerCuboids) {
+                copyCuboid(tempCuboid, it);
+                it = tempCuboid;
+
+                // nova tower regen animation
+                if (tw.type == 'nova') {
                     if (it.name == 'base') {
                         let p = (1 - tw.cooldown / 120); 
 
@@ -151,41 +155,33 @@ export function renderGame(game) {
                         it.b = p * it.b;
                     }
                 }
-            }
 
-            // missile turret kickback
-            if (tw.type == 'balistic') {
-                for (let it of towerCuboids) {
+                // missile turret kickback
+                if (tw.type == 'missile') {
                     if (it.name != 'stand') {
                         const p = Math.min(60 - tw.cooldown, 10) / 10;
                         it.py -= Math.sin(Math.PI * p) * 0.2;
                     }
                 }
-            }
-
-			
-			for (let it of towerCuboids) {
-				it.x   = x;
-				it.y   = y;
 
 				if (it.name != 'stand' && it.name != 'base' && it.name != 'fixed') {
-					it.rot = tw.rot;
-				}
-                pushCuboid2(it);
+                    pushCuboidXYZRot(it, x, y, 0, tw.rot);
+				} else {
+                    pushCuboidXYZRot(it, x, y, 0, 0);
+                }
 			}
 		}
 	}
 
 	// particles
 	for (let pt of game.particles) {
-		let cub = {
-			name: 'particle',
-			x: pt.x, y: pt.y, z: pt.z + pt.sz/2, rot: pt.rot,
-			sx: pt.sx, sy: pt.sy, sz: pt.sz,
-			px: 0, py: 0,
-			r: pt.r, g: pt.g, b: pt.b, a: pt.a,
-		}
-		pushCuboid2(cub);
+		pushCuboidData(
+            pt.x, pt.y, pt.z + pt.sz/2,
+            pt.sx, pt.sy, pt.sz,
+            0, 0,
+            pt.rot,
+            pt.r, pt.g, pt.b, pt.a
+        );
 	}
 
 	// enemies
@@ -197,174 +193,130 @@ export function renderGame(game) {
 		if (en.type == 'butcher') zOffset = -3;
 		if (en.type == 'goo-boss') zOffset = -3;
 		if (en.type == 'goo-big') zOffset = -2;
-		
-		let green = {
-			x: en.x, y: en.y, z: -zOffset,
-			name: 'green',
-            py: 0,
-			sz: 10/256,    sy: 10/256,
-			sx: en.health * size, px: (en.maxHealth - en.health)/2 * size,
-			r: 0, g: 1, b: 0, a: 1,
-			rot: Math.PI / 4,
-		};
-		let red = {
-			x: en.x, y: en.y, z: -zOffset,
-			name: 'green',
-            py: 0,
-			sz: 10/256,  sy: 10/256,
-			sx: (en.maxHealth - en.health) * size, px: -en.health/2 * size,
-			r: 1, g: 0, b: 0, a: 1,
-			rot: Math.PI / 4,
-		};
 
-		pushCuboid2(green);
-        pushCuboid2(red);
+		pushCuboidData(  // green
+            en.x, en.y, -zOffset,
+            en.health * size, 10/256, 10/256,
+            (en.maxHealth - en.health)/2 * size, 0,
+            Math.PI / 4,
+            0, 1, 0, 1,
+        );
 
-		// duck, snezak
-		let enCuboids = [];
+        pushCuboidData(  // red
+            en.x, en.y, -zOffset,
+            (en.maxHealth - en.health) * size, 10/256, 10/256,
+            -en.health/2 * size, 0,
+            Math.PI / 4,
+            1, 0, 0, 1,
+        );
 
-		if (en.type == 'duck')	  		enCuboids = cuboidsFromJson(duckJson);
-		if (en.type == 'snezak')  		enCuboids = cuboidsFromJson(snezakJson);
-        if (en.type == 'butcher') 		enCuboids = cuboidsFromJson(butcherJson);
-        if (en.type == 'vek')     		enCuboids = cuboidsFromJson(vekJson);
-        if (en.type == 'vek2')    		enCuboids = cuboidsFromJson(vek2Json);
-        if (en.type == 'goo')     		enCuboids = cuboidsFromJson(gooJson);
-		if (en.type == 'goo-small') 	enCuboids = cuboidsFromJson(gooSmallJson);
-		if (en.type == 'goo-big')		enCuboids = cuboidsFromJson(gooBigJson);
-		if (en.type == 'goo-boss')		enCuboids = cuboidsFromJson(gooBossJson);
-		if (en.type == 'scarab-blue')	enCuboids = cuboidsFromJson(blueScarabJson);
-		if (en.type == 'scarab-yellow')	enCuboids = cuboidsFromJson(yellowScarabJson);
+		const enCuboids = cuboids[en.type];
 
+        for (let it of enCuboids) {
+            copyCuboid(tempCuboid, it);
+            it = tempCuboid;
 
-        if (en.type == 'vek') {
+            // oilyness
+            applyOilynessFilter(it, en.oilyness / 100);
+
             // vek animation
-            for (let it of enCuboids) {
-                if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
-                    it.py +=  Math.sin(game.time / 2) * 0.03
-                    			* Math.sign(it.px)
-                    			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
-                    it.z  -= -Math.cos(game.time / 2) * 0.022
-                    			* Math.sign(it.px)
-                    			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
-                }
+            if (en.type == 'vek' && ['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
+                it.py +=  Math.sin(game.time / 2) * 0.03
+                			* Math.sign(it.px)
+                			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                it.z  -= -Math.cos(game.time / 2) * 0.022
+                			* Math.sign(it.px)
+                			* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
             }
-        }
 
-        // vek2 animation
-        if (en.type == 'vek2') {
-            for (let it of enCuboids) {
-                if (['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
-                    it.py += Math.sin(game.time / 3) * 0.05
-                             	* Math.sign(it.px)
-                             	* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
-                    it.z -= -Math.cos(game.time / 3) * 0.04
-                                * Math.sign(it.px)
-                                * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
-                }
+            // vek2 animation
+            if (en.type == 'vek2' && ['legs1', 'legs1inner', 'legs2', 'legs2inner', 'legs3', 'legs3inner'].includes(it.name)) {
+                it.py += Math.sin(game.time / 3) * 0.05
+                         	* Math.sign(it.px)
+                         	* (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
+                it.z -= -Math.cos(game.time / 3) * 0.04
+                            * Math.sign(it.px)
+                            * (['legs2', 'legs2inner'].includes(it.name) ? -2 : 2);
             }
-        }
 
-		// scarab animation
-		if (en.type == 'scarab-blue' || en.type == 'scarab-yellow') {
-            for (let it of enCuboids) {
-                if (['legs1', 'legs1inner', 'legs3'].includes(it.name)) {
-                    it.py += Math.sin(game.time / 2) * 0.03
-                    			* Math.sign(it.px)
-                    			* (['legs3'].includes(it.name) ? -2 : 2);
-                    it.z  -= -Math.cos(game.time / 2) * 0.022
-                    			* Math.sign(it.px)
-                    			* (['legs3'].includes(it.name) ? -2 : 2);
-                }
-			}
-		}
+		    // scarab animation
+		    if ((en.type == 'scarab-blue' || en.type == 'scarab-yellow') && ['legs1', 'legs1inner', 'legs3'].includes(it.name)) {
+                it.py += Math.sin(game.time / 2) * 0.03
+                			* Math.sign(it.px)
+                			* (['legs3'].includes(it.name) ? -2 : 2);
+                it.z  -= -Math.cos(game.time / 2) * 0.022
+                			* Math.sign(it.px)
+                			* (['legs3'].includes(it.name) ? -2 : 2);
+		    }
 
-		// fried ducks
-		if (en.type == 'duck') {
-			for (let it of enCuboids) {
-				// don't fry them cute eyes
-				if (it.name == 'eyes') continue;
-                applyFriednessFilter(it, en.friedness / 100);
-                applyOilynessFilter( it, en.oilyness / 100);
-            }
-        } else {
-            for (let it of enCuboids) {
-                applyOilynessFilter(it, en.oilyness / 100);
-            }
-        }
-
-
-        let alpha = 1;
-        if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
-            alpha = 0.6;
-		}
-		// fade in enemies when they come out of portal (first 0.5 of the path)
-		if (en.pathPos < 0.5) {
-			alpha = Math.max(0, en.pathPos) * alpha * 2;
-		}
-		// fade out enemies when that go in portal (last 0.5 of the path)
-		if (en.pathPos > game.pathLen - 0.5) {
-			alpha = 1 - Math.min(en.pathPos - (game.pathLen-0.5), 0.5) * alpha * 2;
-		}
-
-		for (let it of enCuboids) {
-			it.x   = en.x;
-			it.y   = en.y;
-			it.z   += en.z;
-			it.rot = en.rot;
-			it.a   = alpha;
+            let alpha = 1;
+            if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
+                alpha = 0.6;
+    		}
+    		// fade in enemies when they come out of portal (first 0.5 of the path)
+    		if (en.pathPos < 0.5) {
+    			alpha = Math.max(0, en.pathPos) * alpha * 2;
+    		}
+    		// fade out enemies when that go in portal (last 0.5 of the path)
+    		if (en.pathPos > game.pathLen - 0.5) {
+    			alpha = 1 - Math.min(en.pathPos - (game.pathLen-0.5), 0.5) * alpha * 2;
+    		}
 
 			if (it.name == 'canister') it.a = 0.7;
-		}
-		// goo flatten on landing
-		if (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') {
-            for (let it of enCuboids) {
-				if (en.jumpCooldown < 15) {
-					it.sz *= 0.5 + 0.5 * en.jumpCooldown / 45;
-					it.sx *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
-					it.sy *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
-				}
-			}
-		}
-		// remove vek armor on less than half hp
-		if (en.type == 'vek' && !en.hasArmor) {
-			for (let it of enCuboids) {
-				if (it.name == 'armor') {
-					it.a = 0;
-				}
-			}
-		}
 
-		
-        for (const it of enCuboids) {
-		  pushCuboid2(it);
+    		// goo flatten on landing
+    		if ( (en.type == 'goo' || en.type == 'goo-small' || en.type == 'goo-big' || en.type == 'goo-boss') && en.jumpCooldown < 15) {
+				it.sz *= 0.5 + 0.5 * en.jumpCooldown / 45;
+				it.sx *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
+				it.sy *= 1 + 0.5 * (1 - en.jumpCooldown / 45);
+    		}
+
+    		// remove vek armor on less than half hp
+    		if (en.type == 'vek' && it.name == 'armor' && !en.hasArmor) {
+			    alpha = 0;
+		    }
+
+	        pushCuboidXYZRotAlpha(it, en.x, en.y, en.z, en.rot, alpha);
         }
 	}
 
-	// bullets
-	for (let bl of game.bullets) {
-		// missile
-		let blCuboids = [];
-
-		if (bl.type == 'missile') blCuboids = cuboidsFromJson(missileJson);
-
-		for (let it of blCuboids) {
-			it.x   = bl.x;
-			it.y   = bl.y;
-			it.z   = bl.z;
-			it.rot = bl.rot;
-		}
-
-        for (const it of blCuboids) {
-            pushCuboid2(it);
+	// bullets (missiles)
+	for (let bl of game.bullets) { 
+        for (const it of cuboids['missile-bullet']) {
+            pushCuboidXYZRot(it, bl.x, bl.y, bl.z, bl.rot);
         }
 	}
 
 	renderCuboids();
 }
 
-
 export function initGameRenderer() {
     initCuboidRenderer();
+}
+
+function copyCuboid(dst, src) {
+    dst.name = src.name;
+    dst.x    = src.x;
+    dst.y    = src.y;
+    dst.z    = src.z;
+    dst.sx   = src.sx;
+    dst.sy   = src.sy;
+    dst.sz   = src.sz;
+    dst.r    = src.r;
+    dst.g    = src.g;
+    dst.b    = src.b;
+    dst.a    = src.a;
+    dst.rot  = src.rot;
+    dst.px   = src.px;
+    dst.py   = src.py;
+}
+
+function pushCuboidXYZRot(cub, x, y, z, rot) {
+    pushCuboidData(cub.x + x, cub.y + y, cub.z + z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.rot + rot, cub.r, cub.g, cub.b, cub.a);
+}
+
+function pushCuboidXYZRotAlpha(cub, x, y, z, rot, a) {
+    pushCuboidData(cub.x + x, cub.y + y, cub.z + z, cub.sx, cub.sy, cub.sz, cub.px, cub.py, cub.rot + rot, cub.r, cub.g, cub.b, a);
 }
 
 function cuboidsFromJson(modelJson) {
@@ -401,14 +353,4 @@ function applyOilynessFilter(rgb, oilyness) {
     rgb.r = rgb.r * (1 - oilyness*0.8) + oilColor[0]/256 * oilyness*0.8;
     rgb.g = rgb.g * (1 - oilyness*0.8) + oilColor[1]/256 * oilyness*0.8;
     rgb.b = rgb.b * (1 - oilyness*0.8) + oilColor[2]/256 * oilyness*0.8;
-}
-export function applyFriednessFilter(rgb, friedness) {
-    rgb.r *= 1 - friedness;
-    rgb.g *= 1 - friedness;
-    rgb.b *= 1 - friedness;
-}
-
-// distance between two points : {x,y,z}
-function dist(a, b) {
-    return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
 }
