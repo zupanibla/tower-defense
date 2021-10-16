@@ -324,9 +324,11 @@ let timer = 0;
 // FPS METER
 const frameTimestamps = new Array(100).fill(-1);
 let lastLogTimestamp = -1;
+let isFpsMeterVisible = false;
 
 document.addEventListener('keyup', e => {
     if (e.key == '~') {
+        isFpsMeterVisible = true;
         html.fpsMeter.style.visibility = 'visible';
     }
 });
@@ -355,7 +357,9 @@ function updateFpsMeter() {
 }
 
 function onAnimationFrame() {
-    updateFpsMeter();
+    if (isFpsMeterVisible) {
+        updateFpsMeter();
+    }
 
     const timerTarget = (performance.now() - startTime) / 1000 * 60;
 
