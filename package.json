@@ -3,9 +3,6 @@
   "name": "git-repo",
   "version": "1.0.0",
   "description": "",
-  "dependencies": {
-    "gl-matrix": "^3.3.0"
-  },
   "devDependencies": {
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.1.3",

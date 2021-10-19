@@ -1,7 +1,6 @@
 import {compileShaders} from './compile-shaders.js';
 import {canvas} from './html-references.js';
 import shaders from './shaders.js';
-import {mat4} from 'gl-matrix';
 
 // cuboid
 const vertexBuffer = new Float32Array([
@@ -52,7 +51,7 @@ const indexBuffer = new Uint16Array([
     20, 21, 22,     20, 22, 23,   // left
 ]);
 
-let gl, cuboidShaders, viewMatrix, projectionMatrix, gpuCuboidBuffer;
+let gl, cuboidShaders, viewProjectionMatrix, gpuCuboidBuffer;
 
 const MAX_CUBOID_COUNT = 20000;
 const CUBOID_DATA_LENGTH = 13;
@@ -90,11 +89,8 @@ export function pushCuboid(x, y, z, sx, sy, sz, px, py, rot, r, g, b, a) {
     cuboidCount++;
 }
 
-export function setViewMatrix(m) {
-	viewMatrix = m;
-}
-export function setProjectionMatrix(m) {
-    projectionMatrix = m;
+export function setViewProjectionMatrix(m) {
+	viewProjectionMatrix = m;
 }
 
 
@@ -167,16 +163,12 @@ export function initCuboidRenderer() {
 }
 
 export function renderCuboids() {
-
-    let vpMatrix = mat4.create();
-    mat4.mul(vpMatrix, projectionMatrix, viewMatrix);
-    
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	gl.useProgram(cuboidShaders.program);
 
     // set viewProjection matrix
-    gl.uniformMatrix4fv(cuboidShaders.uniforms.uVpMatrix, false, vpMatrix);
+    gl.uniformMatrix4fv(cuboidShaders.uniforms.uVpMatrix, false, viewProjectionMatrix);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, gpuCuboidBuffer);
     gl.bufferSubData(

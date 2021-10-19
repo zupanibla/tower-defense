@@ -1,5 +1,4 @@
 import {createCombatLogEntry, pauseGame, showEndPopout, waves, enemyTypes} from './game';
-import {applyFriednessFilter} from './render-game';
 import {playSound} from './audio.js'
 
 export let waveReward = 50;

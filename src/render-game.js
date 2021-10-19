@@ -1,5 +1,4 @@
-import {mat4} from 'gl-matrix';
-import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewMatrix, setProjectionMatrix, pushCuboid as pushCuboidData, getCuboidCount, setCuboidCount, setSkippableCuboidCount} from './render-cuboids.js';
+import {initCuboidRenderer, renderCuboids, adjustCanvasSize, setViewProjectionMatrix, pushCuboid as pushCuboidData, getCuboidCount, setCuboidCount, setSkippableCuboidCount} from './render-cuboids.js';
 
 import iceTileJson          from './models/ice-tile.json';
 import mountainTileJson     from './models/mountain-tile.json';
@@ -65,21 +64,37 @@ const tempCuboid = {
 let canvas = document.querySelector('.game-canvas');
 let staticCuboidCount = 0;
 
+// set camera, isometric view
+// NOTE transformations are applied bottom up
+// const m = mat4.create();
+// mat4.scale(m, m, [120, 120, -0.001]);  // tile size 120px
+// mat4.rotateX(m, m, Math.PI * (-1/4));   // tilt world
+// mat4.rotateZ(m, m, Math.PI * (-1/4));   // rotate 45deg
+// mat4.translate(m, m, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
+const m = new Float32Array([
+        84.85281372070312, -60, -0.0005000000237487257, 0,
+        84.85281372070312, 60, 0.0005000000237487257,
+        0, 0, 84.85281372070312, -0.0007071068393997848, 0,
+        -933.3809814453125, 0, 0, 1,
+]);
+
+const viewProjectionMatrix = new Float32Array(m);
+
 export function renderGame(game) {
     adjustCanvasSize();
 
-    // set camera, isometric view
-    // NOTE transformations are applied bottom up
-    let v = mat4.create();
-    mat4.scale(v, v, [120 / canvas.width, 120 / canvas.height, -0.001]);  // tile size 120px
-    mat4.rotateX(v, v, Math.PI * (-1/4));   // tilt world
-    mat4.rotateZ(v, v, Math.PI * (-1/4));   // rotate 45deg
-    mat4.translate(v, v, [-5.5, -5.5, 0]);  // (0, 0) tile to (-5.5, -5.5) pos
-    setViewMatrix(v);
+    viewProjectionMatrix.set(m);
+    // mat4.scale(viewProjectionMatrix, viewProjectionMatrix, [1 / canvas.width, 1 / canvas.height, 1]);
+    viewProjectionMatrix[0]  /= canvas.width;
+    viewProjectionMatrix[4]  /= canvas.width;
+    viewProjectionMatrix[8]  /= canvas.width;
+    viewProjectionMatrix[12] /= canvas.width;
+    viewProjectionMatrix[1]  /= canvas.height;
+    viewProjectionMatrix[5]  /= canvas.height;
+    viewProjectionMatrix[9]  /= canvas.height;
+    viewProjectionMatrix[13] /= canvas.height;
 
-    // TODO move projection component here TODO why?
-    let p = mat4.create();
-    setProjectionMatrix(p);
+    setViewProjectionMatrix(viewProjectionMatrix);
 
     // load static cuboids into buffer only once
     if (staticCuboidCount == 0) {

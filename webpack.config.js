@@ -23,12 +23,13 @@ module.exports = [{
 		port: 3000,
 	},
 },
-{	// asset-editor.js
-    mode: 'development',
-    devtool: 'inline-source-map',
-	entry: './src/asset-editor.js',
-	output: {
-		filename: 'asset-editor.js',
-		path: path.resolve(__dirname, 'dist'),
-	},
-}];
+// {	// asset-editor.js
+//     mode: 'development',
+//     devtool: 'inline-source-map',
+// 	entry: './src/asset-editor.js',
+// 	output: {
+// 		filename: 'asset-editor.js',
+// 		path: path.resolve(__dirname, 'dist'),
+// 	},
+// }
+];
