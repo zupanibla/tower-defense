@@ -186,6 +186,11 @@ body {
     cursor: url('assets/ui/cursor.png'), pointer;
 }
 
+.phone-disclaimer {
+    color: white;
+    font-size: 40px;
+    z-index: 10;
+}
 
 /* buttons */
 
