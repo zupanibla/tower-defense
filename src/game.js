@@ -3,6 +3,7 @@ import {updateMouse} from './update-mouse.js';
 import {initGameRenderer, renderGame} from './render-game.js';
 import {initAudio, playSound}         from './audio.js';
 import * as html from './html-references.js';
+import {startStopwatch, addTimeDifferenceTo} from './profiling.js';
 
 
 export let enemyTypes      = [
@@ -369,11 +370,14 @@ function onAnimationFrame() {
         timer = ~~timerTarget;
     }
 
+    startStopwatch();  // PROFILING
+
     // MAIN LOOP 60fps
     while (timerTarget > timer) {
         timer++;
 
         if (!game.wave.isActive || !game.isPaused) {
+
             for (let i = 0; i < game.speed; i++) {
                 updateGame(game);
             }
@@ -383,8 +387,15 @@ function onAnimationFrame() {
         }
     }
 
+    addTimeDifferenceTo('updateGame');  // PROFILING
+
     updateMouse(game);
+
+    addTimeDifferenceTo('updateMouse');  // PROFILING
+
     updateUi();
+
+    addTimeDifferenceTo('updateUi');  // PROFILING
 
     // compute game width and height
     let w = html.canvas.clientWidth;
@@ -401,6 +412,9 @@ function onAnimationFrame() {
     game.height = h * k;
 
     renderGame(game);
+
+    addTimeDifferenceTo('renderGame');
+
     requestAnimationFrame(onAnimationFrame);
 }
 
