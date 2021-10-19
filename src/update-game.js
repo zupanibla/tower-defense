@@ -97,8 +97,10 @@ export function updateGame(game) {
                         let d2 = Math.sqrt((en.x - x1)*(en.x - x1) + (en.y - y1)*(en.y - y1));
 
                         // damage
-                        if (d2 <= 0.5) en.health -= 20;
-                        else if (d2 <= 1 && en.type == 'goo-boss') en.health -= 20;
+                        if (d1 >= 0 && d1 < 100) {
+                            if (d2 <= 0.5) en.health -= 20;
+                            else if (d2 <= 1 && en.type == 'goo-boss') en.health -= 20;
+                        }
                     }
 
                     addParticle(game,
@@ -686,7 +688,7 @@ export function updateGame(game) {
 
 
 function positionOnPath(p, path) {
-	if (p < 0) return [-100, -100];
+	if (p < 0) return [-1000, -1000];
 
 	let prevIt = path[0];
 
