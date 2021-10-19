@@ -197,8 +197,6 @@ html.pausePlayButton.addEventListener('pointerup', e => {
 
 html.speedupButton.addEventListener('click', e => {
     game.speed = (game.speed % 3) + 1;
-    html.gameSpeed.style.visibility = 'visible';
-    html.gameSpeed.innerHTML = game.speed + 'x';
 });
 
 document.addEventListener('keydown', e => {
@@ -264,6 +262,9 @@ function updateUi() {
     }
     if (html.wave.innerHTML != game.wave.number) {
         html.wave.innerHTML  = game.wave.number;
+    }
+    if (html.gameSpeed.innerHTML != game.speed + 'x') {
+        html.gameSpeed.innerHTML  = game.speed + 'x';
     }
 }
 
