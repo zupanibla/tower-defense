@@ -12,12 +12,12 @@ export function updateGame(game) {
     if (game.time === 1) {
         let STAR_AMOUNT = 400;
         for (let i = 0; i < STAR_AMOUNT; i++) {
-            spawnStar(game);
+            spawnStarParticle(game);
         }
     }
 
     let snowFrequency = Math.max(0, Math.sin(2 * Math.PI * (0.5 + game.time / (120 * 60)))) * 1/3;
-    if (game.time % ~~(1/snowFrequency) == 1) spawnSnow(game);
+    if (game.time % ~~(1/snowFrequency) == 1) spawnSnowParticle(game);
 
     // end of wave
     if (game.enemies.length === 0 && game.wave.isActive && game.player.health > 0) {
@@ -54,7 +54,7 @@ export function updateGame(game) {
             if (tw.type == 'laser')  RANGE = 2.9;
 
 			for (let en of game.enemies) {
-				if (dist({x,y,z:0}, en) > RANGE) continue;
+				if (dist(x,y,0, en.x,en.y,en.z) > RANGE) continue;
 				if (!tw.targetEn || en.pathPos > tw.targetEn.pathPos) {
 					tw.targetEn = en;
 				}
@@ -101,19 +101,19 @@ export function updateGame(game) {
                         else if (d2 <= 1 && en.type == 'goo-boss') en.health -= 20;
                     }
 
-                    game.particles.push({
-                        type: 'laser',
-                        x: x +  -Math.sin(-tw.rot) * 50.2,
-                        y: y +  -Math.cos(-tw.rot) * 50.2,
-                        z: 0.35,
-                        vx: 0, vy: 0, vz: 0,
-                        rot: tw.rot,
-                        rotv: 0,
-                        sx: 0.1,
-                        sz: 0.1,
-                        sy: 100,
-                        r: 200/255, g: 255/255, b: 255/255, a: 2.5,
-                    });
+                    addParticle(game,
+                        /*type:*/ 'laser',
+                        /*x:*/ x +  -Math.sin(-tw.rot) * 50.2,
+                        /*y:*/ y +  -Math.cos(-tw.rot) * 50.2,
+                        /*z:*/ 0.35,
+                        /*vx:*/ 0, /*vy:*/ 0, /*vz:*/ 0,
+                        /*rot:*/ tw.rot,
+                        /*rotv:*/ 0,
+                        /*sx:*/ 0.1,
+                        /*sy:*/ 100,
+                        /*sz:*/ 0.1,
+                        /*r:*/ 200/255, /*g:*/ 255/255, /*b:*/ 255/255, /*a:*/ 2.5,
+                    );
 
                     playSound(13);
                     tw.cooldown = 90;
@@ -142,19 +142,19 @@ export function updateGame(game) {
 
                     let color = colors[~~(Math.random() * colors.length)];
 
-                    game.particles.push({
-                        type: 'flame',
-                        x: xo,
-                        y: yo,
-                        z: zo,
+                    addParticle(game,
+                        /*type:*/ 'flame',
+                        /*x:*/ xo,
+                        /*y:*/ yo,
+                        /*z:*/ zo,
                         vx, vy, vz,
-                        rot: 0,
-                        rotv: (Math.random() - 0.5) * 3,
-                        sx: 0.1,
-                        sy: 0.1,
-                        sz: 0.1,
-                        r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
-                    });
+                        /*rot:*/ 0,
+                        /*rotv:*/ (Math.random() - 0.5) * 3,
+                        /*sx:*/ 0.1,
+                        /*sy:*/ 0.1,
+                        /*sz:*/ 0.1,
+                        /*r:*/ color[0]/255, /*g:*/ color[1]/255, /*b:*/ color[2]/255, /*a:*/ 2.5,
+                    );
 
                     // damage
                     tw.targetEn.health    -= 0.5;
@@ -187,19 +187,19 @@ export function updateGame(game) {
 
                         let color = [47, 214, 100];
 
-                        game.particles.push({
-                            type: 'oil',
-                            x: xo,
-                            y: yo,
-                            z: zo,
+                        addParticle(game,
+                            /*type:*/ 'oil',
+                            /*x:*/ xo,
+                            /*y:*/ yo,
+                            /*z:*/ zo,
                             vx, vy, vz,
-                            rot: 0,
-                            rotv: (Math.random() - 0.5) * 3,
-                            sx: 0.15,
-                            sy: 0.15,
-                            sz: 0.15,
-                            r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
-                        });
+                            /*rot:*/ 0,
+                            /*rotv:*/ (Math.random() - 0.5) * 3,
+                            /*sx:*/ 0.15,
+                            /*sy:*/ 0.15,
+                            /*sz:*/ 0.15,
+                            /*r:*/ color[0]/255, /*g:*/ color[1]/255, /*b:*/ color[2]/255, /*a:*/ 2.5,
+                        );
                     }
 
                     // oil aoe
@@ -222,19 +222,14 @@ export function updateGame(game) {
                 }
 
                 if (tw.type == 'nova') {
-                    // blue nova
-                    //game.particles.push(...novaParticles(x, y, 0.1,  64/250, 219/250, 221/250, 2.5, 5, 10, 0.1));
-                    //game.particles.push(...novaParticles(x, y, 0.1,  46/250, 155/250, 209/250, 2.5, 5, 10, 0.1));
-                    //game.particles.push(...novaParticles(x, y, 0.1, 119/250, 194/250, 212/250, 2.5, 5, 10, 0.1));
-                    //game.particles.push(...novaParticles(x, y, 0.1,  53/250,  93/250, 167/250, 2.5, 5, 10, 0.1));
 
                     // yellow nova
-                    game.particles.push(...novaParticles(x, y, 0.1,  255/250, 255/250,   0/250, 2.5, 5, 10, 0.1));
-                    game.particles.push(...novaParticles(x, y, 0.1,  252/250, 255/250,  92/250, 2.5, 5, 10, 0.1));
-                    game.particles.push(...novaParticles(x, y, 0.1,  255/250, 255/250, 179/250, 2.5, 5, 10, 0.1));
+                    spawnNovaParticles(game, x, y, 0.1,  255/250, 255/250,   0/250, 2.5, 5, 10, 0.1);
+                    spawnNovaParticles(game, x, y, 0.1,  252/250, 255/250,  92/250, 2.5, 5, 10, 0.1);
+                    spawnNovaParticles(game, x, y, 0.1,  255/250, 255/250, 179/250, 2.5, 5, 10, 0.1);
 
                     for (let en of game.enemies) {
-                        if (dist({x,y,z:0}, en) > RANGE) continue;
+                        if (dist(x,y,0, en.x,en.y,en.z) > RANGE) continue;
                         en.health -= 18;
                     }
 
@@ -288,7 +283,7 @@ export function updateGame(game) {
         // on collision
         if (d < 0.1) {
             game.bullets.splice(i, 1);
-            game.particles.push(...explosionParticles(bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 2, 2, 5, 0.03));
+            spawnExplosionParticles(game, bl.targetEn.x, bl.targetEn.y, bl.targetEn.z, 1, 1, 1, 2, 2, 5, 0.03);
             if (bl.targetEn.hasArmor) {
                 playSound(11);
             }
@@ -325,19 +320,19 @@ export function updateGame(game) {
             ];
             let color = colors[~~(Math.random() * colors.length)];
 
-            game.particles.push({
-                type: 'fire',
-                x: en.x + (Math.random() - 0.5) * 0.2,
-                y: en.y + (Math.random() - 0.5) * 0.2,
-                z: 0.5 + (Math.random() - 0.5) * 0.2,
-                vx: 0, vy: 0, vz: 0,
-                rot: (Math.random() - 0.5),
-                rotv: (Math.random() - 0.5) * 3,
-                sx: 0.1,
-                sy: 0.1,
-                sz: 0.1,
-                r: color[0]/255, g: color[1]/255, b: color[2]/255, a: 2.5,
-            });
+            addParticle(game,
+                /*type:*/ 'fire',
+                /*x:*/ en.x + (Math.random() - 0.5) * 0.2,
+                /*y:*/ en.y + (Math.random() - 0.5) * 0.2,
+                /*z:*/ 0.5 + (Math.random() - 0.5) * 0.2,
+                /*vx:*/ 0, /*vy:*/ 0, /*vz:*/ 0,
+                /*rot:*/ (Math.random() - 0.5),
+                /*rotv:*/ (Math.random() - 0.5) * 3,
+                /*sx:*/ 0.1,
+                /*sy:*/ 0.1,
+                /*sz:*/ 0.1,
+                /*r:*/ color[0]/255, /*g:*/ color[1]/255, /*b:*/ color[2]/255, /*a:*/ 2.5,
+            );
         }
 
         let speed = 2;
@@ -410,10 +405,10 @@ export function updateGame(game) {
             if (en.jumpCooldown == 15) {
                 let color = [70/255, 206/255, 74/255]
                 let density = 2;
-                if (en.type == 'goo-small') game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.03));
-                if (en.type == 'goo')       game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.05));
-                if (en.type == 'goo-big')   game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07));
-                if (en.type == 'goo-boss')  game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 0.5, density, 10, 0.1));
+                if (en.type == 'goo-small') spawnDebrisParticles(game, en.x, en.y, en.z, ...color, 0.5, density, 10, 0.03);
+                if (en.type == 'goo')       spawnDebrisParticles(game, en.x, en.y, en.z, ...color, 0.5, density, 10, 0.05);
+                if (en.type == 'goo-big')   spawnDebrisParticles(game, en.x, en.y, en.z, ...color, 0.5, density, 10, 0.07);
+                if (en.type == 'goo-boss')  spawnDebrisParticles(game, en.x, en.y, en.z, ...color, 0.5, density, 10, 0.1);
             }
             
             if (en.jumpCooldown > 0) en.jumpCooldown--;
@@ -481,7 +476,7 @@ export function updateGame(game) {
                 playSound(12);
             }
 
-            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, alpha, density, velocity, size));
+            spawnDebrisParticles(game, en.x, en.y, en.z, ...color, alpha, density, velocity, size);
 
             // split goo
             if (en.type == 'goo') {
@@ -555,14 +550,15 @@ export function updateGame(game) {
         // vek armor break
         if (en.type == 'vek' && en.hasArmor && en.health <= en.maxHealth / 2) {
             let color = [125/255, 80/255, 80/255];
-            game.particles.push(...debrisParticles(en.x, en.y, en.z, ...color, 1, 3, 20, 0.1));
+            spawnDebrisParticles(game, en.x, en.y, en.z, ...color, 1, 3, 20, 0.1);
             playSound(10);
             en.hasArmor = false;
         }
     }
 
     // particles
-    for (let pt of game.particles) {
+    for (let i = 0; i < game.particleCount; i++) {
+        const pt = game.particles[i];
 
         if (pt.type == 'debris') {
             // bounce
@@ -673,18 +669,17 @@ export function updateGame(game) {
     }
 
     // particle death
-    for (let i = 0; i < game.particles.length; i++) {
+    for (let i = 0; i < game.particleCount; i++) {
         let pt = game.particles[i];
 
         // remove when a <= 0
         if (pt.a <= 0) {
             // make new star when old one dies
             if (pt.type == 'star') {
-                spawnStar(game);
+                spawnStarParticle(game);
             }
 
-            game.particles.splice(i, 1);
-            i--;
+            removeParticle(game, i--);
         }
     }
 }
@@ -723,9 +718,9 @@ function angleBetween(a, b) {
 	return Math.atan2(Math.sin(a-b), Math.cos(a-b));
 }
 
-// distance between two points : {x,y,z}
-function dist(a, b) {
-	return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
+// distance between two /*points :*/ {x,y,z}
+function dist(x1, y1, z1, x2, y2, z2) {
+	return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) + (z1 - z2)*(z1 - z2));
 }
 
 // random float between min and max
@@ -733,14 +728,46 @@ function randomBetween(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function debrisParticles(x, y, z, r, g, b, a, d, v, s) {
+function spawnDebrisParticles(game, x, y, z, r, g, b, a, d, v, s) {
     let CUBE_DENSITY      = d;
     let CUBE_SIZE         = 0.2;
     let PARTICLE_SIZE     = s;
     let PARTICLE_VELOCITY = v/60;
     let ROTATION_SCALE    = 0.3;
 
-    let particles = [];
+    for (let i = -CUBE_DENSITY/2 + 0.5; i < CUBE_DENSITY/2 + 0.5; i++) {
+        for (let j = -CUBE_DENSITY/2 + 0.5; j < CUBE_DENSITY/2 + 0.5; j++) {
+            for (let k = -CUBE_DENSITY/2 + 0.5; k < CUBE_DENSITY/2 + 0.5; k++) {
+                if (i*i + j*j + k*k > (CUBE_DENSITY/2)*(CUBE_DENSITY/2)) continue;
+                let i2 = i + Math.random() - 0.5; 
+                let j2 = j + Math.random() - 0.5; 
+                let k2 = k + Math.random() - 0.5;
+                addParticle(game,
+                    /*type:*/ 'debris',
+                    /*x:*/ x + i2 * CUBE_SIZE / CUBE_DENSITY,
+                    /*y:*/ y + j2 * CUBE_SIZE / CUBE_DENSITY,
+                    /*z:*/ z + k2 * CUBE_SIZE / CUBE_DENSITY,
+                    /*vx:*/ i2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    /*vy:*/ j2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    /*vz:*/ k2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    /*rot:*/ 0,
+                    /*rotv:*/ (Math.random() - 0.5) * ROTATION_SCALE,
+                    /*sx:*/ PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
+                    /*sy:*/ PARTICLE_SIZE,
+                    /*sz:*/ PARTICLE_SIZE,
+                    r, g, b, a,
+                );
+            }
+        }
+    }
+}
+
+function spawnExplosionParticles(game, x, y, z, r, g, b, a, d, v, s) {
+    let CUBE_DENSITY      = d;
+    let CUBE_SIZE         = 0.2;
+    let PARTICLE_SIZE     = s;
+    let PARTICLE_VELOCITY = v/60;
+    let ROTATION_SCALE    = 0.3;
 
     for (let i = -CUBE_DENSITY/2 + 0.5; i < CUBE_DENSITY/2 + 0.5; i++) {
         for (let j = -CUBE_DENSITY/2 + 0.5; j < CUBE_DENSITY/2 + 0.5; j++) {
@@ -749,103 +776,60 @@ function debrisParticles(x, y, z, r, g, b, a, d, v, s) {
                 let i2 = i + Math.random() - 0.5; 
                 let j2 = j + Math.random() - 0.5; 
                 let k2 = k + Math.random() - 0.5; 
-                particles.push({
-                    type: 'debris',
-                    x: x + i2 * CUBE_SIZE / CUBE_DENSITY,
-                    y: y + j2 * CUBE_SIZE / CUBE_DENSITY,
-                    z: z + k2 * CUBE_SIZE / CUBE_DENSITY,
-                    vx: i2 * PARTICLE_VELOCITY / CUBE_DENSITY,
-                    vy: j2 * PARTICLE_VELOCITY / CUBE_DENSITY,
-                    vz: k2 * PARTICLE_VELOCITY / CUBE_DENSITY,
-                    rot: 0,
-                    rotv: (Math.random() - 0.5) * ROTATION_SCALE,
-                    sx: PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
-                    sy: PARTICLE_SIZE,
-                    sz: PARTICLE_SIZE,
-                    r, g, b, a: a,
-                });
+                addParticle(game,
+                    /*type:*/ 'explosion',
+                    /*x:*/ x + i2 * CUBE_SIZE / CUBE_DENSITY,
+                    /*y:*/ y + j2 * CUBE_SIZE / CUBE_DENSITY,
+                    /*z:*/ z + k2 * CUBE_SIZE / CUBE_DENSITY,
+                    /*vx:*/ i2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    /*vy:*/ j2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    /*vz:*/ k2 * PARTICLE_VELOCITY / CUBE_DENSITY,
+                    /*rot:*/ 0,
+                    /*rotv:*/ (Math.random() - 0.5) * ROTATION_SCALE,
+                    /*sx:*/ PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
+                    /*sy:*/ PARTICLE_SIZE,
+                    /*sz:*/ PARTICLE_SIZE,
+                    r, g, b, a,
+                );
             }
         }
     }
 
-    return particles;
 }
 
-function explosionParticles(x, y, z, r, g, b, a, d, v, s) {
+function spawnNovaParticles(game, x, y, z, r, g, b, a, d, v, s) {
     let CUBE_DENSITY      = d;
     let CUBE_SIZE         = 0.2;
     let PARTICLE_SIZE     = s;
     let PARTICLE_VELOCITY = v/60;
     let ROTATION_SCALE    = 0.3;
 
-    let particles = [];
-
     for (let i = -CUBE_DENSITY/2 + 0.5; i < CUBE_DENSITY/2 + 0.5; i++) {
         for (let j = -CUBE_DENSITY/2 + 0.5; j < CUBE_DENSITY/2 + 0.5; j++) {
             for (let k = -CUBE_DENSITY/2 + 0.5; k < CUBE_DENSITY/2 + 0.5; k++) {
                 if (i*i + j*j + k*k > (CUBE_DENSITY/2)*(CUBE_DENSITY/2)) continue;
-                let i2 = i + Math.random() - 0.5; 
-                let j2 = j + Math.random() - 0.5; 
-                let k2 = k + Math.random() - 0.5; 
-                particles.push({
-                    type: 'explosion',
-                    x: x + i2 * CUBE_SIZE / CUBE_DENSITY,
-                    y: y + j2 * CUBE_SIZE / CUBE_DENSITY,
-                    z: z + k2 * CUBE_SIZE / CUBE_DENSITY,
-                    vx: i2 * PARTICLE_VELOCITY / CUBE_DENSITY,
-                    vy: j2 * PARTICLE_VELOCITY / CUBE_DENSITY,
-                    vz: k2 * PARTICLE_VELOCITY / CUBE_DENSITY,
-                    rot: 0,
-                    rotv: (Math.random() - 0.5) * ROTATION_SCALE,
-                    sx: PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
-                    sy: PARTICLE_SIZE,
-                    sz: PARTICLE_SIZE,
-                    r, g, b, a: a,
-                });
+                let rot = randomBetween(0, Math.PI * 2);
+                addParticle(game,
+                    /*type:*/ 'nova',
+                    /*x:*/ x + i * CUBE_SIZE / CUBE_DENSITY,
+                    /*y:*/ y + j * CUBE_SIZE / CUBE_DENSITY,
+                    /*z:*/ z + k * CUBE_SIZE / CUBE_DENSITY,
+                    /*vx:*/ PARTICLE_VELOCITY * Math.sin(rot),
+                    /*vy:*/ PARTICLE_VELOCITY * Math.cos(rot),
+                    /*vz:*/ 0,
+                    /*rot:*/ 0,
+                    /*rotv:*/ (Math.random() - 0.5) * ROTATION_SCALE,
+                    /*sx:*/ PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
+                    /*sy:*/ PARTICLE_SIZE,
+                    /*sz:*/ PARTICLE_SIZE,
+                    r, g, b, a,
+                );
             }
         }
     }
-
-    return particles;
 }
 
-function novaParticles(x, y, z, r, g, b, a, d, v, s) {
-    let CUBE_DENSITY      = d;
-    let CUBE_SIZE         = 0.2;
-    let PARTICLE_SIZE     = s;
-    let PARTICLE_VELOCITY = v/60;
-    let ROTATION_SCALE    = 0.3;
-
-    let particles = [];
-
-    for (let i = -CUBE_DENSITY/2 + 0.5; i < CUBE_DENSITY/2 + 0.5; i++) {
-        for (let j = -CUBE_DENSITY/2 + 0.5; j < CUBE_DENSITY/2 + 0.5; j++) {
-            for (let k = -CUBE_DENSITY/2 + 0.5; k < CUBE_DENSITY/2 + 0.5; k++) {
-                if (i*i + j*j + k*k > (CUBE_DENSITY/2)*(CUBE_DENSITY/2)) continue;
-                let rot = randomBetween(0, Math.PI * 2)
-                particles.push({
-                    type: 'nova',
-                    x: x + i * CUBE_SIZE / CUBE_DENSITY,
-                    y: y + j * CUBE_SIZE / CUBE_DENSITY,
-                    z: z + k * CUBE_SIZE / CUBE_DENSITY,
-                    vx: PARTICLE_VELOCITY * Math.sin(rot),
-                    vy: PARTICLE_VELOCITY * Math.cos(rot),
-                    vz: 0,
-                    rot: 0,
-                    rotv: (Math.random() - 0.5) * ROTATION_SCALE,
-                    sx: PARTICLE_SIZE*Math.floor(2.5*Math.random() + 1),
-                    sy: PARTICLE_SIZE,
-                    sz: PARTICLE_SIZE,
-                    r, g, b, a: a,
-                });
-            }
-        }
-    }
-
-    return particles;
-}
-
-function spawnSnow(game) {
+function spawnSnowParticle(game) {
     let SNOW_SIZE_MIN = 0.03;
     let SNOW_SIZE_MAX = 0.1;
     let ROTATION_SCALE = 0.3;
@@ -853,24 +837,24 @@ function spawnSnow(game) {
 
     let snowSize = randomBetween(SNOW_SIZE_MIN, SNOW_SIZE_MAX);
 
-    game.particles.push({
-        type: 'snow',
-        x: randomBetween(-0.5, 11.5),    // HARDCODED
-        y: randomBetween(-0.5, 11.5),    // HARDCODED
-        z: 10,
-        vx: 0,
-        vy: 0,
-        vz: -PARTICLE_VELOCITY,
-        rot: 0,
-        rotv: (Math.random() - 0.5) * ROTATION_SCALE,
-        sx: snowSize,
-        sy: snowSize,
-        sz: snowSize,
-        r: 240/255, g: 240/255, b: 255/255, a: 2,
-    });
+    addParticle(game,
+        /*type:*/ 'snow',
+        /*x:*/ randomBetween(-0.5, 11.5),    // HARDCODED
+        /*y:*/ randomBetween(-0.5, 11.5),    // HARDCODED
+        /*z:*/ 10,
+        /*vx:*/ 0,
+        /*vy:*/ 0,
+        /*vz:*/ -PARTICLE_VELOCITY,
+        /*rot:*/ 0,
+        /*rotv:*/ (Math.random() - 0.5) * ROTATION_SCALE,
+        /*sx:*/ snowSize,
+        /*sy:*/ snowSize,
+        /*sz:*/ snowSize,
+        /*r:*/ 240/255, /*g:*/ 240/255, /*b:*/ 255/255, /*a:*/ 2,
+    );
 }
 
-function spawnStar(game) {
+function spawnStarParticle(game) {
     let STAR_SIZE_MIN = 0.01;
     let STAR_SIZE_MAX = 0.1;
     let STAR_ALIVE_MIN = 1;
@@ -878,19 +862,62 @@ function spawnStar(game) {
 
     let starSize = randomBetween(STAR_SIZE_MIN, STAR_SIZE_MAX);
 
-    game.particles.push({
-        type: 'star',
-        x: randomBetween(-10, 22),    // HARDCODED
-        y: randomBetween(-10, 22),    // HARDCODED
-        z: -2,
-        vx: 0,
-        vy: 0,
-        vz: 0,
-        rot: 0,
-        rotv: 0,
-        sx: starSize,
-        sy: starSize,
-        sz: starSize,
-        r: 240/255, g: 240/255, b: 100/255, a: randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
-    });
+    addParticle(game,
+        /*type:*/ 'star',
+        /*x:*/ randomBetween(-10, 22),    // HARDCODED
+        /*y:*/ randomBetween(-10, 22),    // HARDCODED
+        /*z:*/ -2,
+        /*vx:*/ 0,
+        /*vy:*/ 0,
+        /*vz:*/ 0,
+        /*rot:*/ 0,
+        /*rotv:*/ 0,
+        /*sx:*/ starSize,
+        /*sy:*/ starSize,
+        /*sz:*/ starSize,
+        /*r:*/ 240/255, /*g:*/ 240/255, /*b:*/ 100/255, /*a:*/ randomBetween(STAR_ALIVE_MIN, STAR_ALIVE_MAX),
+    );
+}
+
+function addParticle(game, type, x, y, z, vx, vy, vz, rot, rotv, sx, sy, sz, r, g, b, a) {
+    const pt = game.particles[game.particleCount++];
+
+    pt.type = type;
+    pt.x    = x;
+    pt.y    = y;
+    pt.z    = z;
+    pt.vx   = vx;
+    pt.vy   = vy;
+    pt.vz   = vz;
+    pt.rot  = rot;
+    pt.rotv = rotv;
+    pt.sx   = sx;
+    pt.sy   = sy;
+    pt.sz   = sz;
+    pt.r    = r;
+    pt.g    = g;
+    pt.b    = b;
+    pt.a    = a;
+}
+
+function removeParticle(game, idx) {
+    const dst = game.particles[idx];
+    const src = game.particles[--game.particleCount];
+
+    dst.type = src.type;
+    dst.x    = src.x;
+    dst.y    = src.y;
+    dst.z    = src.z;
+    dst.vx   = src.vx;
+    dst.vy   = src.vy;
+    dst.vz   = src.vz;
+    dst.rot  = src.rot;
+    dst.rotv = src.rotv;
+    dst.sx   = src.sx;
+    dst.sy   = src.sy;
+    dst.sz   = src.sz;
+    dst.r    = src.r;
+    dst.g    = src.g;
+    dst.b    = src.b;
+    dst.a    = src.a;
 }

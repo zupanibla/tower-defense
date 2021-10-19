@@ -189,7 +189,9 @@ export function renderGame(game) {
 	}
 
 	// particles
-	for (let pt of game.particles) {
+    for (let i = 0; i < game.particleCount; i++) {
+        const pt = game.particles[i];
+
 		pushCuboidData(
             pt.x, pt.y, pt.z + pt.sz/2,
             pt.sx, pt.sy, pt.sz,

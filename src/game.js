@@ -66,7 +66,8 @@ let game = {
     pathLen: 47,  // HARDCODED
 	time: 0,
     enemies: [],
-    particles: [],
+    particles: [],  // is initialized as a large static array later
+    particleCount: 0,
     bullets: [],
     player: {
         health: 100,
@@ -103,6 +104,28 @@ let game = {
     selectedShopItemIdx: -1,
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
+
+game.particles = new Array(30000);
+for (let i = 0; i < game.particles.length; i++) {
+    game.particles[i] = {
+        type: 'null',
+        x: -0.1,
+        y: -0.1,
+        z: -0.1,
+        vx: -0.1,
+        vy: -0.1,
+        vz: -0.1,
+        rot: -0.1,
+        rotv: -0.1,
+        sx: -0.1,
+        sy: -0.1,
+        sz: -0.1,
+        r: -0.1,
+        g: -0.1,
+        b: -0.1,
+        a: -0.1,
+    }
+}
 
 createCombatLogEntry('Welcome to tower defense!<br />Defeat the evil enemies that are trying to breach into human world to take over.<br />');
 
