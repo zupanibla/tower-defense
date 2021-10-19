@@ -105,7 +105,7 @@ let game = {
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
 
-game.particles = new Array(30000);
+game.particles = new Array(3000);
 for (let i = 0; i < game.particles.length; i++) {
     game.particles[i] = {
         type: 'null',
@@ -347,7 +347,7 @@ let lastLogTimestamp = -1;
 let isFpsMeterVisible = false;
 
 document.addEventListener('keyup', e => {
-    if (e.key == '~') {
+    if (e.key == '9') {
         isFpsMeterVisible = true;
         html.fpsMeter.style.visibility = 'visible';
     }
@@ -495,40 +495,33 @@ let audioUrls = [
     'assets/sounds/laser.mp3',
 ];
 
-
-let loadedAssetCount = 0;
-let loadedSoundCount = 0;
-let loadedImageCount = 0;
-
-let assetLoadEventHandler = () => {
-    loadedAssetCount++;
-    if (loadedAssetCount == imageUrls.length + audioUrls.length) {
-        html.loadingCover.style.display = 'none';
-    }
-
-    // console.log(`loaded ${loadedSoundCount}/${audioUrls.length} sounds and ${loadedImageCount}/${imageUrls.length} images`);
-};
-
-for (let it of imageUrls) {
-    let image = new Image();
-    image.onload = () => { loadedImageCount++; assetLoadEventHandler(); };
-    image.onerror = () => { loadedImageCount++; assetLoadEventHandler(); };  // TODO handle failure
-    image.src = it;
+const imgs = [];
+for (const it of imageUrls) {
+    let img = new Image();
+    img.src = it;
+    imgs.push(img);
 }
-
-// TODO rare bug that seems like a race condition caused by oncanplay event not firing
-let audios = [];
-for (let it of audioUrls) {
+const audios = [];
+for (const it of audioUrls) {
     const a = new Audio();
-    audios.push(a);
     a.src = it;
+    audios.push(a);
 }
-for (let it of audios) {
-    it.oncanplay = () => { loadedSoundCount++; assetLoadEventHandler(); };
-    it.onerror = () => { loadedSoundCount++; assetLoadEventHandler(); };  // TODO handle failure
-    it.load();
-}
-window.audios = audios;
+
+const assetLoadingCheckInterval = window.setInterval(() => {
+    for (const it of imgs) {
+        if (!it.complete) {
+            return;
+        }
+    }
+    for (const it of audios) {
+        if (!it.readyState) {
+            return;
+        }
+    }
+    window.clearInterval(assetLoadingCheckInterval);
+    html.loadingCover.style.display = 'none';
+}, 100);
 
 initGameRenderer();
 onAnimationFrame();
