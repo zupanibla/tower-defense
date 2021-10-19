@@ -139,9 +139,8 @@ html.uiDiv.addEventListener('mousemove', e => {
 html.uiDiv.addEventListener('mousedown', e => {
     // left click
     if (e.button === 0) {
-        var rect             = html.uiDiv.getBoundingClientRect();
-        game.mouse.x         = Math.round(e.clientX - rect.left);
-        game.mouse.y         = Math.round(e.clientY - rect.top);
+        game.mouse.x         = e.clientX * game.width / html.canvas.clientWidth;
+        game.mouse.y         = e.clientY * game.height / html.canvas.clientHeight;
         game.mouse.isDown    = true;
         game.mouse.clickTime = game.time;
         game.mouse.clickX    = game.mouse.x;
@@ -164,7 +163,7 @@ html.uiDiv.addEventListener('mousedown', e => {
             game.player.money -= selectedShopItem.cost;
             selectedShopItem.cost = Math.round(selectedShopItem.cost * TOWER_COST_MULTIPLIER);
             // on pressing shift don't remove tower from cursor to allow placing multiple towers
-            if (!e.shiftKey) {
+            if (!e.shiftKey || selectedShopItem.cost > game.player.money) {
                 // deselect tower from shop and remove it from cursor
                 for (let it of html.shopButtons) {
                     it.classList.remove('tower-selected');
@@ -178,9 +177,6 @@ html.uiDiv.addEventListener('mousedown', e => {
 html.uiDiv.addEventListener('mouseup', e => {
     // left click
     if (e.button === 0) {
-        var rect = html.uiDiv.getBoundingClientRect();
-        game.mouse.x = Math.round(e.clientX - rect.left);
-        game.mouse.y = Math.round(e.clientY - rect.top);
         game.mouse.isDown = false;
     }
 });
