@@ -105,7 +105,9 @@ let game = {
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
 
-game.particles = new Array(3000);
+const MAX_PARTICLE_COUNT = 20000;
+
+game.particles = new Array(MAX_PARTICLE_COUNT);
 for (let i = 0; i < game.particles.length; i++) {
     game.particles[i] = {
         type: 'null',
