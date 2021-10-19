@@ -131,12 +131,12 @@ createCombatLogEntry('Welcome to tower defense!<br />Defeat the evil enemies tha
 
 let initialGameStateJSON = JSON.stringify(game);
 
-html.uiDiv.addEventListener('mousemove', e => {
+html.uiDiv.addEventListener('pointermove', e => {
     game.mouse.x = e.clientX * game.width / html.canvas.clientWidth;
     game.mouse.y = e.clientY * game.height / html.canvas.clientHeight;
 });
 
-html.uiDiv.addEventListener('mousedown', e => {
+html.uiDiv.addEventListener('pointerdown', e => {
     // left click
     if (e.button === 0) {
         game.mouse.x         = e.clientX * game.width / html.canvas.clientWidth;
@@ -174,14 +174,14 @@ html.uiDiv.addEventListener('mousedown', e => {
     }
 });
 
-html.uiDiv.addEventListener('mouseup', e => {
+html.uiDiv.addEventListener('pointerup', e => {
     // left click
     if (e.button === 0) {
         game.mouse.isDown = false;
     }
 });
 
-html.pausePlayButton.addEventListener('mouseup', e => {
+html.pausePlayButton.addEventListener('pointerup', e => {
     // unpauase
     if (game.isPaused) {
         unpauseGame();
@@ -438,7 +438,7 @@ function onAnimationFrame() {
 }
 
 // init audio after user interaction
-html.uiDiv.addEventListener('mousedown', function handler(e) {
+html.uiDiv.addEventListener('pointerdown', function handler(e) {
     e.currentTarget.removeEventListener(e.type, handler);
     initAudio();
 })
