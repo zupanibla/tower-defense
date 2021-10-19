@@ -102,6 +102,7 @@ let game = {
         {type: 'laser',    cost: 1000},
     ],
     selectedShopItemIdx: -1,
+    waveReward: 50,
 }
 game.towers = game.tiles.map(row => row.map(_ => null));
 

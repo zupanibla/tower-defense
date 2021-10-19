@@ -1,7 +1,6 @@
 import {createCombatLogEntry, pauseGame, showEndPopout, waves, enemyTypes} from './game';
 import {playSound} from './audio.js'
 
-export let waveReward = 50;
 
 export function updateGame(game) {
     game.time++;
@@ -27,8 +26,8 @@ export function updateGame(game) {
         if (game.wave.number == 9) createCombatLogEntry("Good luck with the next one.");
         if (game.wave.number === waves.length) showEndPopout(true);
         else game.wave.number++;
-        game.player.money += waveReward;
-        waveReward += 10;
+        game.player.money += game.waveReward;
+        game.waveReward += 10;
         game.wave.isActive = false;
         pauseGame();
     }
