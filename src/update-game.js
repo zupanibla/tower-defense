@@ -98,8 +98,8 @@ export function updateGame(game) {
 
                         // damage
                         if (d1 >= 0 && d1 < 100) {
-                            if (d2 <= 0.5) en.health -= 20;
-                            else if (d2 <= 1 && en.type == 'goo-boss') en.health -= 20;
+                            if (d2 <= 0.5) en.health -= 25;
+                            else if (d2 <= 1 && en.type == 'goo-boss') en.health -= 25;
                         }
                     }
 
