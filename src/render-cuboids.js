@@ -103,6 +103,7 @@ export function initCuboidRenderer() {
 
 	// cuboidShaders <- { program, attributes, uniforms }
 	cuboidShaders = compileShaders(gl, shaders).cuboid;
+    gl.useProgram(cuboidShaders.program);
 
 	gl.clearColor(15/255, 16/255, 22/255, 1.0);  // Clear to dark gray  // background
 	gl.clearDepth(1.0);                          // Clear everything
@@ -140,45 +141,10 @@ export function initCuboidRenderer() {
         3*4,                                    // offset in bytes of the first component in the vertex attribute array
     );
 
-	gl.enableVertexAttribArray(cuboidShaders.attributes['aNormal']);
-	gl.enableVertexAttribArray(cuboidShaders.attributes['aPosition']);
-    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubPos']);
-    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubSize']);
-    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubPivot']);
-    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubRot']);
-    gl.enableVertexAttribArray(cuboidShaders.attributes['aColor']);
-
-    // make attributes instanced
-    // 1 <- divisor: number of instances that will pass between updates of the generic attribute
-    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubPos'], 1);
-    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubSize'], 1);
-    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubPivot'], 1);
-    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubRot'], 1);
-    gl.vertexAttribDivisor(cuboidShaders.attributes['aColor'], 1);
-
-    // initalize cuboid buffer on GPU
+    // initialize cuboid buffer on GPU
     gpuCuboidBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, gpuCuboidBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, cuboidBuffer, gl.DYNAMIC_DRAW);
-}
-
-export function renderCuboids() {
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-	gl.useProgram(cuboidShaders.program);
-
-    // set viewProjection matrix
-    gl.uniformMatrix4fv(cuboidShaders.uniforms.uVpMatrix, false, viewProjectionMatrix);
-
-	gl.bindBuffer(gl.ARRAY_BUFFER, gpuCuboidBuffer);
-    gl.bufferSubData(
-        gl.ARRAY_BUFFER,                                // target
-        skippableCuboidCount * CUBOID_DATA_LENGTH * 4,  // dst offset (in bytes)
-        cuboidBuffer,                                   // src buffer
-        skippableCuboidCount * CUBOID_DATA_LENGTH,      // src offset (in 32s)
-        // length (in 32s)
-        cuboidCount * CUBOID_DATA_LENGTH - skippableCuboidCount * 1 * CUBOID_DATA_LENGTH,
-    );
 
     gl.vertexAttribPointer(
         cuboidShaders.attributes['aCubPos'],
@@ -212,13 +178,45 @@ export function renderCuboids() {
         CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
         (3+3+2) * 4,             // offset in bytes of the first component in the vertex attribute array
     );
-	gl.vertexAttribPointer(
+    gl.vertexAttribPointer(
         cuboidShaders.attributes['aColor'],
         4,                       // number of components per vertex attribute
         gl.FLOAT,                // (4 bytes per value)
         false,                   // normalize
         CUBOID_DATA_LENGTH * 4,  // offset in bytes between the beginning of consecutive vertex attributes
         (3+3+2+1) * 4,           // offset in bytes of the first component in the vertex attribute array
+    );
+
+	gl.enableVertexAttribArray(cuboidShaders.attributes['aNormal']);
+	gl.enableVertexAttribArray(cuboidShaders.attributes['aPosition']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubPos']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubSize']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubPivot']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aCubRot']);
+    gl.enableVertexAttribArray(cuboidShaders.attributes['aColor']);
+
+    // make attributes instanced
+    // 1 <- divisor: number of instances that will pass between updates of the generic attribute
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubPos'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubSize'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubPivot'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aCubRot'], 1);
+    gl.vertexAttribDivisor(cuboidShaders.attributes['aColor'], 1);
+}
+
+export function renderCuboids() {
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // set viewProjection matrix
+    gl.uniformMatrix4fv(cuboidShaders.uniforms.uVpMatrix, false, viewProjectionMatrix);
+
+    gl.bufferSubData(
+        gl.ARRAY_BUFFER,                                // target
+        skippableCuboidCount * CUBOID_DATA_LENGTH * 4,  // dst offset (in bytes)
+        cuboidBuffer,                                   // src buffer
+        skippableCuboidCount * CUBOID_DATA_LENGTH,      // src offset (in 32s)
+        // length (in 32s)
+        cuboidCount * CUBOID_DATA_LENGTH - skippableCuboidCount * 1 * CUBOID_DATA_LENGTH,
     );
 
 	gl.drawElementsInstanced(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0, cuboidCount);
